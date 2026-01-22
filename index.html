@@ -34,65 +34,16 @@
         }
 
         body {
-            /* O background original foi movido para um overlay para permitir imagens atrás */
-            background-color: var(--bg-primary);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
             color: var(--text-primary);
             font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
             height: 100vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            position: relative;
         }
 
-        /* ==================== NOVOS ESTILOS DE BACKGROUND ==================== */
-        #art-layer-container {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; /* Atrás de tudo */
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        /* Overlay para manter o tom escuro original sobre as imagens */
-        #bg-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(10,10,12,0.85) 0%, rgba(18,18,26,0.95) 100%);
-            z-index: 2;
-        }
-
-        .bg-image {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            /* Transição suave e zoom lento */
-            transition: opacity 1.5s ease-in-out, transform 12s linear;
-            transform: scale(1.1);
-            z-index: 1;
-        }
-
-        .bg-image.active {
-            opacity: 0.33; /* SOLICITADO: Opacidade de 33% */
-            transform: scale(1.0);
-        }
-
-        #art-credit {
-            position: absolute;
-            bottom: 20px; left: 20px;
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            opacity: 0.7;
-            z-index: 10;
-            font-family: sans-serif;
-            max-width: 60%;
-        }
-        /* ==================== FIM NOVOS ESTILOS ==================== */
-
-
-        /* ==================== CABEÇALHO ORIGINAL ==================== */
+        /* ==================== CABEÇALHO ==================== */
         header {
             text-align: center;
             padding: 24px 20px;
@@ -101,8 +52,7 @@
             text-transform: uppercase;
             letter-spacing: 0.25em;
             border-bottom: 1px solid var(--border-subtle);
-            /* Fundo semi-transparente para ver a imagem */
-            background: rgba(10, 10, 12, 0.8);
+            background: var(--bg-primary);
             position: relative;
             z-index: 10;
         }
@@ -118,13 +68,12 @@
             background: var(--accent-gold-dim);
         }
 
-        /* ==================== CONTAINER PRINCIPAL ORIGINAL ==================== */
+        /* ==================== CONTAINER PRINCIPAL ==================== */
         #app {
             flex: 1;
             position: relative;
             width: 100%;
             height: 100%;
-            z-index: 5;
         }
 
         .screen {
@@ -144,7 +93,7 @@
             pointer-events: auto;
         }
 
-        /* ==================== TELA INICIAL ORIGINAL ==================== */
+        /* ==================== TELA INICIAL ==================== */
         #home-screen {
             flex-direction: column;
             justify-content: center;
@@ -211,13 +160,12 @@
             transform: translateY(0);
         }
 
-        /* ==================== TELA DE ORAÇÃO ORIGINAL ==================== */
+        /* ==================== TELA DE ORAÇÃO ==================== */
         #prayer-screen {
             flex-direction: row;
             align-items: stretch;
         }
 
-        /* Botão Voltar */
         .back-btn {
             position: absolute;
             top: 28px;
@@ -248,7 +196,6 @@
             transform: translateX(-3px);
         }
 
-        /* Área de Conteúdo */
         .prayer-content {
             flex: 1;
             display: flex;
@@ -284,18 +231,50 @@
         .mystery-subtitle {
             font-size: 1.1rem;
             color: var(--text-secondary);
-            margin-bottom: 32px;
+            margin-bottom: 15px;
             font-style: italic;
             text-align: center;
         }
 
+        /* --- ESTILO DA IMAGEM --- */
+        .sacred-art-container {
+            margin: 10px 0 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            min-height: 200px;
+            justify-content: center;
+        }
+
+        .sacred-art {
+            height: 180px; 
+            width: auto;
+            object-fit: contain;
+            border: 2px solid var(--accent-gold-dim);
+            box-shadow: 0 0 25px rgba(201,169,97,0.3); 
+            border-radius: 4px;
+            background: #0a0a0c; /* Fundo escuro enquanto carrega */
+        }
+
+        .art-credit {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-style: italic;
+            text-align: center;
+            max-width: 90%;
+            opacity: 0.7;
+        }
+
         .meditation-box {
             font-size: 1.15rem;
-            line-height: 1.75;
+            line-height: 1.6;
             color: var(--text-secondary);
             font-style: italic;
-            margin-top: 24px;
-            padding-top: 24px;
+            margin-top: 10px;
+            padding-top: 15px;
             border-top: 1px solid var(--border-subtle);
             text-align: center;
             max-width: 560px;
@@ -313,278 +292,122 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        /* ==================== ROSÁRIO LATERAL ORIGINAL ==================== */
+        /* ==================== ROSÁRIO LATERAL ==================== */
         .rosary-container {
             width: 140px;
             height: 100%;
             position: relative;
-            /* Fundo ajustado para ser mais transparente */
-            background: linear-gradient(to left, rgba(0,0,0,0.5), transparent);
+            background: linear-gradient(to left, rgba(0,0,0,0.25), transparent);
             overflow: hidden;
             flex-shrink: 0;
             border-left: 1px solid var(--border-subtle);
         }
 
-        /* Máscaras de fade */
-        .rosary-container::before,
-        .rosary-container::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 180px;
-            z-index: 10;
-            pointer-events: none;
-        }
-
         .rosary-container::before {
-            top: 0;
-            background: linear-gradient(to bottom, var(--bg-primary) 0%, rgba(10,10,12,0.8) 40%, transparent 100%);
+            content: ''; position: absolute; left: 0; width: 100%; height: 180px; top: 0; z-index: 10; pointer-events: none;
+            background: linear-gradient(to bottom, var(--bg-primary) 0%, rgba(10,10,12,0.9) 30%, transparent 100%);
         }
 
         .rosary-container::after {
-            bottom: 0;
-            background: linear-gradient(to top, var(--bg-primary) 0%, rgba(10,10,12,0.8) 40%, transparent 100%);
+            content: ''; position: absolute; left: 0; width: 100%; height: 180px; bottom: 0; z-index: 10; pointer-events: none;
+            background: linear-gradient(to top, var(--bg-primary) 0%, rgba(10,10,12,0.9) 30%, transparent 100%);
         }
 
-        /* Linha guia central */
         .center-guide {
-            position: absolute;
-            top: 50%;
-            left: 20%;
-            right: 20%;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(201,169,97,0.15) 50%, 
-                transparent);
-            transform: translateY(-50%);
-            z-index: 5;
+            position: absolute; top: 50%; left: 20%; right: 20%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(201,169,97,0.15) 50%, transparent);
+            transform: translateY(-50%); z-index: 5;
         }
 
-        /* Controles de toque */
         .touch-control {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            z-index: 20;
-            cursor: pointer;
+            position: absolute; left: 0; width: 100%; z-index: 20; cursor: pointer;
             transition: background 0.2s ease;
         }
+        .touch-up { top: 0; height: 25%; }
+        .touch-down { bottom: 0; height: 35%; }
+        .touch-control:hover { background: rgba(255,255,255,0.02); }
 
-        .touch-up {
-            top: 0;
-            height: 25%;
-        }
-
-        .touch-down {
-            bottom: 0;
-            height: 35%;
-        }
-
-        .touch-control:hover {
-            background: rgba(255,255,255,0.02);
-        }
-
-        /* Track de contas */
         .bead-track {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
+            position: absolute; top: 50%; left: 50%; width: 100%;
             transform: translate3d(-50%, 0, 0);
             transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             will-change: transform;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* Contas */
         .bead {
-            border-radius: 50%;
-            margin: calc(var(--bead-gap) / 2) 0;
+            border-radius: 50%; margin: calc(var(--bead-gap) / 2) 0;
             transition: all 0.4s var(--transition-smooth);
-            position: relative;
-            flex-shrink: 0;
+            position: relative; flex-shrink: 0;
         }
 
         .bead.ave {
-            width: var(--bead-size-ave);
-            height: var(--bead-size-ave);
-            background: var(--bead-ave);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            width: var(--bead-size-ave); height: var(--bead-size-ave);
+            background: var(--bead-ave); box-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
 
         .bead.pater {
-            width: var(--bead-size-pater);
-            height: var(--bead-size-pater);
-            background: transparent;
-            border: 2.5px solid var(--accent-gold-dim);
+            width: var(--bead-size-pater); height: var(--bead-size-pater);
+            background: transparent; border: 2.5px solid var(--accent-gold-dim);
             box-shadow: 0 0 12px rgba(201,169,97,0.2);
         }
 
-        .bead.cross,
-        .bead.credo,
-        .bead.gloria {
-            width: 18px;
-            height: 26px;
-            background: transparent;
+        .bead.cross, .bead.credo, .bead.gloria {
+            width: 18px; height: 26px; background: transparent;
             border: 1.5px solid var(--accent-gold-dim);
-            border-radius: 3px;
-            box-shadow: 0 0 10px rgba(201,169,97,0.15);
+            border-radius: 3px; box-shadow: 0 0 10px rgba(201,169,97,0.15);
         }
 
-        .bead.active {
-            transform: scale(1.35);
-            z-index: 2;
-        }
-
+        .bead.active { transform: scale(1.35); z-index: 2; }
+        
         .bead.active.ave {
             background: linear-gradient(135deg, #6a6a6a, #505050);
-            box-shadow: 0 0 20px rgba(201,169,97,0.4),
-                        0 4px 12px rgba(0,0,0,0.5);
+            box-shadow: 0 0 20px rgba(201,169,97,0.4), 0 4px 12px rgba(0,0,0,0.5);
         }
 
         .bead.active.pater {
-            background: var(--bead-pater);
-            border-color: var(--accent-gold-bright);
-            box-shadow: 0 0 25px rgba(201,169,97,0.6),
-                        0 0 40px rgba(201,169,97,0.3),
-                        0 4px 12px rgba(0,0,0,0.5);
+            background: var(--bead-pater); border-color: var(--accent-gold-bright);
+            box-shadow: 0 0 25px rgba(201,169,97,0.6), 0 0 40px rgba(201,169,97,0.3), 0 4px 12px rgba(0,0,0,0.5);
         }
 
-        .bead.active.cross,
-        .bead.active.credo,
-        .bead.active.gloria {
-            background: rgba(201,169,97,0.3);
-            border-color: var(--accent-gold);
+        .bead.active.cross, .bead.active.credo, .bead.active.gloria {
+            background: rgba(201,169,97,0.3); border-color: var(--accent-gold);
             box-shadow: 0 0 20px rgba(201,169,97,0.5);
         }
 
-        /* ==================== RESPONSIVIDADE ORIGINAL ==================== */
         @media (max-width: 768px) {
-            header {
-                padding: 20px;
-                font-size: 0.75rem;
-            }
-
-            #prayer-screen {
-                flex-direction: column-reverse;
-            }
-
+            header { padding: 20px; font-size: 0.75rem; }
+            #prayer-screen { flex-direction: column-reverse; }
             .rosary-container {
-                width: 100%;
-                height: 120px;
-                border-left: none;
+                width: 100%; height: 120px; border-left: none;
                 border-top: 1px solid var(--border-subtle);
-                background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+                background: linear-gradient(to top, rgba(0,0,0,0.25), transparent);
             }
-
             .rosary-container::before {
-                left: 0;
-                width: 140px;
-                height: 100%;
+                left: 0; width: 140px; height: 100%;
                 background: linear-gradient(to right, var(--bg-primary) 0%, transparent 100%);
             }
-
             .rosary-container::after {
-                right: 0;
-                left: auto;
-                width: 140px;
-                height: 100%;
+                right: 0; left: auto; width: 140px; height: 100%;
                 background: linear-gradient(to left, var(--bg-primary) 0%, transparent 100%);
             }
-
-            .center-guide {
-                top: 50%;
-                left: 20%;
-                right: 20%;
-                width: auto;
-                height: 1px;
-            }
-
-            .bead-track {
-                flex-direction: row;
-                top: 50%;
-                left: 50%;
-                transform: translate3d(0, -50%, 0);
-            }
-
-            .bead {
-                margin: 0 calc(var(--bead-gap) / 2);
-            }
-
-            .touch-control {
-                width: 25%;
-                height: 100%;
-            }
-
-            .touch-up {
-                left: 0;
-                top: 0;
-            }
-
-            .touch-down {
-                right: 0;
-                left: auto;
-                height: 100%;
-                width: 35%;
-            }
-
-            .prayer-content {
-                padding: 40px 30px;
-                justify-content: flex-start;
-                padding-top: 80px;
-            }
-
-            .prayer-title {
-                font-size: 1.6rem;
-            }
-
-            .mystery-subtitle {
-                font-size: 0.95rem;
-            }
-
-            .meditation-box {
-                font-size: 1rem;
-            }
-
-            .back-btn {
-                top: 24px;
-                left: 24px;
-            }
-
-            .progress-indicator {
-                bottom: 140px;
-            }
-
-            #art-credit {
-                bottom: 130px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .prayer-title {
-                font-size: 1.4rem;
-            }
-
-            .meditation-box {
-                font-size: 0.95rem;
-            }
-
-            .prayer-content {
-                padding: 30px 20px;
-            }
+            .center-guide { top: 50%; left: 20%; right: 20%; width: auto; height: 1px; }
+            .bead-track { flex-direction: row; top: 50%; left: 50%; transform: translate3d(0, -50%, 0); }
+            .bead { margin: 0 calc(var(--bead-gap) / 2); }
+            .touch-control { width: 25%; height: 100%; }
+            .touch-up { left: 0; top: 0; }
+            .touch-down { right: 0; left: auto; height: 100%; width: 35%; }
+            .prayer-content { padding: 40px 30px; justify-content: flex-start; padding-top: 60px; }
+            .sacred-art { height: 150px; }
+            .prayer-title { font-size: 1.6rem; }
+            .mystery-subtitle { font-size: 0.95rem; }
+            .meditation-box { font-size: 1rem; }
+            .back-btn { top: 24px; left: 24px; }
+            .progress-indicator { bottom: 140px; }
         }
     </style>
 </head>
 <body>
-
-    <div id="art-layer-container">
-        <div id="bg-overlay"></div> <div class="bg-image active" id="bg-main"></div>
-        <div class="bg-image" id="bg-next"></div>
-    </div>
 
     <header>Rosário · Tradicional</header>
 
@@ -605,6 +428,12 @@
                 <div class="prayer-info" id="prayer-meta">Década 1 · Conta 1</div>
                 <h1 class="prayer-title" id="prayer-name">Ave Maria</h1>
                 <p class="mystery-subtitle" id="mystery-subtitle"></p>
+                
+                <div id="art-container" class="sacred-art-container" style="display: none;">
+                    <img id="sacred-art-img" class="sacred-art" src="" alt="Arte Sacra">
+                    <p id="art-credit" class="art-credit"></p>
+                </div>
+
                 <div class="meditation-box" id="prayer-meditation">
                     "Ave, cheia de graça..."
                 </div>
@@ -617,181 +446,136 @@
                 <div class="touch-control touch-down" onclick="app.nextBead()"></div>
                 <div class="bead-track" id="bead-track"></div>
             </div>
-            
-            <div id="art-credit"></div>
         </div>
     </div>
 
     <script>
-        // ==================== BANCO DE IMAGENS (CURADORIA) ====================
-        const ART = {
-            default: { url: 'https://upload.wikimedia.org/wikipedia/commons/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg', credit: 'Noite Estrelada - Van Gogh' },
+        // ==================== GUIA DE INSTALAÇÃO LOCAL (PARA EXPORTAR) ====================
+        // Para hospedar no GitHub e ficar perfeito:
+        // 1. Crie uma pasta chamada 'rosario'.
+        // 2. Salve este arquivo como 'index.html' dentro dela.
+        // 3. Crie uma pasta chamada 'img' dentro de 'rosario'.
+        // 4. Baixe as imagens e nomeie como: g1_1.jpg, g1_2.jpg, etc.
+        // 5. Mude a variável abaixo para 'true'.
+        
+        const USE_LOCAL_IMAGES = false; 
+
+        // ==================== BANCO DE IMAGENS ONLINE (LINKS DIRETOS) ====================
+        const ART_DB = {
             gozosos: {
                 m1: [ // Anunciação
-                    { credit: "Fra Angelico (c. 1438)", url: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Fra_Angelico_-_Annunciation_-_WGA00468.jpg" },
-                    { credit: "Leonardo da Vinci (c. 1472)", url: "https://upload.wikimedia.org/wikipedia/commons/9/93/Annunciation_%28Leonardo%29.jpg" },
-                    { credit: "Botticelli (1489)", url: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Sandro_Botticelli_080.jpg" },
-                    { credit: "Rossetti (1850)", url: "https://upload.wikimedia.org/wikipedia/commons/d/d3/Dante_Gabriel_Rossetti_-_Ecce_Ancilla_Domini%21_-_Google_Art_Project.jpg" },
-                    { credit: "Henry Ossawa Tanner (1898)", url: "https://upload.wikimedia.org/wikipedia/commons/4/4a/The_Annunciation_by_Henry_Ossawa_Tanner%2C_1898.jpg" },
-                    { credit: "Jan van Eyck (1434)", url: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Jan_van_Eyck_-_The_Annunciation_-_WGA07595.jpg" },
-                    { credit: "El Greco (1596)", url: "https://upload.wikimedia.org/wikipedia/commons/7/75/El_Greco_-_The_Annunciation_-_WGA10454.jpg" },
-                    { credit: "Simone Martini (1333)", url: "https://upload.wikimedia.org/wikipedia/commons/3/30/Martini_Annunciation.jpg" },
-                    { credit: "Philippe de Champaigne (1644)", url: "https://upload.wikimedia.org/wikipedia/commons/0/0a/Philippe_de_Champaigne_-_The_Annunciation_-_WGA04719.jpg" },
-                    { credit: "Rubens (1610)", url: "https://upload.wikimedia.org/wikipedia/commons/2/29/Peter_Paul_Rubens_-_Annunciation_-_WGA20168.jpg" }
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Fra_Angelico_-_Annunciation_-_WGA00462.jpg/600px-Fra_Angelico_-_Annunciation_-_WGA00462.jpg", credit: "Fra Angelico" },
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Annunciation_Leonardo.jpg/600px-Annunciation_Leonardo.jpg", credit: "Leonardo da Vinci" },
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Sandro_Botticelli_080.jpg/600px-Sandro_Botticelli_080.jpg", credit: "Botticelli" }
                 ],
                 m2: [ // Visitação
-                    { credit: "Mariotto Albertinelli (1503)", url: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Mariotto_Albertinelli_Visitation.jpg" },
-                    { credit: "Pontormo (1528)", url: "https://upload.wikimedia.org/wikipedia/commons/3/33/Pontormo_-_Visitation_-_WGA18086.jpg" },
-                    { credit: "Ghirlandaio (1491)", url: "https://upload.wikimedia.org/wikipedia/commons/2/25/Domenico_Ghirlandaio_-_Visitation_-_WGA08865.jpg" },
-                    { credit: "Rubens (1612)", url: "https://upload.wikimedia.org/wikipedia/commons/9/91/Rubens_Descent_from_the_Cross_Visitation.jpg" },
-                    { credit: "El Greco", url: "https://upload.wikimedia.org/wikipedia/commons/6/60/El_Greco_-_The_Visitation_-_WGA10574.jpg" },
-                    { credit: "Sebastiano del Piombo (1517)", url: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Sebastiano_del_Piombo_-_Visitation_-_WGA21102.jpg" },
-                    { credit: "Rogier van der Weyden", url: "https://upload.wikimedia.org/wikipedia/commons/e/e2/Weyden%2C_Rogier_van_der_-_Visitation_-_1445.jpg" },
-                    { credit: "Francesco Salviati (1538)", url: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Francesco_Salviati_-_The_Visitation_-_WGA20739.jpg" },
-                    { credit: "Giotto", url: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Giotto_di_Bondone_-_No._20_Scenes_from_the_Life_of_Christ_-_4._Visitation_-_WGA09196.jpg" },
-                    { credit: "Mestre de Perea", url: "https://upload.wikimedia.org/wikipedia/commons/5/55/Master_of_Perea_-_Visitation_-_Google_Art_Project.jpg" }
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Mariotto_Albertinelli_Visitation.jpg/500px-Mariotto_Albertinelli_Visitation.jpg", credit: "Mariotto Albertinelli" },
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Pontormo_-_Visitation_-_WGA18086.jpg/500px-Pontormo_-_Visitation_-_WGA18086.jpg", credit: "Pontormo" }
                 ],
                 m3: [ // Nascimento
-                    { credit: "Gerard van Honthorst (1622)", url: "https://upload.wikimedia.org/wikipedia/commons/9/90/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_%281622%29.jpg" },
-                    { credit: "Correggio (1529)", url: "https://upload.wikimedia.org/wikipedia/commons/7/77/Correggio_-_Adoration_of_the_Shepherds_%28The_Holy_Night%29_-_Google_Art_Project.jpg" },
-                    { credit: "Georges de La Tour", url: "https://upload.wikimedia.org/wikipedia/commons/c/cb/La_Tour.jpg" },
-                    { credit: "Caravaggio (1609)", url: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Adorazione_dei_pastori_-_Caravaggio.jpg" },
-                    { credit: "Velázquez", url: "https://upload.wikimedia.org/wikipedia/commons/a/af/Adoraci%C3%B3n_de_los_Reyes_Magos_%28Vel%C3%A1zquez%29.jpg" },
-                    { credit: "Botticelli", url: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Mystic_Nativity%2C_Sandro_Botticelli.jpg" },
-                    { credit: "Hugo van der Goes (1475)", url: "https://upload.wikimedia.org/wikipedia/commons/9/90/Hugo_van_der_Goes_003.jpg" },
-                    { credit: "Murillo (1669)", url: "https://upload.wikimedia.org/wikipedia/commons/e/ee/Murillo_Adoration_of_the_Shepherds_Seville.jpg" },
-                    { credit: "Georges de La Tour", url: "https://upload.wikimedia.org/wikipedia/commons/e/eb/Georges_de_La_Tour_033.jpg" },
-                    { credit: "Barocci", url: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Federico_Barocci_-_Nativity_-_WGA01327.jpg" }
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_%281622%29.jpg/600px-Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_%281622%29.jpg", credit: "Honthorst" },
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Correggio_-_Adoration_of_the_Shepherds_%28The_Holy_Night%29_-_Google_Art_Project.jpg/500px-Correggio_-_Adoration_of_the_Shepherds_%28The_Holy_Night%29_-_Google_Art_Project.jpg", credit: "Correggio" }
                 ],
                 m4: [ // Apresentação
-                    { credit: "Champaigne (1648)", url: "https://upload.wikimedia.org/wikipedia/commons/0/07/Philippe_de_Champaigne_-_The_Presentation_in_the_Temple_-_WGA04738.jpg" },
-                    { credit: "Rembrandt (1631)", url: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Rembrandt_Harmensz._van_Rijn_096.jpg" },
-                    { credit: "Mantegna (1455)", url: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Andrea_Mantegna_-_Presentation_at_the_Temple_-_WGA13978.jpg" },
-                    { credit: "Bellini (1460)", url: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Giovanni_Bellini_-_Presentation_at_the_Temple_-_WGA01620.jpg" },
-                    { credit: "Fra Bartolomeo (1510)", url: "https://upload.wikimedia.org/wikipedia/commons/d/dd/Fra_Bartolomeo_-_Presentation_in_the_Temple_-_WGA01292.jpg" },
-                    { credit: "Rembrandt (1669)", url: "https://upload.wikimedia.org/wikipedia/commons/4/49/Rembrandt_Harmensz._van_Rijn_147.jpg" },
-                    { credit: "Simon Vouet (1641)", url: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Simon_Vouet_-_The_Presentation_in_the_Temple_-_WGA25357.jpg" },
-                    { credit: "Rubens (1605)", url: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Peter_Paul_Rubens_-_The_Circumcision_-_WGA20177.jpg" },
-                    { credit: "Ambrogio Lorenzetti", url: "https://upload.wikimedia.org/wikipedia/commons/d/da/Ambrogio_Lorenzetti_006.jpg" },
-                    { credit: "Carpaccio", url: "https://upload.wikimedia.org/wikipedia/commons/5/52/Vittore_Carpaccio_-_The_Presentation_of_Jesus_in_the_Temple_-_WGA04297.jpg" }
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Andrea_Mantegna_-_Presentation_at_the_Temple_-_WGA13978.jpg/600px-Andrea_Mantegna_-_Presentation_at_the_Temple_-_WGA13978.jpg", credit: "Mantegna" },
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Rembrandt_Harmensz._van_Rijn_096.jpg/500px-Rembrandt_Harmensz._van_Rijn_096.jpg", credit: "Rembrandt" }
                 ],
                 m5: [ // Encontro
-                    { credit: "Dürer (1506)", url: "https://upload.wikimedia.org/wikipedia/commons/f/f4/Albrecht_D%C3%BCrer_-_Christ_among_the_Doctors_-_Google_Art_Project.jpg" },
-                    { credit: "Veronese (1548)", url: "https://upload.wikimedia.org/wikipedia/commons/0/02/Paolo_Veronese_012.jpg" },
-                    { credit: "Bernardino Luini", url: "https://upload.wikimedia.org/wikipedia/commons/4/49/Bernardino_Luini_-_Christ_among_the_Doctors_-_WGA13768.jpg" },
-                    { credit: "Ribera (1650s)", url: "https://upload.wikimedia.org/wikipedia/commons/d/d3/Jusepe_de_Ribera_-_Jesus_among_the_Doctors_-_WGA19379.jpg" },
-                    { credit: "Duccio", url: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Duccio_di_Buoninsegna_016.jpg" },
-                    { credit: "Tintoretto (1560)", url: "https://upload.wikimedia.org/wikipedia/commons/7/77/Tintoretto_-_Christ_Disputing_with_the_Doctors_-_WGA22476.jpg" },
-                    { credit: "Rembrandt", url: "https://upload.wikimedia.org/wikipedia/commons/9/9e/Rembrandt_Harmensz._van_Rijn_039.jpg" },
-                    { credit: "Borgianni", url: "https://upload.wikimedia.org/wikipedia/commons/8/8e/Orazio_Borgianni_-_Christ_among_the_Doctors.jpg" },
-                    { credit: "James Tissot (1896)", url: "https://upload.wikimedia.org/wikipedia/commons/9/9f/Brooklyn_Museum_-_The_Finding_in_the_Temple_%28Le_recouvrement_au_Temple%29_-_James_Tissot.jpg" },
-                    { credit: "Guercino", url: "https://upload.wikimedia.org/wikipedia/commons/0/04/Guercino_-_Jesus_and_the_Doctors_-_WGA10943.jpg" }
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Albrecht_D%C3%BCrer_-_Christ_among_the_Doctors_-_Google_Art_Project.jpg/600px-Albrecht_D%C3%BCrer_-_Christ_among_the_Doctors_-_Google_Art_Project.jpg", credit: "Dürer" },
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Paolo_Veronese_012.jpg/600px-Paolo_Veronese_012.jpg", credit: "Veronese" }
                 ]
             },
             dolorosos: {
-                m1: [ // Agonia
-                    { credit: "El Greco (1608)", url: "https://upload.wikimedia.org/wikipedia/commons/0/0b/El_Greco_-_The_Agony_in_the_Garden_-_WGA10526.jpg" },
-                    { credit: "Caravaggio", url: "https://upload.wikimedia.org/wikipedia/commons/5/53/Caravaggio_-_The_Agony_in_the_Garden_-_WGA04117.jpg" },
-                    { credit: "Mantegna (1460)", url: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Andrea_Mantegna_038.jpg" },
-                    { credit: "Bellini (1465)", url: "https://upload.wikimedia.org/wikipedia/commons/3/36/Giovanni_Bellini_-_Agony_in_the_Garden_-_National_Gallery%2C_London.jpg" }
+                m1: [
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/El_Greco_-_The_Agony_in_the_Garden_-_WGA10526.jpg/500px-El_Greco_-_The_Agony_in_the_Garden_-_WGA10526.jpg", credit: "El Greco" },
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Giovanni_Bellini_-_Agony_in_the_Garden_-_National_Gallery%2C_London.jpg/600px-Giovanni_Bellini_-_Agony_in_the_Garden_-_National_Gallery%2C_London.jpg", credit: "Bellini" }
                 ],
-                m2: [ // Flagelação
-                    { credit: "Caravaggio (1607)", url: "https://upload.wikimedia.org/wikipedia/commons/2/22/Caravaggio_-_The_Flagellation_of_Christ_-_WGA04153.jpg" },
-                    { credit: "Piero della Francesca", url: "https://upload.wikimedia.org/wikipedia/commons/d/d7/Piero_della_Francesca_014.jpg" },
-                    { credit: "Velázquez", url: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Cristo_en_la_columna_%28Vel%C3%A1zquez%29.jpg" },
-                    { credit: "Bouguereau (1880)", url: "https://upload.wikimedia.org/wikipedia/commons/7/73/William-Adolphe_Bouguereau_%281825-1905%29_-_The_Flagellation_of_Our_Lord_Jesus_Christ_%281880%29.jpg" }
+                m2: [
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Caravaggio_-_The_Flagellation_of_Christ_-_WGA04153.jpg/500px-Caravaggio_-_The_Flagellation_of_Christ_-_WGA04153.jpg", credit: "Caravaggio" }
                 ],
-                m3: [ // Coroação Espinhos
-                    { credit: "Ticiano (1576)", url: "https://upload.wikimedia.org/wikipedia/commons/3/30/Tizian_078.jpg" },
-                    { credit: "Caravaggio (1603)", url: "https://upload.wikimedia.org/wikipedia/commons/e/e8/The_Crowning_with_Thorns-Caravaggio_%28Prado%29.jpg" },
-                    { credit: "Ciseri", url: "https://upload.wikimedia.org/wikipedia/commons/6/61/Antonio_Ciseri_-_Ecce_Homo_-_Google_Art_Project.jpg" },
-                    { credit: "Guido Reni", url: "https://upload.wikimedia.org/wikipedia/commons/9/90/Reni_-_Christ_Crowned_with_Thorns_c1630.jpg" }
+                m3: [
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Tizian_078.jpg/600px-Tizian_078.jpg", credit: "Ticiano" }
                 ],
-                m4: [ // Cruz
-                    { credit: "El Greco (1580)", url: "https://upload.wikimedia.org/wikipedia/commons/0/03/El_Greco_-_Christ_Carrying_the_Cross_-_WGA10471.jpg" },
-                    { credit: "Ticiano (1516)", url: "https://upload.wikimedia.org/wikipedia/commons/8/86/Tizian_083.jpg" },
-                    { credit: "Raphael", url: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Raffaello_Sanzio_-_Spasimo_di_Sicilia_-_Google_Art_Project.jpg" },
-                    { credit: "Bosch", url: "https://upload.wikimedia.org/wikipedia/commons/6/67/Hieronymus_Bosch_025.jpg" }
+                m4: [
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/El_Greco_-_Christ_Carrying_the_Cross_-_WGA10471.jpg/500px-El_Greco_-_Christ_Carrying_the_Cross_-_WGA10471.jpg", credit: "El Greco" }
                 ],
-                m5: [ // Crucificação
-                    { credit: "Velázquez (1632)", url: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Cristo_crucificado.jpg" },
-                    { credit: "Simon Vouet (1622)", url: "https://upload.wikimedia.org/wikipedia/commons/d/dd/Simon_Vouet_-_Crucifixion_-_WGA25350.jpg" },
-                    { credit: "Zurbarán", url: "https://upload.wikimedia.org/wikipedia/commons/6/69/Francisco_de_Zurbar%C3%A1n_028.jpg" },
-                    { credit: "Gauguin", url: "https://upload.wikimedia.org/wikipedia/commons/4/42/Paul_Gauguin_137.jpg" }
+                m5: [
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Cristo_crucificado.jpg/400px-Cristo_crucificado.jpg", credit: "Velázquez" }
                 ]
             },
             gloriosos: {
-                m1: [ // Ressurreição
-                    { credit: "Cecco del Caravaggio (1619)", url: "https://upload.wikimedia.org/wikipedia/commons/8/87/Resurrection_by_Cecco_del_Caravaggio.jpg" },
-                    { credit: "Piero della Francesca", url: "https://upload.wikimedia.org/wikipedia/commons/8/87/Piero_della_Francesca_046.jpg" },
-                    { credit: "Correggio", url: "https://upload.wikimedia.org/wikipedia/commons/8/86/Correggio_-_Noli_Me_Tangere_-_Prado.jpg" },
-                    { credit: "El Greco", url: "https://upload.wikimedia.org/wikipedia/commons/6/69/El_Greco_-_The_Resurrection_-_WGA10557.jpg" }
+                m1: [
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Piero_della_Francesca_046.jpg/500px-Piero_della_Francesca_046.jpg", credit: "Piero della Francesca" }
                 ],
-                m2: [ // Ascensão
-                    { credit: "John Singleton Copley (1775)", url: "https://upload.wikimedia.org/wikipedia/commons/2/25/The_Ascension_1775_John_Singleton_Copley.jpg" },
-                    { credit: "Giotto", url: "https://upload.wikimedia.org/wikipedia/commons/8/8a/Giotto_di_Bondone_-_No._38_Scenes_from_the_Life_of_Christ_-_22._Ascension_-_WGA09228.jpg" },
-                    { credit: "Rembrandt", url: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Rembrandt_Harmensz._van_Rijn_014.jpg" },
-                    { credit: "Perugino", url: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Pietro_Perugino_038.jpg" }
+                m2: [
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Giotto_di_Bondone_-_No._38_Scenes_from_the_Life_of_Christ_-_22._Ascension_-_WGA09228.jpg/500px-Giotto_di_Bondone_-_No._38_Scenes_from_the_Life_of_Christ_-_22._Ascension_-_WGA09228.jpg", credit: "Giotto" }
                 ],
-                m3: [ // Pentecostes
-                    { credit: "El Greco (1600)", url: "https://upload.wikimedia.org/wikipedia/commons/c/c5/El_Greco_-_The_Pentecost_-_WGA10555.jpg" },
-                    { credit: "Ticiano", url: "https://upload.wikimedia.org/wikipedia/commons/5/52/Tizian_095.jpg" },
-                    { credit: "Duccio", url: "https://upload.wikimedia.org/wikipedia/commons/a/a1/Duccio_di_Buoninsegna_032.jpg" },
-                    { credit: "Restout", url: "https://upload.wikimedia.org/wikipedia/commons/7/70/Jean_II_Restout_-_Pentecost_-_WGA19310.jpg" }
+                m3: [
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/El_Greco_-_The_Pentecost_-_WGA10555.jpg/400px-El_Greco_-_The_Pentecost_-_WGA10555.jpg", credit: "El Greco" }
                 ],
-                m4: [ // Assunção
-                    { credit: "Ticiano (1516)", url: "https://upload.wikimedia.org/wikipedia/commons/8/88/Tizian_-_Assunta_-_Frari_Venedig.jpg" },
-                    { credit: "Murillo", url: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Murillo_Assumption_of_the_Virgin_Hermitage.jpg" },
-                    { credit: "Rubens", url: "https://upload.wikimedia.org/wikipedia/commons/0/09/Rubens_Assumption_of_the_Virgin.jpg" },
-                    { credit: "Carracci", url: "https://upload.wikimedia.org/wikipedia/commons/6/60/Annibale_Carracci_-_Assumption_of_the_Virgin_-_WGA04423.jpg" }
+                m4: [
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Tizian_-_Assunta_-_Frari_Venedig.jpg/450px-Tizian_-_Assunta_-_Frari_Venedig.jpg", credit: "Ticiano" }
                 ],
-                m5: [ // Coroação
-                    { credit: "Velázquez (1644)", url: "https://upload.wikimedia.org/wikipedia/commons/7/73/Coronaci%C3%B3n_de_la_Virgen_%28Vel%C3%A1zquez%29.jpg" },
-                    { credit: "Fra Angelico", url: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Fra_Angelico_023.jpg" },
-                    { credit: "El Greco", url: "https://upload.wikimedia.org/wikipedia/commons/8/82/El_Greco_-_The_Coronation_of_the_Virgin_-_WGA10565.jpg" },
-                    { credit: "Botticelli", url: "https://upload.wikimedia.org/wikipedia/commons/4/47/Sandro_Botticelli_028.jpg" }
+                m5: [
+                    { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Coronaci%C3%B3n_de_la_Virgen_%28Vel%C3%A1zquez%29.jpg/640px-Coronaci%C3%B3n_de_la_Virgen_%28Vel%C3%A1zquez%29.jpg", credit: "Velázquez" }
                 ]
             }
         };
 
-        // ==================== DADOS ORIGINAIS COM IDs ADICIONADOS ====================
+        // ==================== DADOS ESPIRITUAIS (MONTFORT) ====================
         const MYSTERIES = {
             gozosos: [
-                { id: 'm1', title: "A Anunciação", med: "Oferecemos-Vos, Senhor Jesus, esta primeira dezena em honra da vossa Encarnação..." },
-                { id: 'm2', title: "A Visitação", med: "Oferecemos-Vos, Senhor Jesus, esta segunda dezena em honra da Visitação..." },
-                { id: 'm3', title: "O Nascimento de Jesus", med: "Oferecemos-Vos, Senhor Jesus, esta terceira dezena em honra do vosso Nascimento..." },
-                { id: 'm4', title: "A Apresentação no Templo", med: "Oferecemos-Vos, Senhor Jesus, esta quarta dezena em honra da vossa Apresentação..." },
-                { id: 'm5', title: "Jesus perdido e achado", med: "Oferecemos-Vos, Senhor Jesus, esta quinta dezena em honra de quando vos perdestes..." }
+                { id: 'm1', title: "A Anunciação", intro: "Oferecemos-Vos, Senhor Jesus, esta primeira dezena em honra da Encarnação...", beads: [
+                    "1. A Santíssima Trindade decreta a Encarnação do Verbo.", "2. O Anjo Gabriel desce à terra para saudar Maria.", "3. A saudação angélica: Ave, cheia de graça.", "4. A perturbação de Maria e sua virgindade.", "5. A explicação do Anjo sobre a obra do Espírito Santo.", "6. O consentimento de Maria: Eis a escrava do Senhor.", "7. O Verbo se faz carne no seio de Maria.", "8. A adoração dos anjos ao Verbo Encarnado.", "9. A alegria de Deus ao contemplar seu Filho homem.", "10. A humildade profunda de Jesus e Maria." ] },
+                { id: 'm2', title: "A Visitação", intro: "Oferecemos-Vos, Senhor Jesus, esta segunda dezena em honra da Visitação...", beads: [
+                    "1. A alegria de Maria ao saber da gravidez de Isabel.", "2. Maria apressa-se para ir às montanhas.", "3. O encontro e a saudação de Maria a Isabel.", "4. A santificação de São João Batista no ventre.", "5. Isabel cheia do Espírito Santo exclama.", "6. Bendita és tu entre as mulheres.", "7. Bendito é o fruto do teu ventre, Jesus.", "8. O cântico do Magnificat de Maria.", "9. A caridade de Maria servindo sua prima.", "10. A gratidão a Deus pelos seus dons." ] },
+                { id: 'm3', title: "O Nascimento", intro: "Oferecemos-Vos, Senhor Jesus, esta terceira dezena em honra do Nascimento...", beads: [
+                    "1. O decreto de César e a viagem a Belém.", "2. A rejeição nas estalagens de Belém.", "3. O refúgio na gruta pobre e fria.", "4. O nascimento virginal do Salvador.", "5. Maria envolve Jesus em faixas na manjedoura.", "6. O canto de glória e paz dos anjos.", "7. A adoração dos pastores humildes.", "8. A circuncisão e o nome de Jesus.", "9. A adoração dos Reis Magos e seus presentes.", "10. A pobreza e o desprezo do mundo." ] },
+                { id: 'm4', title: "A Apresentação", intro: "Oferecemos-Vos, Senhor Jesus, esta quarta dezena em honra da Apresentação...", beads: [
+                    "1. A obediência de Maria à Lei de Moisés.", "2. A oferta de Jesus ao Pai no Templo.", "3. O resgate do Criador por duas rolas.", "4. A profecia de Simeão sobre a salvação.", "5. A profecia de Simeão sobre a espada de dor.", "6. O encontro com a profetisa Ana.", "7. O crescimento de Jesus em sabedoria e graça.", "8. A pureza de corpo e de espírito.", "9. A obediência à vontade de Deus.", "10. O sacrifício dos nossos corações." ] },
+                { id: 'm5', title: "Perda e Encontro", intro: "Oferecemos-Vos, Senhor Jesus, esta quinta dezena em honra do Encontro...", beads: [
+                    "1. Jesus aos doze anos sobe a Jerusalém.", "2. Jesus fica no Templo sem os pais saberem.", "3. A dor de Maria e José ao notarem a falta.", "4. A busca angustiosa por três dias.", "5. O encontro entre os doutores da Lei.", "6. A sabedoria divina nas respostas de Jesus.", "7. A pergunta de Maria: Por que fizeste isso?", "8. A resposta: Devo tratar das coisas de meu Pai.", "9. A submissão de Jesus em Nazaré.", "10. A busca constante pela presença de Deus." ] }
             ],
             dolorosos: [
-                { id: 'm1', title: "A Agonia de Jesus", med: "Oferecemos-Vos, Senhor Jesus, esta primeira dezena em honra da vossa agonia..." },
-                { id: 'm2', title: "A Flagelação", med: "Oferecemos-Vos, Senhor Jesus, esta segunda dezena em honra da vossa sangrenta Flagelação..." },
-                { id: 'm3', title: "A Coroação de Espinhos", med: "Oferecemos-Vos, Senhor Jesus, esta terceira dezena em honra da vossa Coroação de Espinhos..." },
-                { id: 'm4', title: "Jesus carrega a Cruz", med: "Oferecemos-Vos, Senhor Jesus, esta quarta dezena em honra do carregamento da vossa Cruz..." },
-                { id: 'm5', title: "A Crucifixão e Morte", med: "Oferecemos-Vos, Senhor Jesus, esta quinta dezena em honra da vossa Crucifixão e Morte..." }
+                { id: 'm1', title: "A Agonia no Horto", intro: "Oferecemos-Vos, Senhor Jesus, esta dezena em honra da Agonia...", beads: [
+                    "1. Jesus retira-se ao Jardim das Oliveiras.", "2. A tristeza mortal da alma de Cristo.", "3. A visão de todos os pecados do mundo.", "4. A visão dos sofrimentos futuros.", "5. O suor de sangue caindo por terra.", "6. A oração humilde: Afasta de mim este cálice.", "7. A conformidade: Não a minha vontade, mas a vossa.", "8. O anjo que o conforta.", "9. O sono dos apóstolos e a repreensão.", "10. O beijo de Judas e a traição." ] },
+                { id: 'm2', title: "A Flagelação", intro: "Oferecemos-Vos, Senhor Jesus, esta dezena em honra da Flagelação...", beads: [
+                    "1. Jesus é levado de tribunal em tribunal.", "2. As acusações falsas e o silêncio de Jesus.", "3. Pilatos declara a inocência mas o condena.", "4. Jesus é despido brutalmente.", "5. Amarrado à coluna da ignomínia.", "6. Os golpes cruéis dos açoites.", "7. A carne rasgada e o sangue precioso.", "8. A mansidão do Cordeiro de Deus.", "9. A expiação pelos pecados da carne.", "10. A necessidade de mortificar nossos sentidos." ] },
+                { id: 'm3', title: "Coroação de Espinhos", intro: "Oferecemos-Vos, Senhor Jesus, esta dezena em honra da Coroação...", beads: [
+                    "1. Os soldados levam Jesus ao pretório.", "2. Vestem-no com um manto de púrpura.", "3. Tecem uma coroa de espinhos agudos.", "4. Cravam a coroa em sua cabeça sagrada.", "5. Colocam uma cana como cetro em sua mão.", "6. As zombarias: Salve, Rei dos Judeus.", "7. As cusparadas e bofetadas na face.", "8. Pilatos apresenta-o: Ecce Homo.", "9. A expiação pelos pecados de orgulho.", "10. O reinado de Cristo em nossos corações." ] },
+                { id: 'm4', title: "O Caminho da Cruz", intro: "Oferecemos-Vos, Senhor Jesus, esta dezena em honra do Caminho da Cruz...", beads: [
+                    "1. A condenação à morte de cruz.", "2. Jesus carrega o madeiro pesado.", "3. O encontro doloroso com sua Mãe.", "4. As quedas de Jesus sob o peso da cruz.", "5. Simão Cirineu é forçado a ajudar.", "6. A Verônica enxuga o rosto de Jesus.", "7. As mulheres de Jerusalém choram.", "8. O despojamento das vestes no Calvário.", "9. O fel e o vinagre oferecidos.", "10. A paciência nas nossas próprias cruzes." ] },
+                { id: 'm5', title: "A Crucifixão", intro: "Oferecemos-Vos, Senhor Jesus, esta dezena em honra da vossa Morte...", beads: [
+                    "1. Jesus é pregado na cruz com cravos.", "2. A cruz é erguida entre dois ladrões.", "3. A oração pelos algozes: Pai, perdoa-lhes.", "4. A promessa ao bom ladrão.", "5. A entrega de Maria a João: Eis a tua mãe.", "6. O abandono e a sede: Tenho sede.", "7. Tudo está consumado.", "8. A entrega do espírito nas mãos do Pai.", "9. O lado aberto pela lança.", "10. O sacrifício perfeito pela nossa salvação." ] }
             ],
             gloriosos: [
-                { id: 'm1', title: "A Ressurreição", med: "Oferecemos-Vos, Senhor Jesus, esta primeira dezena em honra da vossa gloriosa Ressurreição..." },
-                { id: 'm2', title: "A Ascensão de Jesus", med: "Oferecemos-Vos, Senhor Jesus, esta segunda dezena em honra da vossa triunfante Ascensão..." },
-                { id: 'm3', title: "A Vinda do Espírito Santo", med: "Oferecemos-Vos, Senhor Jesus, esta terceira dezena em honra do mistério de Pentecostes..." },
-                { id: 'm4', title: "A Assunção de Nossa Senhora", med: "Oferecemos-Vos, Senhor Jesus, esta quarta dezena em honra da Assunção..." },
-                { id: 'm5', title: "A Coroação de Nossa Senhora", med: "Oferecemos-Vos, Senhor Jesus, esta quinta dezena em honra da Coroação..." }
+                { id: 'm1', title: "A Ressurreição", intro: "Oferecemos-Vos, Senhor Jesus, esta dezena em honra da Ressurreição...", beads: [
+                    "1. A alma de Jesus desce aos infernos.", "2. O corpo glorioso se une à alma no sepulcro.", "3. A vitória sobre a morte e o pecado.", "4. A aparição resplandecente à sua Mãe.", "5. A aparição a Madalena e às santas mulheres.", "6. A aparição aos apóstolos no Cenáculo.", "7. A dúvida e a confissão de Tomé.", "8. A confirmação da fé dos discípulos.", "9. O poder da nossa própria ressurreição.", "10. A fé inabalável na palavra de Deus." ] },
+                { id: 'm2', title: "A Ascensão", intro: "Oferecemos-Vos, Senhor Jesus, esta dezena em honra da Ascensão...", beads: [
+                    "1. As últimas instruções aos apóstolos.", "2. A promessa do Espírito Santo.", "3. A subida ao Monte das Oliveiras.", "4. A benção final aos discípulos.", "5. Jesus eleva-se aos céus pelo próprio poder.", "6. A nuvem que o oculta aos olhos humanos.", "7. A entrada triunfal no Céu.", "8. O assento à direita do Pai.", "9. O desejo do céu e desapego da terra.", "10. A esperança de estarmos com Ele um dia." ] },
+                { id: 'm3', title: "Pentecostes", intro: "Oferecemos-Vos, Senhor Jesus, esta dezena em honra de Pentecostes...", beads: [
+                    "1. A oração unânime com Maria no Cenáculo.", "2. O ruído do céu como vento impetuoso.", "3. As línguas de fogo sobre cada um.", "4. A plenitude do Espírito Santo.", "5. A sabedoria e o entendimento divinos.", "6. O conselho e a fortaleza na fé.", "7. A ciência, piedade e temor de Deus.", "8. A pregação destemida dos apóstolos.", "9. A conversão das multidões.", "10. A renovação da face da terra." ] },
+                { id: 'm4', title: "A Assunção", intro: "Oferecemos-Vos, Senhor Jesus, esta dezena em honra da Assunção...", beads: [
+                    "1. O desejo ardente de Maria de ver Deus.", "2. A morte suave por amor divino.", "3. A reunião dos apóstolos junto dela.", "4. A ressurreição do corpo imaculado.", "5. A subida gloriosa aos céus pelos anjos.", "6. O encontro com seu Filho divino.", "7. A alegria de toda a corte celeste.", "8. A exaltação acima de todos os anjos.", "9. A esperança da nossa ressurreição.", "10. A verdadeira devoção à nossa Mãe." ] },
+                { id: 'm5', title: "A Coroação", intro: "Oferecemos-Vos, Senhor Jesus, esta dezena em honra da Coroação...", beads: [
+                    "1. A Santíssima Trindade acolhe Maria.", "2. O Pai coroa sua Filha predileta.", "3. O Filho coroa sua Mãe santíssima.", "4. O Espírito Santo coroa sua Esposa fiel.", "5. Maria Rainha do Céu e da Terra.", "6. A mediadora de todas as graças.", "7. O refúgio dos pecadores.", "8. A alegria dos justos e terror dos demônios.", "9. A perseverança final na graça.", "10. A coroa da glória eterna para nós." ] }
             ]
         };
 
         const PRAYERS = {
-            cross: { name: "Sinal da Cruz", med: "Fazemos o Sinal da Cruz em nome do Pai, e do Filho, e do Espírito Santo." },
-            credo: { name: "Creio", med: "Professamos nossa fé no Deus Uno e Trino." },
+            cross: { name: "Sinal da Cruz", med: "Em nome do Pai, e do Filho, e do Espírito Santo." },
+            credo: { name: "Creio", med: "Creio em Deus Pai Todo-Poderoso..." },
             pater: { name: "Pai Nosso" },
-            ave: { name: "Ave Maria" },
-            gloria: { name: "Glória ao Pai" },
-            fatima: { name: "Ó meu Jesus", med: "Perdoai-nos, livrai-nos do fogo do inferno..." },
-            salve: { name: "Salve Rainha", med: "Salve, Rainha, Mãe de misericórdia..." }
+            ave: { name: "Ave Maria", med: "" },
+            gloria: { name: "Glória", med: "Glória ao Pai, ao Filho e ao Espírito Santo." },
+            fatima: { name: "Ó meu Jesus", med: "Perdoai-nos e livrai-nos do fogo do inferno." },
+            salve: { name: "Salve Rainha", med: "Salve, Rainha, Mãe de Misericórdia..." }
         };
 
+        // ==================== APLICAÇÃO ====================
         const app = {
             state: {
-                currentMysteryKey: null,
+                currentMystery: null,
                 beads: [],
                 currentIndex: 0
             },
@@ -805,27 +589,24 @@
                 mysterySubtitle: document.getElementById('mystery-subtitle'),
                 prayerMed: document.getElementById('prayer-meditation'),
                 progressIndicator: document.getElementById('progress-indicator'),
-                // Elementos de Background
-                bgMain: document.getElementById('bg-main'),
-                bgNext: document.getElementById('bg-next'),
+                artContainer: document.getElementById('art-container'),
+                artImg: document.getElementById('sacred-art-img'),
                 artCredit: document.getElementById('art-credit')
             },
 
             init() {
-                // Inicializa o background padrão
-                this.elements.bgMain.style.backgroundImage = `url('${ART.default.url}')`;
-
-                // Event Listeners (Teclado, Scroll, Touch) mantidos do original
+                // Teclado
                 document.addEventListener('keydown', (e) => {
-                    if (!this.state.currentMysteryKey) return;
+                    if (!this.state.currentMystery) return;
                     if (['ArrowDown','ArrowRight',' '].includes(e.key)) { e.preventDefault(); this.nextBead(); }
                     if (['ArrowUp','ArrowLeft'].includes(e.key)) { e.preventDefault(); this.prevBead(); }
                     if (e.key === 'Escape') this.goHome();
                 });
 
+                // Scroll
                 let wheelTimeout;
                 window.addEventListener('wheel', (e) => {
-                    if (!this.state.currentMysteryKey) return;
+                    if (!this.state.currentMystery) return;
                     if (!wheelTimeout) {
                         if (e.deltaY > 0) this.nextBead();
                         else if (e.deltaY < 0) this.prevBead();
@@ -833,79 +614,81 @@
                     }
                 }, { passive: true });
 
-                let ts = 0;
-                document.addEventListener('touchstart', e => ts = e.touches[0].clientY, {passive: true});
-                document.addEventListener('touchend', e => {
-                    if(!this.state.currentMysteryKey) return;
-                    const te = e.changedTouches[0].clientY;
-                    if(ts - te > 50) this.nextBead();
-                    if(te - ts > 50) this.prevBead();
-                }, {passive: true});
+                // Touch
+                let touchStartY = 0;
+                document.addEventListener('touchstart', (e) => touchStartY = e.touches[0].clientY, { passive: true });
+                document.addEventListener('touchend', (e) => {
+                    if (!this.state.currentMystery) return;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const diff = touchStartY - touchEndY;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) this.nextBead();
+                        else this.prevBead();
+                    }
+                }, { passive: true });
             },
 
-            generateSequence(key) {
-                const mysteries = MYSTERIES[key];
+            // --- SISTEMA DE PRELOAD DE IMAGENS ---
+            preloadImage(url) {
+                if (!url) return;
+                const img = new Image();
+                img.src = url;
+            },
+
+            generateSequence(mysteryKey) {
+                const mysteries = MYSTERIES[mysteryKey];
+                const artwork = ART_DB[mysteryKey];
                 const seq = [];
                 let id = 0;
-                const defaultImg = ART.default;
 
-                // Função auxiliar para adicionar contas com suporte a imagem
-                const add = (type, prayerKey, meta, medOverride, mysteryTitle = '', imgData = defaultImg) => {
-                    const p = PRAYERS[prayerKey];
+                const add = (type, prayer, meta = '', med = '', mysteryTitle = '', imgData = null) => {
                     seq.push({ 
                         id: id++, 
                         type, 
-                        name: p.name, 
+                        name: prayer.name || prayer, 
                         meta, 
-                        med: medOverride || p.med || '',
+                        med: med || prayer.med || '',
                         mysteryTitle,
-                        img: imgData // Adiciona dados da imagem à conta
+                        imgData 
                     });
                 };
 
-                // Início
-                add('cross', 'cross', 'Início');
-                add('credo', 'credo', 'Profissão de Fé');
-                add('pater', 'pater', 'Intenções', 'Pelas intenções do Santo Padre.');
-                add('ave', 'ave', 'Virtudes', 'Pela Fé.');
-                add('ave', 'ave', 'Virtudes', 'Pela Esperança.');
-                add('ave', 'ave', 'Virtudes', 'Pela Caridade.');
-                add('gloria', 'gloria', 'Glória');
+                add('cross', PRAYERS.cross, 'Início');
+                add('credo', PRAYERS.credo, 'Profissão de Fé');
+                add('pater', PRAYERS.pater, 'Intenções', 'Pelas intenções do Santo Padre, o Papa.');
+                add('ave', PRAYERS.ave, 'Virtudes', 'Pela virtude da Fé.');
+                add('ave', PRAYERS.ave, 'Virtudes', 'Pela virtude da Esperança.');
+                add('ave', PRAYERS.ave, 'Virtudes', 'Pela virtude da Caridade.');
+                add('gloria', PRAYERS.gloria, 'Glória');
 
-                // Mistérios
                 mysteries.forEach((myst, idx) => {
                     const num = idx + 1;
-                    // Recupera o array de arte para este mistério (com fallback para imagem padrão)
-                    let artArray = ART[key] && ART[key][myst.id] ? ART[key][myst.id] : [defaultImg];
+                    const mystId = myst.id; 
+                    const artArray = artwork[mystId]; 
                     
-                    // Pai Nosso (Usa a 1ª imagem do conjunto)
-                    add('pater', 'pater', `${num}º Mistério`, myst.med, myst.title, artArray[0]);
+                    // Pai Nosso
+                    add('pater', PRAYERS.pater, `${num}º Mistério`, myst.intro, myst.title, artArray[0]);
 
                     // 10 Ave Marias
                     for (let i = 0; i < 10; i++) {
-                        // Lógica cíclica: se houver menos de 10 imagens, recomeça do início do array
                         const artIndex = i % artArray.length;
-                        add('ave', 'ave', `${num}ª Dezena · Conta ${i+1}`, myst.med, myst.title, artArray[artIndex]);
+                        add('ave', PRAYERS.ave, `${num}ª Dezena · Conta ${i+1}`, myst.beads[i], myst.title, artArray[artIndex]);
                     }
 
-                    // Glória e Fátima (Usam a última imagem da dezena)
                     const lastImg = artArray[artArray.length - 1];
-                    add('gloria', 'gloria', `${num}ª Dezena`, '', myst.title, lastImg);
-                    add('ave', 'fatima', `${num}ª Dezena`, '', myst.title, lastImg);
+                    add('gloria', PRAYERS.gloria, `${num}ª Dezena`, '', myst.title, lastImg);
+                    add('ave', PRAYERS.fatima, `${num}ª Dezena`, '', myst.title, lastImg);
                 });
 
-                // Encerramento
-                add('salve', 'salve', 'Encerramento');
-
+                add('salve', PRAYERS.salve, 'Encerramento');
                 return seq;
             },
 
-            startRosary(key) {
-                this.state.currentMysteryKey = key;
-                this.state.beads = this.generateSequence(key);
+            startRosary(mysteryKey) {
+                this.state.currentMystery = mysteryKey;
+                this.state.beads = this.generateSequence(mysteryKey);
                 this.state.currentIndex = 0;
 
-                // Renderiza as contas (DOM original)
                 this.elements.beadTrack.innerHTML = '';
                 this.state.beads.forEach((bead, idx) => {
                     const el = document.createElement('div');
@@ -920,15 +703,9 @@
             },
 
             goHome() {
-                this.state.currentMysteryKey = null;
+                this.state.currentMystery = null;
                 this.elements.prayerScreen.classList.remove('active');
                 this.elements.homeScreen.classList.add('active');
-                
-                // Reseta o background para o padrão
-                setTimeout(() => {
-                     this.elements.bgMain.style.backgroundImage = `url('${ART.default.url}')`;
-                     this.elements.artCredit.innerText = '';
-                }, 500);
             },
 
             nextBead() {
@@ -951,12 +728,46 @@
                 const track = this.elements.beadTrack;
                 const beadEls = track.children;
 
-                // Atualizar textos (DOM original)
+                // 1. Preload da PRÓXIMA imagem
+                if (idx < this.state.beads.length - 1) {
+                    const nextBead = this.state.beads[idx + 1];
+                    if (nextBead.imgData) {
+                        const nextUrl = USE_LOCAL_IMAGES 
+                            ? 'img/' + nextBead.imgData.file 
+                            : nextBead.imgData.url;
+                        this.preloadImage(nextUrl);
+                    }
+                }
+
+                // 2. Atualizar UI
                 this.elements.prayerMeta.textContent = bead.meta;
                 this.elements.prayerName.textContent = bead.name;
                 this.elements.mysterySubtitle.textContent = bead.mysteryTitle || '';
                 this.elements.progressIndicator.textContent = `${idx + 1} / ${this.state.beads.length}`;
 
+                // 3. Exibir Imagem
+                if (bead.imgData) {
+                    // Seleciona se usa link online ou local
+                    const fullUrl = USE_LOCAL_IMAGES 
+                        ? 'img/' + bead.imgData.file 
+                        : bead.imgData.url;
+
+                    this.elements.artImg.src = fullUrl;
+                    this.elements.artCredit.textContent = bead.imgData.credit;
+                    this.elements.artContainer.style.display = "flex";
+                    requestAnimationFrame(() => {
+                        this.elements.artContainer.style.opacity = "1";
+                    });
+                } else {
+                    this.elements.artContainer.style.opacity = "0";
+                    setTimeout(() => {
+                         if (this.elements.artContainer.style.opacity === "0") {
+                            this.elements.artContainer.style.display = "none";
+                         }
+                    }, 500);
+                }
+
+                // 4. Animação Texto Meditação
                 const medBox = this.elements.prayerMed;
                 medBox.style.opacity = '0';
                 setTimeout(() => {
@@ -964,45 +775,20 @@
                     medBox.style.opacity = '1';
                 }, 200);
 
-                // Atualizar contas ativas (DOM original)
+                // 5. Atualizar Contas
                 Array.from(beadEls).forEach(el => el.classList.remove('active'));
                 beadEls[idx].classList.add('active');
 
-                // Centralizar conta (Lógica original)
+                // 6. Centralizar Track
                 const activeEl = beadEls[idx];
+                const beadCenter = activeEl.offsetTop + (activeEl.offsetHeight / 2);
                 const isMobile = window.innerWidth <= 768;
+                
                 if (isMobile) {
-                    const center = activeEl.offsetLeft + (activeEl.offsetWidth / 2);
-                    track.style.transform = `translate3d(-${center}px, -50%, 0)`;
+                    const beadCenterX = activeEl.offsetLeft + (activeEl.offsetWidth / 2);
+                    track.style.transform = `translate3d(-${beadCenterX}px, -50%, 0)`;
                 } else {
-                    const center = activeEl.offsetTop + (activeEl.offsetHeight / 2);
-                    track.style.transform = `translate3d(-50%, -${center}px, 0)`;
-                }
-
-                // --- NOVA LÓGICA DE TRANSIÇÃO DE BACKGROUND ---
-                if (bead.img) {
-                    const currentUrl = this.elements.bgMain.style.backgroundImage;
-                    const newUrl = `url("${bead.img.url}")`;
-
-                    // Atualiza o crédito sempre
-                    this.elements.artCredit.innerText = bead.img.credit || '';
-
-                    // Se a imagem for nova, faz a transição cruzada (cross-fade)
-                    if (currentUrl !== newUrl.replace(/"/g, '')) {
-                        // 1. Prepara a próxima imagem na camada de trás
-                        this.elements.bgNext.style.backgroundImage = newUrl;
-                        this.elements.bgNext.style.opacity = 0.33; // Opacidade alvo
-                        
-                        // 2. Esconde a imagem atual
-                        this.elements.bgMain.style.opacity = 0;
-
-                        // 3. Após a transição CSS terminar, troca as camadas
-                        setTimeout(() => {
-                            this.elements.bgMain.style.backgroundImage = newUrl;
-                            this.elements.bgMain.style.opacity = 0.33;
-                            this.elements.bgNext.style.opacity = 0;
-                        }, 1500); // Tempo deve casar com a transição CSS
-                    }
+                    track.style.transform = `translate3d(-50%, -${beadCenter}px, 0)`;
                 }
             }
         };
