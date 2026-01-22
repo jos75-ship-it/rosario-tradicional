@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -451,7 +452,14 @@
             .back-btn { top: 24px; left: 24px; }
             .progress-indicator { bottom: 140px; }
         }
-    </style>
+    
+        /* ====== AJUSTE: remover textos (subtítulo do mistério e crédito) ====== */
+        .mystery-subtitle,
+        .art-credit {
+            display: none !important;
+        }
+
+</style>
 </head>
 <body>
 
@@ -496,134 +504,103 @@
 </div>
 
 <script>
-/* =============================================================
-   POR QUE AS IMAGENS NÃO ABRIAM?
-   - Você estava usando muitos "thumb URLs" diretos da Wikimedia.
-   - Alguns estavam errados/instáveis (404) e "quebram" com hash/tamanho.
-   CORREÇÃO:
-   - Guardar só o NOME DO ARQUIVO no Commons e obter o thumb via MediaWiki API.
-   - Com cache local e fallback seguro.
-   ============================================================= */
 
-// ==================== BANCO DE ARTE (somente nomes de arquivos) ====================
-const ART_FILES = {
-  gozosos: {
-    m1: [
-      { file: "Fra_Angelico_-_Annunciation_-_WGA00462.jpg", credit: "Fra Angelico, c. 1430" },
-      { file: "Annunciation_Leonardo.jpg", credit: "Leonardo da Vinci, c. 1472" }
-    ],
-    m2: [
-      { file: "Mariotto_Albertinelli_Visitation.jpg", credit: "Mariotto Albertinelli, 1503" },
-      { file: "Pontormo_-_Visitation_-_WGA18086.jpg", credit: "Pontormo, 1528" }
-    ],
-    m3: [
-      { file: "Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_(1622).jpg", credit: "Gerard van Honthorst, 1622" },
-      { file: "Correggio_-_Adoration_of_the_Shepherds_(The_Holy_Night)_-_Google_Art_Project.jpg", credit: "Correggio, c. 1529" }
-    ],
-    m4: [
-      { file: "Andrea_Mantegna_-_Presentation_at_the_Temple_-_WGA13978.jpg", credit: "Andrea Mantegna, c. 1455" },
-      { file: "Rembrandt_Harmensz._van_Rijn_096.jpg", credit: "Rembrandt, 1631" }
-    ],
-    m5: [
-      { file: "Albrecht_D%C3%BCrer_-_Christ_among_the_Doctors_-_Google_Art_Project.jpg", credit: "Albrecht Dürer, 1506" },
-      { file: "Paolo_Veronese_012.jpg", credit: "Paolo Veronese, 1548" }
-    ]
-  },
-  dolorosos: {
-    m1: [
-      { file: "El_Greco_-_The_Agony_in_the_Garden_-_WGA10526.jpg", credit: "El Greco" },
-      { file: "Giovanni_Bellini_-_Agony_in_the_Garden_-_National_Gallery%2C_London.jpg", credit: "Bellini" }
-    ],
-    m2: [
-      { file: "Caravaggio_-_The_Flagellation_of_Christ_-_WGA04153.jpg", credit: "Caravaggio" }
-    ],
-    m3: [
-      { file: "Tizian_078.jpg", credit: "Ticiano" }
-    ],
-    m4: [
-      { file: "El_Greco_-_Christ_Carrying_the_Cross_-_WGA10471.jpg", credit: "El Greco" }
-    ],
-    m5: [
-      { file: "Cristo_crucificado.jpg", credit: "Velázquez" }
-    ]
-  },
-  gloriosos: {
-    m1: [
-      { file: "Piero_della_Francesca_046.jpg", credit: "Piero della Francesca" }
-    ],
-    // Corrigido: o seu banco original usava WGA09228, que frequentemente dá 404.
-    // Este nome é o mais comum para a cena "Ascension" do ciclo WGA do Giotto.
-    m2: [
-      { file: "Giotto_di_Bondone_-_No._38_Scenes_from_the_Life_of_Christ_-_22._Ascension_-_WGA09226.jpg", credit: "Giotto" }
-    ],
-    m3: [
-      { file: "El_Greco_-_The_Pentecost_-_WGA10555.jpg", credit: "El Greco" }
-    ],
-    m4: [
-      { file: "Tizian_-_Assunta_-_Frari_Venedig.jpg", credit: "Ticiano" }
-    ],
-    m5: [
-      { file: "Coronaci%C3%B3n_de_la_Virgen_(Vel%C3%A1zquez).jpg", credit: "Velázquez" }
-    ]
-  }
+// ==================== IMAGENS (1 POR MISTÉRIO · 100% OFFLINE) ====================
+// Cada mistério usa UMA imagem SVG embutida (data:image/svg+xml). Isso garante carregamento mesmo sem internet.
+// ==================== ARTE OFFLINE (1 IMAGEM POR MISTÉRIO) ====================
+/*
+  ✅ 100% offline: a imagem é um SVG gerado no próprio HTML (data URI).
+  - Não depende de internet, Wikimedia, GitHub, fetch, CORS, etc.
+  - 1 imagem fixa por mistério (o mesmo "cartão" aparece durante todo o mistério).
+  - Sem textos extras: removemos as legendas ("Imagem local..." e "Arte simbólica...").
+*/
+
+function svgToDataUri(svg) {
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+
+function escapeXml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+const MYSTERY_KIND_LABEL = {
+  gozosos: "Mistério Gozoso",
+  dolorosos: "Mistério Doloroso",
+  gloriosos: "Mistério Glorioso"
 };
 
-// ==================== RESOLVER THUMBS VIA MEDIAWIKI API (COM CACHE) ====================
-const COMMONS_THUMB_WIDTH = 640;
-const FALLBACK_IMG = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Hofmann_Getsemani.jpg/400px-Hofmann_Getsemani.jpg";
-const artCache = new Map();
+const MYSTERY_SYMBOL = {
+  gozosos: "✶",
+  dolorosos: "✟",
+  gloriosos: "✧"
+};
 
-function cacheKey(file, width) { return `${file}|${width}`; }
+function makeMysterySvgCard(title, label, symbol) {
+  const t = escapeXml(title);
+  const l = escapeXml(label);
+  const sym = escapeXml(symbol);
 
-function safeDecode(s) {
-  try { return decodeURIComponent(s); } catch (_) { return s; }
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0a0c"/>
+      <stop offset="1" stop-color="#12121a"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a7548"/>
+      <stop offset="0.55" stop-color="#c9a961"/>
+      <stop offset="1" stop-color="#e0c080"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="800" height="500" fill="url(#bg)"/>
+
+  <!-- Moldura -->
+  <rect x="58" y="58" width="684" height="384" rx="8" fill="none" stroke="url(#gold)" stroke-width="3" opacity="0.9" filter="url(#glow)"/>
+  <rect x="78" y="78" width="644" height="344" rx="6" fill="none" stroke="#8a7548" stroke-width="2" opacity="0.65"/>
+
+  <!-- Símbolo -->
+  <text x="400" y="205" text-anchor="middle"
+        font-family="Georgia, Palatino Linotype, serif"
+        font-size="56" fill="#c9a961" opacity="0.95" filter="url(#glow)">${sym}</text>
+
+  <!-- Título -->
+  <text x="400" y="280" text-anchor="middle"
+        font-family="Georgia, Palatino Linotype, serif"
+        font-size="38" fill="#e8e6e3">${t}</text>
+
+  <!-- Subtítulo (label) -->
+  <text x="400" y="318" text-anchor="middle"
+        font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
+        font-size="18" fill="#9a9390" opacity="0.95">${l}</text>
+</svg>`.trim();
 }
 
-function loadCacheFromStorage() {
-  try {
-    const raw = localStorage.getItem("rosary_art_cache_v1");
-    if (!raw) return;
-    const obj = JSON.parse(raw);
-    for (const [k, v] of Object.entries(obj)) artCache.set(k, v);
-  } catch (_) {}
+// Fallback (também offline)
+const FALLBACK_IMG = svgToDataUri(makeMysterySvgCard("Rosário Tradicional", "Offline", "✟"));
+
+function getArtForMystery(mysteryKey, num, title) {
+  const labelBase = MYSTERY_KIND_LABEL[mysteryKey] || "Mistério";
+  const symbol = MYSTERY_SYMBOL[mysteryKey] || "✶";
+  const label = `${labelBase} ${num}`;
+  const svg = makeMysterySvgCard(title, label, symbol);
+  return { src: svgToDataUri(svg), credit: "" };
 }
 
-function saveCacheToStorage() {
-  try {
-    const obj = Object.fromEntries(artCache.entries());
-    localStorage.setItem("rosary_art_cache_v1", JSON.stringify(obj));
-  } catch (_) {}
-}
 
-loadCacheFromStorage();
-
-async function getCommonsThumbUrl(fileRaw, width = COMMONS_THUMB_WIDTH) {
-  const file = safeDecode(fileRaw);
-  const k = cacheKey(file, width);
-  if (artCache.has(k)) return artCache.get(k);
-
-  const title = `File:${file}`;
-  const api = "https://commons.wikimedia.org/w/api.php";
-  const url =
-    `${api}?action=query&titles=${encodeURIComponent(title)}` +
-    `&prop=imageinfo&iiprop=url&iiurlwidth=${encodeURIComponent(width)}` +
-    `&format=json&origin=*`;
-
-  const res = await fetch(url, { cache: "force-cache" });
-  if (!res.ok) throw new Error(`API error ${res.status}`);
-  const data = await res.json();
-
-  const pages = data?.query?.pages;
-  const firstPage = pages ? pages[Object.keys(pages)[0]] : null;
-  const thumb = firstPage?.imageinfo?.[0]?.thumburl || firstPage?.imageinfo?.[0]?.url;
-  if (!thumb) throw new Error("No thumburl");
-
-  artCache.set(k, thumb);
-  saveCacheToStorage();
-  return thumb;
-}
-
-// ==================== DADOS ESPIRITUAIS (MONTFORT) ====================
 const MYSTERIES = {
   gozosos: [
     { id: 'm1', title: "A Anunciação", intro: "Oferecemos-Vos, Senhor Jesus, esta primeira dezena em honra da Encarnação...", beads: [
@@ -674,12 +651,53 @@ const PRAYERS = {
 };
 
 // ==================== APLICAÇÃO ====================
+
+// ====== SOM: click suave (100% offline, sem arquivos) ======
+const sound = {
+  enabled: true,
+  ctx: null,
+
+  ensureCtx() {
+    if (!this.ctx) {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new Ctx();
+    }
+    if (this.ctx.state === "suspended") this.ctx.resume();
+  },
+
+  click({ freq = 1200, dur = 0.015, gain = 0.03 } = {}) {
+    if (!this.enabled) return;
+    this.ensureCtx();
+
+    const t0 = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(freq, t0);
+
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(gain, t0 + 0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+    osc.connect(g);
+    g.connect(this.ctx.destination);
+
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.01);
+  }
+};
+
+// “Destrava” áudio no primeiro toque/clique (necessário em mobile/iOS)
+window.addEventListener("pointerdown", () => {
+  if (sound.enabled) sound.ensureCtx();
+}, { once: true });
+
 const app = {
   state: {
     currentMystery: null,
     beads: [],
-    currentIndex: 0,
-    artReqId: 0
+    currentIndex: 0
   },
 
   elements: {
@@ -697,6 +715,7 @@ const app = {
   },
 
   init() {
+    // Teclado
     document.addEventListener('keydown', (e) => {
       if (!this.state.currentMystery) return;
       if (['ArrowDown','ArrowRight',' '].includes(e.key)) { e.preventDefault(); this.nextBead(); }
@@ -704,6 +723,7 @@ const app = {
       if (e.key === 'Escape') this.goHome();
     });
 
+    // Scroll
     let wheelTimeout;
     window.addEventListener('wheel', (e) => {
       if (!this.state.currentMystery) return;
@@ -714,6 +734,7 @@ const app = {
       }
     }, { passive: true });
 
+    // Touch
     let touchStartY = 0;
     document.addEventListener('touchstart', (e) => touchStartY = e.touches[0].clientY, { passive: true });
     document.addEventListener('touchend', (e) => {
@@ -727,19 +748,8 @@ const app = {
     }, { passive: true });
   },
 
-  // Preload do próximo arquivo para reduzir flicker
-  async preloadCommonsThumb(fileRaw) {
-    if (!fileRaw) return;
-    try {
-      const url = await getCommonsThumbUrl(fileRaw, COMMONS_THUMB_WIDTH);
-      const img = new Image();
-      img.src = url;
-    } catch (_) {}
-  },
-
   generateSequence(mysteryKey) {
     const mysteries = MYSTERIES[mysteryKey];
-    const artwork = ART_FILES[mysteryKey];
     const seq = [];
     let id = 0;
 
@@ -755,6 +765,7 @@ const app = {
       });
     };
 
+    // Início (sem imagem)
     add('cross', PRAYERS.cross, 'Início');
     add('credo', PRAYERS.credo, 'Profissão de Fé');
     add('pater', PRAYERS.pater, 'Intenções', 'Pelas intenções do Santo Padre, o Papa.');
@@ -763,23 +774,20 @@ const app = {
     add('ave', PRAYERS.ave, 'Virtudes', 'Pela virtude da Caridade.');
     add('gloria', PRAYERS.gloria, 'Glória');
 
+    // Mistérios (1 imagem fixa por mistério)
     mysteries.forEach((myst, idx) => {
       const num = idx + 1;
       const mystId = myst.id;
-      const artArray = (artwork && artwork[mystId]) ? artwork[mystId] : [];
+      const imgData = getArtForMystery(mysteryKey, num, myst.title);
 
-      // Pai Nosso
-      add('pater', PRAYERS.pater, `${num}º Mistério`, myst.intro, myst.title, artArray[0] || null);
+      add('pater', PRAYERS.pater, `${num}º Mistério`, myst.intro, myst.title, imgData);
 
-      // 10 Ave Marias
       for (let i = 0; i < 10; i++) {
-        const artIndex = artArray.length ? (i % artArray.length) : 0;
-        add('ave', PRAYERS.ave, `${num}ª Dezena · Conta ${i+1}`, myst.beads[i], myst.title, artArray.length ? artArray[artIndex] : null);
+        add('ave', PRAYERS.ave, `${num}ª Dezena · Conta ${i+1}`, myst.beads[i], myst.title, imgData);
       }
 
-      const lastImg = artArray.length ? artArray[artArray.length - 1] : null;
-      add('gloria', PRAYERS.gloria, `${num}ª Dezena`, '', myst.title, lastImg);
-      add('ave', PRAYERS.fatima, `${num}ª Dezena`, '', myst.title, lastImg);
+      add('gloria', PRAYERS.gloria, `${num}ª Dezena`, '', myst.title, imgData);
+      add('ave', PRAYERS.fatima, `${num}ª Dezena`, '', myst.title, imgData);
     });
 
     add('salve', PRAYERS.salve, 'Encerramento');
@@ -811,59 +819,21 @@ const app = {
   },
 
   nextBead() {
+
     if (this.state.currentIndex < this.state.beads.length - 1) {
       this.state.currentIndex++;
-      this.updateView();
+      
+      sound.click();this.updateView();
     }
   },
 
   prevBead() {
+
     if (this.state.currentIndex > 0) {
       this.state.currentIndex--;
-      this.updateView();
+      
+      sound.click();this.updateView();
     }
-  },
-
-  async setArt(imgData) {
-    const reqId = ++this.state.artReqId;
-
-    this.elements.artContainer.style.display = "flex";
-    this.elements.artCredit.textContent = imgData?.credit || "";
-    this.elements.artContainer.style.opacity = "1";
-
-    // loading state suave
-    this.elements.artImg.style.opacity = "0.85";
-
-    try {
-      const url = await getCommonsThumbUrl(imgData.file, COMMONS_THUMB_WIDTH);
-      if (reqId !== this.state.artReqId) return;
-
-      this.elements.artImg.onload = () => {
-        if (reqId !== this.state.artReqId) return;
-        this.elements.artImg.style.opacity = "1";
-      };
-
-      this.elements.artImg.onerror = () => {
-        if (reqId !== this.state.artReqId) return;
-        this.elements.artImg.src = FALLBACK_IMG;
-        this.elements.artImg.style.opacity = "1";
-      };
-
-      this.elements.artImg.src = url;
-    } catch (_) {
-      if (reqId !== this.state.artReqId) return;
-      this.elements.artImg.src = FALLBACK_IMG;
-      this.elements.artImg.style.opacity = "1";
-    }
-  },
-
-  hideArt() {
-    this.elements.artContainer.style.opacity = "0";
-    setTimeout(() => {
-      if (this.elements.artContainer.style.opacity === "0") {
-        this.elements.artContainer.style.display = "none";
-      }
-    }, 500);
   },
 
   updateView() {
@@ -872,21 +842,31 @@ const app = {
     const track = this.elements.beadTrack;
     const beadEls = track.children;
 
-    // Preload da próxima imagem (se houver)
-    if (idx < this.state.beads.length - 1) {
-      const nextBead = this.state.beads[idx + 1];
-      if (nextBead.imgData?.file) this.preloadCommonsThumb(nextBead.imgData.file);
-    }
-
-    // UI Textos
+    // Textos
     this.elements.prayerMeta.textContent = bead.meta;
     this.elements.prayerName.textContent = bead.name;
     this.elements.mysterySubtitle.textContent = bead.mysteryTitle || '';
     this.elements.progressIndicator.textContent = `${idx + 1} / ${this.state.beads.length}`;
 
-    // Imagem (agora robusta via API)
-    if (bead.imgData?.file) this.setArt(bead.imgData);
-    else this.hideArt();
+    // Imagem (offline, 1 por mistério)
+    if (bead.imgData && bead.imgData.src) {
+      this.elements.artImg.onerror = () => {
+        this.elements.artImg.src = FALLBACK_IMG;
+      };
+      this.elements.artImg.src = bead.imgData.src;
+      this.elements.artCredit.textContent = bead.imgData.credit || '';
+      this.elements.artContainer.style.display = "flex";
+      requestAnimationFrame(() => {
+        this.elements.artContainer.style.opacity = "1";
+      });
+    } else {
+      this.elements.artContainer.style.opacity = "0";
+      setTimeout(() => {
+        if (this.elements.artContainer.style.opacity === "0") {
+          this.elements.artContainer.style.display = "none";
+        }
+      }, 500);
+    }
 
     // Meditação
     const medBox = this.elements.prayerMed;
@@ -896,11 +876,13 @@ const app = {
       medBox.style.opacity = '1';
     }, 200);
 
-    // Rosário
+    // Rosário (highlight)
     Array.from(beadEls).forEach(el => el.classList.remove('active'));
-    beadEls[idx].classList.add('active');
+    if (beadEls[idx]) beadEls[idx].classList.add('active');
 
+    // Centralização
     const activeEl = beadEls[idx];
+    if (!activeEl) return;
     const beadCenter = activeEl.offsetTop + (activeEl.offsetHeight / 2);
     const isMobile = window.innerWidth <= 768;
 
@@ -914,6 +896,7 @@ const app = {
 };
 
 app.init();
+
 </script>
 </body>
 </html>
