@@ -156,15 +156,90 @@
             line-height: 1.6;
         }
 
-        .welcome-screen {
-            text-align: center;
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .welcome-screen p {
-            margin-bottom: 24px;
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.6;
+        .auth-tab {
+            flex: 1;
+            padding: 14px;
+            background: none;
+            border: none;
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .auth-tab::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s var(--ease-out);
+        }
+
+        .auth-tab.active {
+            color: var(--gold);
+        }
+
+        .auth-tab.active::after {
+            width: 60%;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .input-label {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--gold-dim);
+            box-shadow: 0 0 0 3px rgba(212, 168, 85, 0.1);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-dim);
         }
 
         .auth-btn {
@@ -456,16 +531,21 @@
             background: linear-gradient(135deg, rgba(107, 45, 61, 0.3) 0%, rgba(107, 45, 61, 0.12) 100%);
         }
 
-        .calendar-content {
-            padding: 20px;
-        }
-
+        .calendar-content,
         .profile-content {
             padding: 24px;
+            text-align: center;
+            min-height: 100%;
+        }
+
+        .placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 40px 20px;
+            font-size: 1rem;
         }
 
         .profile-header {
-            text-align: center;
             margin-bottom: 32px;
         }
 
@@ -488,55 +568,30 @@
             font-size: 1.4rem;
             letter-spacing: 0.1em;
             color: var(--text-primary);
-        }
-
-        .profile-section {
-            margin-bottom: 24px;
-        }
-
-        .profile-section-title {
-            font-family: var(--font-display);
-            font-size: 0.6rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 28px;
         }
 
         .profile-btn {
             width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
             padding: 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
+            background: linear-gradient(135deg, rgba(180, 60, 60, 0.2) 0%, rgba(180, 60, 60, 0.08) 100%);
+            border: 1px solid rgba(180, 60, 60, 0.3);
             border-radius: 8px;
             font-family: var(--font-display);
             font-size: 0.8rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: var(--text-secondary);
+            color: #c07070;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
         }
 
         .profile-btn:hover {
-            border-color: var(--gold-dim);
-            color: var(--gold);
-        }
-
-        .profile-btn.danger {
-            border-color: rgba(180, 60, 60, 0.3);
-            color: #c07070;
-        }
-
-        .profile-btn.danger:hover {
-            background: rgba(180, 60, 60, 0.1);
+            background: rgba(180, 60, 60, 0.15);
             border-color: rgba(180, 60, 60, 0.5);
+            transform: translateY(-2px);
         }
 
         .bottom-nav {
@@ -609,13 +664,6 @@
         .nav-item.active::before {
             width: 40px;
         }
-
-        .placeholder-text {
-            text-align: center;
-            color: var(--text-muted);
-            padding: 40px 20px;
-            font-style: italic;
-        }
     </style>
 </head>
 <body>
@@ -628,15 +676,45 @@
         <p class="auth-subtitle">Método de São Luís de Montfort</p>
         
         <div class="auth-info">
-            ✨ <strong>Cloud Enabled:</strong> Seus dados são salvos automaticamente na nuvem com Firebase!
+            ✨ <strong>Cloud Enabled:</strong> Seus dados são salvos automaticamente na nuvem!
         </div>
 
-        <div class="welcome-screen">
-            <p>Bem-vindo! Para começar, clique em "Iniciar" para criar uma sessão anônima.</p>
-            <button type="button" class="auth-btn" id="anon-btn">Iniciar</button>
-            <div class="auth-error" id="anon-error"></div>
-            <div class="auth-success" id="anon-success"></div>
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="login">Entrar</button>
+            <button class="auth-tab" data-tab="register">Criar Conta</button>
         </div>
+
+        <form id="login-form" class="auth-form active">
+            <div class="input-group">
+                <label class="input-label">Nome</label>
+                <input type="text" class="input-field" id="login-username" placeholder="Seu nome" required>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Senha</label>
+                <input type="password" class="input-field" id="login-password" placeholder="Sua senha" required>
+            </div>
+            <button type="submit" class="auth-btn" id="login-btn">Entrar</button>
+            <div class="auth-error" id="login-error"></div>
+            <div class="auth-success" id="login-success"></div>
+        </form>
+
+        <form id="register-form" class="auth-form">
+            <div class="input-group">
+                <label class="input-label">Escolha um Nome</label>
+                <input type="text" class="input-field" id="register-username" placeholder="Ex: Maria" required minlength="2">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Crie uma Senha</label>
+                <input type="password" class="input-field" id="register-password" placeholder="Mínimo 6 caracteres" required minlength="6">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Confirme a Senha</label>
+                <input type="password" class="input-field" id="register-confirm" placeholder="Repita a senha" required>
+            </div>
+            <button type="submit" class="auth-btn" id="register-btn">Criar Conta</button>
+            <div class="auth-error" id="register-error"></div>
+            <div class="auth-success" id="register-success"></div>
+        </form>
     </div>
 </div>
 
@@ -678,10 +756,10 @@
                 <div class="quick-start">
                     <p class="quick-label">Iniciar Oração</p>
                     <div class="quick-grid">
-                        <button class="quick-btn" onclick="app.startPrayer('gozosos')">Gozosos</button>
-                        <button class="quick-btn" onclick="app.startPrayer('dolorosos')">Dolorosos</button>
-                        <button class="quick-btn" onclick="app.startPrayer('gloriosos')">Gloriosos</button>
-                        <button class="quick-btn full" onclick="app.startPrayer('completo')">Rosário Completo</button>
+                        <button type="button" class="quick-btn" onclick="app.startPrayer('gozosos')">Gozosos</button>
+                        <button type="button" class="quick-btn" onclick="app.startPrayer('dolorosos')">Dolorosos</button>
+                        <button type="button" class="quick-btn" onclick="app.startPrayer('gloriosos')">Gloriosos</button>
+                        <button type="button" class="quick-btn full" onclick="app.startPrayer('completo')">Rosário Completo</button>
                     </div>
                 </div>
             </div>
@@ -690,7 +768,7 @@
         <!-- CALENDAR TAB -->
         <div id="tab-calendar" class="tab-content">
             <div class="calendar-content">
-                <p class="placeholder-text">📅 Calendário<br>(Em desenvolvimento)</p>
+                <p class="placeholder">📅 Calendário<br>(Em desenvolvimento)</p>
             </div>
         </div>
 
@@ -699,30 +777,23 @@
             <div class="profile-content">
                 <div class="profile-header">
                     <div class="profile-avatar" id="profile-avatar">👤</div>
-                    <h2 class="profile-name" id="profile-name">Usuário Anônimo</h2>
+                    <h2 class="profile-name" id="profile-name">Usuário</h2>
                 </div>
-
-                <div class="profile-section">
-                    <div class="profile-section-title">Conta</div>
-                    <button class="profile-btn danger" onclick="app.logout()">
-                        <span>Sair da Conta</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-                    </button>
-                </div>
+                <button type="button" class="profile-btn" onclick="app.logout()">Sair da Conta</button>
             </div>
         </div>
     </div>
     
     <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
-        <button class="nav-item active" data-tab="home" onclick="app.switchTab('home')">
+        <button type="button" class="nav-item active" onclick="app.switchTab('home')">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 <polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
             <span class="nav-label">Início</span>
         </button>
-        <button class="nav-item" data-tab="rosary" onclick="app.startRosaryPicker()">
+        <button type="button" class="nav-item" onclick="app.showRosaryPicker()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
                 <circle cx="12" cy="3" r="2.5"/>
@@ -734,7 +805,7 @@
             </svg>
             <span class="nav-label">Rosário</span>
         </button>
-        <button class="nav-item" data-tab="calendar" onclick="app.switchTab('calendar')">
+        <button type="button" class="nav-item" onclick="app.switchTab('calendar')">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
@@ -743,7 +814,7 @@
             </svg>
             <span class="nav-label">Calendário</span>
         </button>
-        <button class="nav-item" data-tab="profile" onclick="app.switchTab('profile')">
+        <button type="button" class="nav-item" onclick="app.switchTab('profile')">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
@@ -753,13 +824,13 @@
     </nav>
 </div>
 
-<!-- FIREBASE SCRIPTS -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
 
 <script>
-// ===== FIREBASE CONFIG =====
+// FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyAD_SvPlYGGZM1JMZmIjfai-a3TPPKDxLg",
   authDomain: "rosario-app-a9da0.firebaseapp.com",
@@ -774,7 +845,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const database = firebase.database();
 
-// ===== DADOS =====
+// DADOS
 const INTENTIONS = [
     "Pelos que sofrem perseguição por causa da fé.",
     "Pela conversão dos pecadores e a salvação das almas.",
@@ -786,16 +857,12 @@ const INTENTIONS = [
     "Pelos jovens, para que encontrem seu caminho em Cristo.",
     "Pela Igreja e pelo Santo Padre.",
     "Pelos missionários em terras distantes.",
-    "Pela proteção das crianças inocentes.",
-    "Pelos que não conhecem a Deus.",
-    "Pelos governantes, para que busquem o bem comum.",
-    "Pelos pobres e marginalizados da sociedade.",
-    "Pela unidade dos cristãos.",
 ];
 
-// ===== APP =====
+// APP
 const app = {
     user: null,
+    userName: null,
 
     init() {
         this.setupAuth();
@@ -803,87 +870,123 @@ const app = {
     },
 
     setupAuth() {
-        // Botão de iniciar anônimo
-        document.getElementById('anon-btn').onclick = () => {
-            this.disableButton('anon-btn', true);
-            auth.signInAnonymously()
-                .then(() => {
-                    this.showSuccess('anon-success', 'Sessão iniciada!');
-                    setTimeout(() => this.loadApp(), 800);
-                })
-                .catch((error) => {
-                    this.showError('anon-error', 'Erro: ' + error.message);
-                    this.disableButton('anon-btn', false);
-                });
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.onclick = () => {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + '-form').classList.add('active');
+            };
+        });
+
+        document.getElementById('login-form').onsubmit = (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            this.loginWithUsernamePassword(username, password);
+        };
+
+        document.getElementById('register-form').onsubmit = (e) => {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value.trim();
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            if (password !== confirm) {
+                this.showError('register-error', 'Senhas não coincidem!');
+                return;
+            }
+            
+            this.registerWithUsernamePassword(username, password);
         };
     },
 
-    loadApp() {
-        this.user = auth.currentUser;
+    loginWithUsernamePassword(username, password) {
+        database.ref('users').orderByChild('name').equalTo(username).once('value', (snapshot) => {
+            if (snapshot.exists()) {
+                const userData = Object.values(snapshot.val())[0];
+                const storedPassword = userData.password;
+                
+                if (storedPassword === password) {
+                    this.user = { uid: Object.keys(snapshot.val())[0] };
+                    this.userName = username;
+                    this.loginSuccess();
+                } else {
+                    this.showError('login-error', 'Senha incorreta!');
+                }
+            } else {
+                this.showError('login-error', 'Usuário não encontrado!');
+            }
+        });
+    },
+
+    registerWithUsernamePassword(username, password) {
+        database.ref('users').orderByChild('name').equalTo(username).once('value', (snapshot) => {
+            if (snapshot.exists()) {
+                this.showError('register-error', 'Este nome já está em uso!');
+                return;
+            }
+            
+            const newUserRef = database.ref('users').push();
+            newUserRef.set({
+                name: username,
+                password: password,
+                createdAt: new Date().toISOString(),
+                prayedDays: {},
+                totalRosaries: 0,
+                totalAves: 0
+            });
+            
+            this.user = { uid: newUserRef.key };
+            this.userName = username;
+            this.showSuccess('register-success', 'Conta criada com sucesso!');
+            setTimeout(() => this.loginSuccess(), 800);
+        });
+    },
+
+    loginSuccess() {
         document.getElementById('auth-screen').classList.remove('active');
         document.getElementById('main-app').classList.add('active');
         this.loadUserInterface();
     },
 
     checkSession() {
-        auth.onAuthStateChanged((user) => {
-            if (user && !document.getElementById('main-app').classList.contains('active')) {
-                this.loadApp();
-            }
-        });
+        const stored = localStorage.getItem('rosario_user');
+        if (stored) {
+            const data = JSON.parse(stored);
+            this.user = data.user;
+            this.userName = data.userName;
+            this.loginSuccess();
+        }
     },
 
     loadUserInterface() {
-        const uid = this.user.uid;
+        document.getElementById('home-user-name').textContent = this.userName;
+        document.getElementById('profile-name').textContent = this.userName;
         
-        // Carregar ou criar dados do usuário
-        database.ref('users/' + uid).once('value').then((snapshot) => {
-            if (!snapshot.exists()) {
-                // Criar novo usuário
-                database.ref('users/' + uid).set({
-                    createdAt: new Date().toISOString(),
-                    prayedDays: {},
-                    totalRosaries: 0,
-                    totalAves: 0
-                });
-            }
-        });
-
-        // Atualizar UI
-        document.getElementById('home-user-name').textContent = 'Peregrino';
-        document.getElementById('profile-name').textContent = 'Usuário Anônimo';
-        
-        // Intenção do dia
         const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
         document.getElementById('today-intention').textContent = INTENTIONS[dayOfYear % INTENTIONS.length];
 
-        // Dia da semana
         const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
         const today = new Date();
         document.getElementById('today-day').textContent = days[today.getDay()];
         
-        // Mistério do dia (padrão: gozosos segunda)
-        const dayMap = {
-            0: 'Gloriosos',
-            1: 'Gozosos',
-            2: 'Dolorosos',
-            3: 'Gloriosos',
-            4: 'Gozosos',
-            5: 'Dolorosos',
-            6: 'Gozosos'
-        };
+        const dayMap = { 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
         document.getElementById('today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
+
+        localStorage.setItem('rosario_user', JSON.stringify({ user: this.user, userName: this.userName }));
     },
 
     switchTab(tabName) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        event.target.closest('.nav-item').classList.add('active');
         document.getElementById('tab-' + tabName).classList.add('active');
     },
 
-    startRosaryPicker() {
+    showRosaryPicker() {
         const choice = prompt('Escolha: gozosos, dolorosos, gloriosos ou completo?', 'gozosos');
         if (choice && ['gozosos', 'dolorosos', 'gloriosos', 'completo'].includes(choice.toLowerCase())) {
             this.startPrayer(choice.toLowerCase());
@@ -896,13 +999,12 @@ const app = {
 
     logout() {
         if (confirm('Deseja realmente sair?')) {
-            auth.signOut().then(() => {
-                this.user = null;
-                document.getElementById('auth-screen').classList.add('active');
-                document.getElementById('main-app').classList.remove('active');
-                document.getElementById('anon-btn').disabled = false;
-                document.getElementById('anon-btn').textContent = 'Iniciar';
-            });
+            this.user = null;
+            this.userName = null;
+            localStorage.removeItem('rosario_user');
+            document.getElementById('auth-screen').classList.add('active');
+            document.getElementById('main-app').classList.remove('active');
+            document.querySelectorAll('.input-field').forEach(f => f.value = '');
         }
     },
 
@@ -917,18 +1019,6 @@ const app = {
         const el = document.getElementById(id);
         el.textContent = msg;
         el.classList.add('visible');
-    },
-
-    disableButton(id, disabled) {
-        const btn = document.getElementById(id);
-        btn.disabled = disabled;
-        btn.textContent = disabled ? 'Aguarde...' : 'Iniciar';
-    },
-
-    saveUserData(data) {
-        if (this.user) {
-            database.ref('users/' + this.user.uid).update(data);
-        }
     }
 };
 
