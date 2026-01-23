@@ -1077,14 +1077,11 @@
     }
 
     function showRosaryPicker() {
-        const types = ['gozosos', 'dolorosos', 'gloriosos', 'completo'];
-        const choice = prompt('Escolha o tipo de Rosário:\n\n1. Gozosos\n2. Dolorosos\n3. Gloriosos\n4. Completo\n\nDigite o nome:', 'gozosos');
-        
-        if (choice && types.includes(choice.toLowerCase())) {
-            startPrayer(choice.toLowerCase());
-        } else if (choice) {
-            alert('Opção inválida! Escolha entre: gozosos, dolorosos, gloriosos ou completo.');
-        }
+        // Inicia automaticamente o rosário do dia baseado no dia da semana
+        const today = new Date().getDay();
+        const dayMap = { 0: 'gloriosos', 1: 'gozosos', 2: 'dolorosos', 3: 'gloriosos', 4: 'gozosos', 5: 'dolorosos', 6: 'gozosos' };
+        const todayRosary = dayMap[today];
+        startPrayer(todayRosary);
     }
 
     function startPrayer(type) {
