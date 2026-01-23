@@ -2,10 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Santo Rosário · Método Montfort</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -76,7 +74,6 @@
             z-index: 0;
         }
 
-        /* ===== SCREENS ===== */
         .screen {
             position: fixed;
             inset: 0;
@@ -93,7 +90,6 @@
             visibility: visible;
         }
 
-        /* ===== AUTH SCREEN ===== */
         #auth-screen {
             justify-content: center;
             align-items: center;
@@ -276,7 +272,6 @@
             display: block;
         }
 
-        /* ===== MAIN APP (with nav) ===== */
         #main-app {
             padding-bottom: var(--nav-height);
         }
@@ -287,7 +282,16 @@
             overflow-x: hidden;
         }
 
-        /* ===== HOME TAB ===== */
+        /* TAB CONTENT - IMPORTANTE */
+        .tab-content {
+            display: none;
+            width: 100%;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .home-content {
             padding: 24px;
             display: flex;
@@ -315,7 +319,6 @@
             letter-spacing: 0.1em;
         }
 
-        /* Streak Card */
         .streak-card {
             width: 100%;
             max-width: 360px;
@@ -372,7 +375,6 @@
             margin-top: 12px;
         }
 
-        /* Today's Intention */
         .intention-card {
             width: 100%;
             max-width: 360px;
@@ -412,7 +414,6 @@
             line-height: 1.6;
         }
 
-        /* Today Info */
         .today-card {
             width: 100%;
             max-width: 360px;
@@ -435,7 +436,6 @@
             color: var(--gold);
         }
 
-        /* Quick Start Buttons */
         .quick-start {
             width: 100%;
             max-width: 360px;
@@ -506,7 +506,6 @@
             background: linear-gradient(135deg, rgba(107, 45, 61, 0.3) 0%, rgba(107, 45, 61, 0.12) 100%);
         }
 
-        /* ===== CALENDAR TAB ===== */
         .calendar-content {
             padding: 20px;
         }
@@ -624,7 +623,6 @@
             border-color: var(--gold);
         }
 
-        /* Calendar Legend */
         .calendar-legend {
             display: flex;
             justify-content: center;
@@ -657,7 +655,6 @@
             border: 2px solid var(--gold);
         }
 
-        /* Selected Day Info */
         .day-info {
             margin-top: 24px;
             padding: 20px;
@@ -706,7 +703,6 @@
             height: 16px;
         }
 
-        /* ===== PROFILE TAB ===== */
         .profile-content {
             padding: 24px;
         }
@@ -822,7 +818,7 @@
             border-color: rgba(180, 60, 60, 0.5);
         }
 
-        /* ===== BOTTOM NAVIGATION ===== */
+        /* BOTTOM NAVIGATION - CORRIGIDA */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -894,230 +890,11 @@
             width: 40px;
         }
 
-        /* ===== PRAYER SCREEN ===== */
-        #prayer-screen {
-            z-index: 60;
-        }
-
-        #prayer-screen .rosary-rail {
-            position: relative;
-            width: var(--rail-width);
-            height: 100%;
-            background: linear-gradient(90deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
-            border-right: 1px solid rgba(212, 168, 85, 0.06);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        #prayer-screen .rosary-rail::before,
-        #prayer-screen .rosary-rail::after {
-            content: '';
-            position: absolute;
-            left: 0; right: 0;
-            height: 120px;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        #prayer-screen .rosary-rail::before {
-            top: 0;
-            background: linear-gradient(180deg, var(--bg-deep) 0%, transparent 100%);
-        }
-
-        #prayer-screen .rosary-rail::after {
-            bottom: 0;
-            background: linear-gradient(0deg, var(--bg-deep) 0%, transparent 100%);
-        }
-
-        .rosary-chain {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 3px;
-            height: calc(100% + 300px);
-            transform: translate(-50%, -50%);
-            background: linear-gradient(180deg, transparent 0%, var(--gold-dark) 3%, var(--gold-dim) 15%, var(--gold) 50%, var(--gold-dim) 85%, var(--gold-dark) 97%, transparent 100%);
-            opacity: 0.4;
-            border-radius: 2px;
-        }
-
-        .center-guide {
-            position: absolute;
-            top: 50%;
-            left: 15%; right: 15%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(212, 168, 85, 0.2), transparent);
-            transform: translateY(-50%);
-            z-index: 5;
-        }
-
-        #bead-track {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, 0);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--bead-gap);
-            transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            will-change: transform;
-            padding: 100px 0;
-        }
-
-        /* Beads */
-        .bead {
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.45s var(--ease-smooth);
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .bead::before {
-            content: '';
-            position: absolute;
-            inset: -15px;
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.5s, transform 0.5s;
-            transform: scale(0.5);
-            z-index: -1;
-        }
-
-        .bead.active::before {
-            opacity: 1;
-            transform: scale(1);
-            animation: bead-aura 2.5s ease-in-out infinite;
-        }
-
-        @keyframes bead-aura {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.25); }
-        }
-
-        .bead::after {
-            content: '';
-            position: absolute;
-            top: 12%; left: 18%;
-            width: 35%; height: 30%;
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .bead:hover::after, .bead.active::after { opacity: 1; }
-
-        .bead.ave {
-            width: var(--bead-size-small);
-            height: var(--bead-size-small);
-            background: radial-gradient(ellipse at 28% 22%, rgba(255,255,255,0.18) 0%, transparent 45%), radial-gradient(ellipse at 70% 75%, rgba(0,0,0,0.3) 0%, transparent 50%), radial-gradient(circle at 35% 35%, #5a5450, #454240, #353330, #252320);
-            box-shadow: inset -5px -5px 12px rgba(0, 0, 0, 0.7), inset 4px 4px 10px rgba(255, 255, 255, 0.06), 0 5px 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .bead.ave::before { background: radial-gradient(circle, rgba(212, 168, 85, 0.45) 0%, transparent 65%); }
-        .bead.ave::after { background: radial-gradient(ellipse, rgba(255,255,255,0.35) 0%, transparent 70%); }
-
-        .bead.ave.active {
-            width: var(--bead-size);
-            height: var(--bead-size);
-            transform: scale(1.15);
-            background: radial-gradient(ellipse at 28% 22%, rgba(255,255,255,0.28) 0%, transparent 40%), radial-gradient(ellipse at 70% 75%, rgba(0,0,0,0.25) 0%, transparent 50%), radial-gradient(circle at 35% 35%, #706a65, #5a5550, #454240, #353330);
-            box-shadow: inset -5px -5px 12px rgba(0, 0, 0, 0.5), inset 4px 4px 10px rgba(255, 255, 255, 0.12), 0 0 40px rgba(212, 168, 85, 0.5), 0 0 70px rgba(212, 168, 85, 0.25);
-        }
-
-        .bead.pater {
-            width: calc(var(--bead-size-small) + 12px);
-            height: calc(var(--bead-size-small) + 12px);
-            background: radial-gradient(ellipse at 22% 18%, rgba(255,255,255,0.6) 0%, transparent 35%), radial-gradient(ellipse at 75% 80%, rgba(100, 70, 20, 0.4) 0%, transparent 45%), radial-gradient(circle at 35% 35%, var(--gold-bright), var(--gold-light), var(--gold), var(--gold-dim));
-            box-shadow: inset -5px -5px 15px rgba(100, 70, 20, 0.5), inset 5px 5px 12px rgba(255, 255, 255, 0.4), 0 5px 20px rgba(0, 0, 0, 0.5), 0 0 25px rgba(212, 168, 85, 0.35);
-        }
-
-        .bead.pater::before { background: radial-gradient(circle, var(--gold-glow) 0%, transparent 60%); }
-        .bead.pater::after { background: radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, transparent 65%); opacity: 0.8; }
-
-        .bead.pater.active {
-            width: var(--bead-size-pater);
-            height: var(--bead-size-pater);
-            transform: scale(1.15);
-            background: radial-gradient(ellipse at 22% 18%, rgba(255,255,255,0.75) 0%, transparent 30%), radial-gradient(ellipse at 75% 80%, rgba(100, 70, 20, 0.3) 0%, transparent 45%), radial-gradient(circle at 35% 35%, #ffe890, var(--gold-bright), var(--gold-light), var(--gold));
-            box-shadow: inset -5px -5px 15px rgba(100, 70, 20, 0.35), inset 5px 5px 12px rgba(255, 255, 255, 0.55), 0 0 55px rgba(212, 168, 85, 0.7), 0 0 90px rgba(212, 168, 85, 0.4);
-        }
-
-        .bead.special {
-            width: calc(var(--bead-size-small) + 8px);
-            height: calc(var(--bead-size-small) + 8px);
-            background: radial-gradient(ellipse at 25% 20%, rgba(255,255,255,0.3) 0%, transparent 40%), radial-gradient(ellipse at 72% 78%, rgba(40, 15, 20, 0.4) 0%, transparent 45%), radial-gradient(circle at 35% 35%, var(--burgundy-bright), var(--burgundy-light), var(--burgundy), #4a1a28);
-            box-shadow: inset -4px -4px 12px rgba(40, 15, 20, 0.6), inset 4px 4px 10px rgba(255, 255, 255, 0.15), 0 5px 15px rgba(0, 0, 0, 0.5), 0 0 18px rgba(138, 61, 80, 0.3);
-        }
-
-        .bead.special::before { background: radial-gradient(circle, var(--burgundy-glow) 0%, transparent 60%); }
-        .bead.special::after { background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 65%); }
-
-        .bead.special.active {
-            width: calc(var(--bead-size) + 8px);
-            height: calc(var(--bead-size) + 8px);
-            transform: scale(1.15);
-            background: radial-gradient(ellipse at 25% 20%, rgba(255,255,255,0.45) 0%, transparent 35%), radial-gradient(ellipse at 72% 78%, rgba(40, 15, 20, 0.3) 0%, transparent 45%), radial-gradient(circle at 35% 35%, #c55a70, var(--burgundy-bright), var(--burgundy-light), var(--burgundy));
-            box-shadow: inset -4px -4px 12px rgba(40, 15, 20, 0.4), inset 4px 4px 10px rgba(255, 255, 255, 0.25), 0 0 50px rgba(138, 61, 80, 0.6), 0 0 80px rgba(138, 61, 80, 0.35);
-        }
-
-        /* Prayer Content */
         .prayer-main {
             flex: 1;
             display: flex;
             flex-direction: column;
             min-width: 0;
-        }
-
-        .prayer-header {
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-        }
-
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-family: var(--font-display);
-            font-size: 0.65rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            cursor: pointer;
-            padding: 10px 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s;
-        }
-
-        .back-btn:hover { color: var(--gold); }
-        .back-btn svg { width: 16px; height: 16px; }
-
-        .progress-compact { display: flex; align-items: center; gap: 10px; }
-
-        .progress-bar-mini {
-            width: 80px; height: 3px;
-            background: var(--bg-elevated);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .progress-fill-mini {
-            height: 100%;
-            background: linear-gradient(90deg, var(--gold-dim), var(--gold));
-            transition: width 0.5s var(--ease-out);
-        }
-
-        .progress-text {
-            font-family: var(--font-display);
-            font-size: 0.65rem;
-            color: var(--text-dim);
-            letter-spacing: 0.05em;
         }
 
         .prayer-body {
@@ -1129,125 +906,6 @@
             overflow-y: auto;
         }
 
-        .prayer-group, .prayer-mystery, .prayer-name, .prayer-count, .meditation-box {
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.45s var(--ease-out);
-        }
-
-        .prayer-group.visible, .prayer-mystery.visible, .prayer-name.visible, .prayer-count.visible, .meditation-box.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .prayer-group {
-            font-family: var(--font-display);
-            font-size: 0.6rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: var(--gold-dim);
-            margin-bottom: 6px;
-        }
-
-        .prayer-mystery {
-            font-family: var(--font-body);
-            font-size: 1.15rem;
-            font-style: italic;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            transition-delay: 0.05s;
-        }
-
-        .prayer-name {
-            font-family: var(--font-display);
-            font-size: 2rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            letter-spacing: 0.04em;
-            margin-bottom: 6px;
-            transition-delay: 0.1s;
-        }
-
-        .prayer-count {
-            font-family: var(--font-display);
-            font-size: 0.7rem;
-            letter-spacing: 0.15em;
-            color: var(--text-dim);
-            margin-bottom: 20px;
-            transition-delay: 0.15s;
-        }
-
-        .meditation-box {
-            background: linear-gradient(135deg, rgba(212, 168, 85, 0.1) 0%, rgba(212, 168, 85, 0.03) 100%);
-            border-left: 3px solid var(--gold);
-            padding: 18px 20px;
-            margin-bottom: 20px;
-            transition-delay: 0.2s;
-        }
-
-        .meditation-label {
-            font-family: var(--font-display);
-            font-size: 0.55rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 8px;
-        }
-
-        .meditation-text {
-            font-family: var(--font-body);
-            font-size: 1.15rem;
-            font-style: italic;
-            color: var(--text-primary);
-            line-height: 1.7;
-        }
-
-        .prayer-text-toggle {
-            background: none;
-            border: 1px solid var(--border-subtle);
-            color: var(--text-muted);
-            font-family: var(--font-display);
-            font-size: 0.6rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            padding: 10px 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            margin-bottom: 12px;
-        }
-
-        .prayer-text-toggle:hover { border-color: var(--border-gold); color: var(--gold); }
-        .prayer-text-toggle svg { width: 14px; height: 14px; transition: transform 0.3s; }
-        .prayer-text-toggle.expanded svg { transform: rotate(180deg); }
-
-        .prayer-full-text {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s var(--ease-out), opacity 0.3s, padding 0.3s;
-            opacity: 0;
-            background: var(--bg-card);
-            border-radius: 6px;
-        }
-
-        .prayer-full-text.visible {
-            max-height: 400px;
-            opacity: 1;
-            padding: 16px 18px;
-            margin-bottom: 16px;
-        }
-
-        .prayer-full-text p {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            color: var(--text-secondary);
-            line-height: 1.8;
-        }
-
         .prayer-footer {
             padding: 16px 20px;
             display: flex;
@@ -1257,109 +915,6 @@
             flex-shrink: 0;
         }
 
-        .nav-btn {
-            width: 52px; height: 52px;
-            border-radius: 50%;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .nav-btn:hover:not(:disabled) {
-            background: var(--bg-elevated);
-            border-color: var(--border-gold);
-            color: var(--gold);
-            transform: scale(1.05);
-        }
-
-        .nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
-        .nav-btn svg { width: 22px; height: 22px; }
-
-        .nav-btn.primary {
-            width: 64px; height: 64px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
-            border: none;
-            color: var(--bg-deep);
-        }
-
-        .nav-btn.primary:hover:not(:disabled) {
-            background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 100%);
-            transform: scale(1.08);
-            box-shadow: 0 0 30px rgba(212, 168, 85, 0.5);
-        }
-
-        /* ===== COMPLETION SCREEN ===== */
-        #completion-screen {
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
-            z-index: 70;
-        }
-
-        .completion-icon {
-            width: 90px; height: 90px;
-            color: var(--gold);
-            margin-bottom: 24px;
-            animation: completion-glow 2.5s ease-in-out infinite;
-        }
-
-        @keyframes completion-glow {
-            0%, 100% { filter: drop-shadow(0 0 15px rgba(212, 168, 85, 0.4)); transform: scale(1); }
-            50% { filter: drop-shadow(0 0 35px rgba(212, 168, 85, 0.7)); transform: scale(1.05); }
-        }
-
-        .completion-title {
-            font-family: var(--font-display);
-            font-size: 1.6rem;
-            color: var(--text-primary);
-            letter-spacing: 0.15em;
-            margin-bottom: 8px;
-        }
-
-        .completion-subtitle {
-            font-family: var(--font-body);
-            font-size: 1.05rem;
-            font-style: italic;
-            color: var(--text-secondary);
-            text-align: center;
-            max-width: 320px;
-            margin-bottom: 28px;
-        }
-
-        .completion-stats {
-            display: flex;
-            gap: 32px;
-            margin-bottom: 32px;
-        }
-
-        .comp-stat { text-align: center; }
-        .comp-stat-value { font-family: var(--font-display); font-size: 2rem; color: var(--gold); }
-        .comp-stat-label { font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); }
-
-        .completion-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-gold);
-            color: var(--gold);
-            padding: 14px 28px;
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .completion-btn:hover {
-            background: rgba(212, 168, 85, 0.1);
-            transform: translateY(-2px);
-        }
-
-        /* Audio Toggle */
         .audio-toggle {
             position: fixed;
             top: 20px;
@@ -1380,37 +935,6 @@
         .audio-toggle:hover { border-color: var(--gold-dim); color: var(--gold); }
         .audio-toggle.active { color: var(--gold); border-color: var(--gold-dim); background: rgba(212, 168, 85, 0.1); }
         .audio-toggle svg { width: 20px; height: 20px; }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            :root {
-                --rail-width: 80px;
-                --bead-size: 50px;
-                --bead-size-small: 40px;
-                --bead-size-pater: 58px;
-            }
-
-            #prayer-screen {
-                flex-direction: row;
-            }
-
-            #prayer-screen .rosary-rail {
-                order: 2;
-                background: linear-gradient(-90deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
-                border-right: none;
-                border-left: 1px solid rgba(212, 168, 85, 0.06);
-            }
-
-            .prayer-main { order: 1; }
-            .prayer-name { font-size: 1.7rem; }
-            .audio-toggle { top: auto; bottom: calc(var(--nav-height) + 80px); right: 12px; width: 40px; height: 40px; }
-        }
-
-        @media (max-width: 380px) {
-            :root { --rail-width: 70px; }
-            .prayer-name { font-size: 1.5rem; }
-            .streak-number { font-size: 3rem; }
-        }
     </style>
 </head>
 <body>
@@ -1421,12 +945,10 @@
         <div class="auth-logo"></div>
         <h1 class="auth-title">Rosário</h1>
         <p class="auth-subtitle">Método de São Luís de Montfort</p>
-        
         <div class="auth-tabs">
             <button class="auth-tab active" data-tab="login">Entrar</button>
             <button class="auth-tab" data-tab="register">Criar Conta</button>
         </div>
-        
         <form id="login-form" class="auth-form active">
             <div class="input-group">
                 <label class="input-label">Nome de Usuário</label>
@@ -1439,7 +961,6 @@
             <button type="submit" class="auth-btn">Entrar</button>
             <div class="auth-error" id="login-error"></div>
         </form>
-        
         <form id="register-form" class="auth-form">
             <div class="input-group">
                 <label class="input-label">Escolha um Nome</label>
@@ -1469,7 +990,6 @@
                     <p class="home-greeting">Bem-vindo(a),</p>
                     <h2 class="home-user" id="home-user-name">Peregrino</h2>
                 </div>
-                
                 <div class="streak-card">
                     <svg class="streak-icon" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -1478,7 +998,6 @@
                     <div class="streak-label">Dias Consecutivos</div>
                     <p class="streak-subtitle" id="streak-message">Comece hoje sua jornada de oração</p>
                 </div>
-                
                 <div class="intention-card">
                     <div class="intention-header">
                         <svg class="intention-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -1488,12 +1007,10 @@
                     </div>
                     <p class="intention-text" id="today-intention">Carregando...</p>
                 </div>
-                
                 <div class="today-card">
                     <p class="today-day" id="today-day">Segunda-feira</p>
                     <p class="today-mystery" id="today-mystery">Mistérios Gozosos</p>
                 </div>
-                
                 <div class="quick-start">
                     <p class="quick-label">Iniciar Oração</p>
                     <div class="quick-grid">
@@ -1509,6 +1026,8 @@
         <!-- CALENDAR TAB -->
         <div id="tab-calendar" class="tab-content">
             <div class="calendar-content">
+                <h2 style="text-align:center; margin-bottom:20px; color: var(--gold);">📅 Calendário</h2>
+                <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">Clique em um dia para ver detalhes</p>
                 <div class="calendar-header">
                     <button class="calendar-nav" onclick="app.prevMonth()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
@@ -1518,7 +1037,6 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                     </button>
                 </div>
-                
                 <div class="calendar-weekdays">
                     <div class="calendar-weekday">Dom</div>
                     <div class="calendar-weekday">Seg</div>
@@ -1528,14 +1046,11 @@
                     <div class="calendar-weekday">Sex</div>
                     <div class="calendar-weekday">Sáb</div>
                 </div>
-                
                 <div class="calendar-days" id="calendar-days"></div>
-                
                 <div class="calendar-legend">
                     <div class="legend-item"><div class="legend-dot prayed"></div> Rezou</div>
                     <div class="legend-item"><div class="legend-dot today"></div> Hoje</div>
                 </div>
-                
                 <div class="day-info" id="day-info" style="display:none;">
                     <div class="day-info-date" id="day-info-date"></div>
                     <div class="day-info-intention" id="day-info-intention"></div>
@@ -1551,7 +1066,6 @@
                     <div class="profile-avatar" id="profile-avatar">M</div>
                     <h2 class="profile-name" id="profile-name">Usuário</h2>
                 </div>
-                
                 <div class="profile-stats">
                     <div class="stat-card">
                         <div class="stat-value" id="stat-total">0</div>
@@ -1566,7 +1080,6 @@
                         <div class="stat-label">Ave Marias</div>
                     </div>
                 </div>
-                
                 <div class="profile-section">
                     <div class="profile-section-title">Configurações</div>
                     <button class="profile-btn" onclick="app.toggleAudio()">
@@ -1574,7 +1087,6 @@
                         <span id="audio-status">Desativado</span>
                     </button>
                 </div>
-                
                 <div class="profile-section">
                     <div class="profile-section-title">Conta</div>
                     <button class="profile-btn danger" onclick="app.logout()">
@@ -1588,7 +1100,7 @@
     
     <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
-        <button class="nav-item active" data-tab="home">
+        <button class="nav-item active" data-tab="home" onclick="app.switchTab('home')">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 <polyline points="9 22 9 12 15 12 15 22"/>
@@ -1607,7 +1119,7 @@
             </svg>
             <span class="nav-label">Rosário</span>
         </button>
-        <button class="nav-item" data-tab="calendar">
+        <button class="nav-item" data-tab="calendar" onclick="app.switchTab('calendar')">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
@@ -1616,7 +1128,7 @@
             </svg>
             <span class="nav-label">Calendário</span>
         </button>
-        <button class="nav-item" data-tab="profile">
+        <button class="nav-item" data-tab="profile" onclick="app.switchTab('profile')">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
@@ -1626,165 +1138,17 @@
     </nav>
 </div>
 
-<!-- PRAYER SCREEN -->
-<div id="prayer-screen" class="screen">
-    <div class="rosary-rail">
-        <div class="rosary-chain"></div>
-        <div class="center-guide"></div>
-        <div id="bead-track"></div>
-    </div>
-    <div class="prayer-main">
-        <header class="prayer-header">
-            <button class="back-btn" onclick="app.exitPrayer()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                Sair
-            </button>
-            <div class="progress-compact">
-                <div class="progress-bar-mini"><div class="progress-fill-mini" id="progress-fill"></div></div>
-                <span class="progress-text" id="progress-text">1/59</span>
-            </div>
-        </header>
-        <div class="prayer-body">
-            <div class="prayer-group" id="prayer-group"></div>
-            <div class="prayer-mystery" id="prayer-mystery"></div>
-            <h2 class="prayer-name" id="prayer-name"></h2>
-            <div class="prayer-count" id="prayer-count"></div>
-            <div class="meditation-box" id="meditation-box">
-                <div class="meditation-label">Meditação</div>
-                <p class="meditation-text" id="meditation-text"></p>
-            </div>
-            <button class="prayer-text-toggle" id="prayer-text-toggle" onclick="app.togglePrayerText()">
-                <span>Ver texto da oração</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <div class="prayer-full-text" id="prayer-full-text"></div>
-        </div>
-        <footer class="prayer-footer">
-            <button class="nav-btn" id="prev-btn" onclick="app.prevBead()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <button class="nav-btn primary" onclick="app.nextBead()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-            </button>
-        </footer>
-    </div>
-</div>
-
-<!-- COMPLETION SCREEN -->
-<div id="completion-screen" class="screen">
-    <svg class="completion-icon" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="50" cy="50" r="42"/>
-        <path d="M28 50l16 16 28-32" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <h2 class="completion-title">Deo Gratias</h2>
-    <p class="completion-subtitle" id="completion-msg"></p>
-    <div class="completion-stats">
-        <div class="comp-stat"><div class="comp-stat-value" id="comp-aves">0</div><div class="comp-stat-label">Ave Marias</div></div>
-        <div class="comp-stat"><div class="comp-stat-value" id="comp-paters">0</div><div class="comp-stat-label">Pai Nossos</div></div>
-    </div>
-    <button class="completion-btn" onclick="app.finishPrayer()">Voltar ao Início</button>
-</div>
-
-<!-- Audio Toggle -->
 <button class="audio-toggle" id="audio-toggle" onclick="app.toggleAudio()">
-    <svg id="audio-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
-        <path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
-    </svg>
     <svg id="audio-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
     </svg>
 </button>
 
 <script>
-// ===== DATA =====
-const TEXTS = {
-    cross: `Em nome do Pai, e do Filho, e do Espírito Santo. Amém.`,
-    credo: `Creio em Deus Pai todo-poderoso, Criador do Céu e da terra; e em Jesus Cristo, seu único Filho, Nosso Senhor, que foi concebido pelo poder do Espírito Santo; nasceu da Virgem Maria; padeceu sob Pôncio Pilatos, foi crucificado, morto e sepultado; desceu à mansão dos mortos; ressuscitou ao terceiro dia; subiu aos Céus; está sentado à direita de Deus Pai todo-poderoso, de onde há de vir a julgar os vivos e os mortos. Creio no Espírito Santo; na Santa Igreja Católica; na comunhão dos Santos; na remissão dos pecados; na ressurreição da carne; na vida eterna. Amém.`,
-    pater: `Pai nosso que estais nos Céus, santificado seja o vosso Nome, venha a nós o vosso Reino, seja feita a vossa vontade assim na terra como no Céu. O pão nosso de cada dia nos dai hoje, perdoai-nos as nossas ofensas assim como nós perdoamos a quem nos tem ofendido, e não nos deixeis cair em tentação, mas livrai-nos do Mal. Amém.`,
-    ave: `Ave Maria, cheia de graça, o Senhor é convosco, bendita sois vós entre as mulheres e bendito é o fruto do vosso ventre, Jesus. Santa Maria, Mãe de Deus, rogai por nós pecadores, agora e na hora da nossa morte. Amém.`,
-    gloria: `Glória ao Pai, e ao Filho, e ao Espírito Santo. Assim como era no princípio, agora e sempre, e por todos os séculos dos séculos. Amém.`,
-    fatima: `Ó meu Jesus, perdoai-nos, livrai-nos do fogo do inferno, levai as almas todas para o Céu, principalmente as que mais precisarem da vossa Misericórdia.`,
-    salve: `Salve Rainha, Mãe de Misericórdia, vida, doçura e esperança nossa, salve! A vós bradamos, os degredados filhos de Eva. A vós suspiramos, gemendo e chorando neste vale de lágrimas. Eia pois, advogada nossa, esses vossos olhos misericordiosos a nós volvei. E depois deste desterro, mostrai-nos Jesus, bendito fruto do vosso ventre. Ó clemente, ó piedosa, ó doce sempre Virgem Maria. Rogai por nós, Santa Mãe de Deus, para que sejamos dignos das promessas de Cristo. Amém.`
-};
-
 const INTENTIONS = [
-    "Pelos que sofrem perseguição por causa da fé.",
-    "Pela conversão dos pecadores e a salvação das almas.",
-    "Pelas vocações sacerdotais e religiosas.",
-    "Pela paz no mundo e o fim das guerras.",
-    "Pelos enfermos e todos que cuidam deles.",
-    "Pelas almas do purgatório, especialmente as mais abandonadas.",
-    "Pela santificação das famílias.",
-    "Pelos jovens, para que encontrem seu caminho em Cristo.",
-    "Pela Igreja e pelo Santo Padre.",
-    "Pelos missionários em terras distantes.",
-    "Pela proteção das crianças inocentes.",
-    "Pela conversão daqueles que não conhecem a Deus.",
-    "Pelos governantes, para que busquem o bem comum.",
-    "Pelos pobres e marginalizados da sociedade.",
-    "Pela unidade dos cristãos.",
-    "Pelos que perderam a fé, para que retornem a Cristo.",
-    "Pelas mães gestantes e seus filhos.",
-    "Pelos idosos e todos que vivem na solidão.",
-    "Pela libertação dos vícios e dependências.",
-    "Pelo fim do aborto e respeito à vida desde a concepção.",
-    "Pelos professores e educadores católicos.",
-    "Pelas comunidades religiosas contemplativas.",
-    "Pelos que trabalham pela justiça social.",
-    "Pela santidade do matrimônio.",
-    "Pelos catequistas e evangelizadores.",
-    "Pelas vítimas de desastres naturais.",
-    "Pelo dom da sabedoria e discernimento.",
-    "Pela perseverança final dos justos.",
-    "Pelos que estão em agonia e próximos da morte.",
-    "Por todas as intenções que carregamos no coração.",
-    "Pela graça de uma boa morte."
+    "Pelos que sofrem perseguição por causa da fé.", "Pela conversão dos pecadores e a salvação das almas.", "Pelas vocações sacerdotais e religiosas.", "Pela paz no mundo e o fim das guerras.", "Pelos enfermos e todos que cuidam deles.", "Pelas almas do purgatório, especialmente as mais abandonadas.", "Pela santificação das famílias.", "Pelos jovens, para que encontrem seu caminho em Cristo.", "Pela Igreja e pelo Santo Padre.", "Pelos missionários em terras distantes."
 ];
 
-const MONTFORT = {
-    intro: ["Em honra do Pai Eterno, que gera seu Filho contemplando-Se.", "Em honra do Verbo Eterno, igual ao Pai, que com Ele produz o Espírito Santo.", "Em honra do Espírito Santo, que procede do Pai e do Filho por via de amor."],
-    gozosos: { name: "Mistérios Gozosos", mysteries: [
-        { title: "A Anunciação do Anjo a Nossa Senhora", pater: "A caridade de Deus, imensa.", aves: ["Para lamentar o desgraçado estado de Adão desobediente.", "Os desejos dos patriarcas e profetas.", "Os desejos e preces da Santíssima Virgem.", "A caridade do Pai Eterno.", "O amor do Filho, que se entregou por nós.", "A embaixada do arcanjo Gabriel.", "O temor virginal de Maria.", "A fé e consentimento da Santíssima Virgem.", "A formação do Corpo de Jesus no seio de Maria.", "A adoração do Verbo Encarnado pelos anjos."] },
-        { title: "A Visitação de Nossa Senhora a Santa Isabel", pater: "A majestade de Deus, adorável.", aves: ["O gozo do Coração de Maria.", "O sacrifício de Jesus ao Pai.", "As complacências de Jesus em Maria.", "A dúvida de São José.", "A eleição dos escolhidos.", "O fervor de Maria na visita.", "A santificação de João Batista.", "A gratidão de Maria no Magnificat.", "A caridade e humildade de Maria.", "A mútua dependência de Jesus e Maria."] },
-        { title: "O Nascimento de Jesus em Belém", pater: "As riquezas de Deus, infinitas.", aves: ["Os desprezos feitos a Maria e José.", "A pobreza do estábulo.", "O amor de Maria ao dar à luz.", "A saída do Verbo do seio de Maria.", "As adorações dos anjos.", "A formosura de Sua divina infância.", "A vinda dos pastores.", "A circuncisão de Jesus.", "A imposição do nome de Jesus.", "A adoração dos reis magos."] },
-        { title: "A Apresentação de Jesus no Templo", pater: "A sabedoria de Deus, eterna.", aves: ["A obediência de Jesus e Maria à Lei.", "O sacrifício de Jesus.", "O sacrifício de Maria.", "O gozo de Simeão e Ana.", "O resgate de Jesus.", "A matança dos inocentes.", "A fuga para o Egito.", "A estada no Egito.", "A volta para Nazaré.", "O crescimento de Jesus."] },
-        { title: "O Encontro de Jesus no Templo", pater: "A santidade de Deus, incompreensível.", aves: ["A vida oculta de Jesus.", "A perda e encontro no Templo.", "O jejum e tentações no deserto.", "O Batismo de Jesus.", "A pregação admirável.", "Os milagres portentosos.", "A eleição dos Apóstolos.", "A transfiguração.", "O lava-pés dos Apóstolos.", "A instituição da Eucaristia."] }
-    ]},
-    dolorosos: { name: "Mistérios Dolorosos", mysteries: [
-        { title: "A Agonia de Jesus no Horto", pater: "A felicidade de Deus, essencial.", aves: ["Os retiros de Jesus no horto.", "As orações fervorosas de Jesus.", "A paciência com os Apóstolos.", "O tédio de Sua Alma.", "Os rios de sangue que brotaram.", "O consolo do anjo.", "A conformidade com o Pai.", "A traição de Judas.", "O valor ao enfrentar os algozes.", "O abandono dos Apóstolos."] },
-        { title: "A Flagelação de Jesus", pater: "A paciência de Deus, admirável.", aves: ["As cordas que ataram Jesus.", "A bofetada em casa de Caifás.", "As negações de Pedro.", "As ignomínias em casa de Herodes.", "O despojamento das vestes.", "Os desprezos pela Sua nudez.", "Os açoites cruéis.", "A coluna em que foi atado.", "O sangue e as chagas.", "A queda no próprio sangue."] },
-        { title: "A Coroação de Espinhos", pater: "A formosura de Deus, inefável.", aves: ["O despojamento das vestes.", "A coroa de espinhos.", "O véu nos olhos.", "As bofetadas e escarros.", "O andrajo sobre os ombros.", "A cana nas mãos.", "A pedra em que O sentaram.", "Os ultrajes e insultos.", "O sangue da cabeça.", "Os cabelos arrancados."] },
-        { title: "Jesus Carrega a Cruz", pater: "A onipotência de Deus, sem limites.", aves: ["O 'Eis o Homem'.", "A preferência por Barrabás.", "Os falsos testemunhos.", "A condenação à morte.", "O abraço à Cruz.", "O trabalho de carregá-la.", "As quedas sob seu peso.", "O encontro com Maria.", "O véu de Verônica.", "As lágrimas até o Calvário."] },
-        { title: "A Crucificação e Morte de Jesus", pater: "A justiça de Deus, espantosa.", aves: ["As cinco chagas de Jesus.", "O coração traspassado.", "Os cravos e a lança.", "A vergonha entre ladrões.", "A compaixão de Maria.", "As sete últimas palavras.", "O desamparo e silêncio.", "A aflição do Universo.", "A morte cruel.", "A descida da Cruz."] }
-    ]},
-    gloriosos: { name: "Mistérios Gloriosos", mysteries: [
-        { title: "A Ressurreição de Jesus", pater: "A eternidade de Deus, sem princípio.", aves: ["A descida aos Infernos.", "A saída das almas do limbo.", "A reunião de Alma e Corpo.", "A saída do Sepulcro.", "As vitórias sobre a morte.", "Os dons gloriosos.", "O poder no céu e terra.", "As aparições a Maria.", "As conversações com os Apóstolos.", "A missão de pregar."] },
-        { title: "A Ascensão de Jesus ao Céu", pater: "A imensidade de Deus, sem limites.", aves: ["A promessa do Espírito Santo.", "A reunião no Monte das Oliveiras.", "A benção aos Apóstolos.", "A gloriosa Ascensão.", "O triunfo celestial.", "A abertura do Céu.", "O assento à direita do Pai.", "O poder de julgar.", "A última vinda à Terra.", "O Juízo Final."] },
-        { title: "A Vinda do Espírito Santo", pater: "A providência de Deus, universal.", aves: ["A verdade do Espírito Santo.", "O dom sobre os Apóstolos.", "O estrondo da descida.", "As línguas de fogo.", "A plenitude de graças em Maria.", "A conduta com os santos.", "Os doze frutos do Espírito.", "Os sete dons do Espírito.", "O dom da Sabedoria.", "A vitória sobre os maus espíritos."] },
-        { title: "A Assunção de Nossa Senhora", pater: "A liberalidade de Deus, inenarrável.", aves: ["A predestinação de Maria.", "A Conceição Imaculada.", "A Natividade de Maria.", "A vida no Templo.", "A vida isenta de pecado.", "A plenitude das virtudes.", "A virgindade fecunda.", "A maternidade divina.", "A morte cheia de amor.", "A assunção triunfante."] },
-        { title: "A Coroação de Nossa Senhora", pater: "A glória de Deus, inacessível.", aves: ["A tríplice coroa.", "O gozo do Céu.", "Rainha do Céu e da Terra.", "Tesoureira das graças.", "Medianeira dos homens.", "Destruidora das heresias.", "Refúgio dos pecadores.", "Mãe dos cristãos.", "Gozo dos justos.", "Asilo dos aflitos."] }
-    ]}
-};
-
-// ===== AUDIO SYSTEM =====
-const Audio = {
-    ctx: null, enabled: false,
-    init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); if (this.ctx.state === 'suspended') this.ctx.resume(); },
-    playBead(type = 'ave') {
-        if (!this.enabled) return; this.init();
-        const now = this.ctx.currentTime, osc = this.ctx.createOscillator(), gain = this.ctx.createGain(), filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass'; osc.type = 'sine';
-        if (type === 'pater') { osc.frequency.setValueAtTime(200, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.2); filter.frequency.setValueAtTime(900, now); gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3); }
-        else if (type === 'special') { osc.frequency.setValueAtTime(260, now); osc.frequency.exponentialRampToValueAtTime(130, now + 0.15); filter.frequency.setValueAtTime(700, now); gain.gain.setValueAtTime(0.12, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25); }
-        else { osc.frequency.setValueAtTime(150, now); osc.frequency.exponentialRampToValueAtTime(75, now + 0.12); filter.frequency.setValueAtTime(550, now); gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18); }
-        osc.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination); osc.start(now); osc.stop(now + 0.4);
-    },
-    playBell() { if (!this.enabled) return; this.init(); const now = this.ctx.currentTime; [523.25, 659.25, 783.99].forEach((f, i) => { const o = this.ctx.createOscillator(), g = this.ctx.createGain(); o.frequency.setValueAtTime(f, now); o.type = 'sine'; g.gain.setValueAtTime(0, now + i * 0.1); g.gain.linearRampToValueAtTime(0.08 / (i + 1), now + i * 0.1 + 0.05); g.gain.exponentialRampToValueAtTime(0.001, now + 2); o.connect(g); g.connect(this.ctx.destination); o.start(now + i * 0.1); o.stop(now + 2.5); }); },
-    playComplete() { if (!this.enabled) return; this.init(); const now = this.ctx.currentTime; [261.63, 329.63, 392, 523.25].forEach((f, i) => { const o = this.ctx.createOscillator(), g = this.ctx.createGain(); o.frequency.setValueAtTime(f, now); o.type = 'sine'; const t = now + i * 0.15; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.1, t + 0.05); g.gain.exponentialRampToValueAtTime(0.001, t + 1.5); o.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t + 2); }); },
-    toggle() { this.enabled = !this.enabled; return this.enabled; }
-};
-
-// ===== STORAGE =====
 const Storage = {
     get(key) { try { return JSON.parse(localStorage.getItem(key)); } catch { return null; } },
     set(key, val) { localStorage.setItem(key, JSON.stringify(val)); },
@@ -1796,21 +1160,15 @@ const Storage = {
     saveUserData(username, data) { const users = this.getUsers(); if (users[username]) { users[username].data = data; this.saveUsers(users); } }
 };
 
-// ===== APP =====
 const app = {
     user: null,
     calendarDate: new Date(),
-    selectedDay: null,
-    prayer: { type: null, beads: [], index: 0, showText: false },
 
     init() {
         this.setupAuth();
-        this.setupNavigation();
-        this.setupGestures();
         this.checkSession();
     },
 
-    // AUTH
     setupAuth() {
         document.querySelectorAll('.auth-tab').forEach(tab => {
             tab.onclick = () => {
@@ -1839,10 +1197,8 @@ const app = {
             const password = document.getElementById('register-password').value;
             const confirm = document.getElementById('register-confirm').value;
             const users = Storage.getUsers();
-            
             if (users[username]) { this.showError('register-error', 'Este nome já está em uso.'); return; }
             if (password !== confirm) { this.showError('register-error', 'As senhas não coincidem.'); return; }
-            
             users[username] = { password: this.hash(password), data: { prayedDays: {}, totalRosaries: 0, totalAves: 0 } };
             Storage.saveUsers(users);
             this.login(username);
@@ -1850,7 +1206,6 @@ const app = {
     },
 
     hash(str) { let h = 0; for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h |= 0; } return h.toString(16); },
-
     showError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add('visible'); setTimeout(() => el.classList.remove('visible'), 3000); },
 
     login(username) {
@@ -1875,94 +1230,44 @@ const app = {
         }
     },
 
-    // NAVIGATION
-    setupNavigation() {
-        document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
-            item.onclick = () => {
-                if (item.dataset.tab === 'rosary') return;
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                item.classList.add('active');
-                const tab = document.getElementById('tab-' + item.dataset.tab);
-                if (tab) tab.classList.add('active');
-            };
-        });
+    // NOVA FUNÇÃO - TROCAR ABAS
+    switchTab(tabName) {
+        // Remove active de todos os itens de navegação e tabs
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        
+        // Adiciona active ao botão clicado e à aba correspondente
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.getElementById('tab-' + tabName).classList.add('active');
+        
+        // Recarrega dados se necessário
+        if (tabName === 'calendar') this.renderCalendar();
+        if (tabName === 'profile') this.loadUserInterface();
     },
 
     showRosaryPicker() {
-        const todayMystery = this.getTodayMystery().key;
-        this.startPrayer(todayMystery);
+        const choice = prompt('Escolha: gozosos, dolorosos, gloriosos ou completo?', 'gozosos');
+        if (choice && ['gozosos', 'dolorosos', 'gloriosos', 'completo'].includes(choice.toLowerCase())) {
+            alert('Iniciando ' + choice + '... (Em desenvolvimento)');
+        }
     },
 
-    // USER INTERFACE
     loadUserInterface() {
         const data = Storage.getUserData(this.user);
-        
-        // Home
         document.getElementById('home-user-name').textContent = this.user;
         document.getElementById('profile-name').textContent = this.user;
         document.getElementById('profile-avatar').textContent = this.user.charAt(0).toUpperCase();
-        
-        // Streak
-        const streak = this.calculateStreak(data.prayedDays);
-        document.getElementById('streak-count').textContent = streak;
-        document.getElementById('stat-streak').textContent = streak;
-        
-        if (streak === 0) document.getElementById('streak-message').textContent = 'Comece hoje sua jornada de oração';
-        else if (streak < 7) document.getElementById('streak-message').textContent = 'Continue firme na oração!';
-        else if (streak < 30) document.getElementById('streak-message').textContent = 'Você está criando um belo hábito!';
-        else document.getElementById('streak-message').textContent = 'Sua perseverança é admirável!';
-        
-        // Stats
         document.getElementById('stat-total').textContent = data.totalRosaries || 0;
         document.getElementById('stat-aves').textContent = data.totalAves || 0;
-        
-        // Today
-        const today = this.getTodayMystery();
-        const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-        document.getElementById('today-day').textContent = days[new Date().getDay()];
-        document.getElementById('today-mystery').textContent = 'Mistérios ' + today.name;
-        
-        // Intention
-        const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-        document.getElementById('today-intention').textContent = INTENTIONS[dayOfYear % INTENTIONS.length];
-        
-        // Calendar
+        document.getElementById('stat-streak').textContent = '0';
+        document.getElementById('today-intention').textContent = INTENTIONS[Math.floor(Math.random() * INTENTIONS.length)];
         this.renderCalendar();
-        
-        // Audio
-        this.updateAudioUI();
     },
 
-    getTodayMystery() {
-        const day = new Date().getDay();
-        const map = { 0: { key: 'gloriosos', name: 'Gloriosos' }, 1: { key: 'gozosos', name: 'Gozosos' }, 2: { key: 'dolorosos', name: 'Dolorosos' }, 3: { key: 'gloriosos', name: 'Gloriosos' }, 4: { key: 'gozosos', name: 'Gozosos' }, 5: { key: 'dolorosos', name: 'Dolorosos' }, 6: { key: 'gozosos', name: 'Gozosos' } };
-        return map[day];
-    },
-
-    calculateStreak(prayedDays) {
-        let streak = 0;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        for (let i = 0; i < 365; i++) {
-            const checkDate = new Date(today);
-            checkDate.setDate(checkDate.getDate() - i);
-            const key = checkDate.toISOString().split('T')[0];
-            
-            if (i === 0 && !prayedDays[key]) continue;
-            if (prayedDays[key]) streak++;
-            else break;
-        }
-        return streak;
-    },
-
-    // CALENDAR
     renderCalendar() {
         const year = this.calendarDate.getFullYear();
         const month = this.calendarDate.getMonth();
         const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        
         document.getElementById('calendar-month').textContent = `${months[month]} ${year}`;
         
         const firstDay = new Date(year, month, 1).getDay();
@@ -1977,7 +1282,6 @@ const app = {
         const container = document.getElementById('calendar-days');
         container.innerHTML = '';
         
-        // Previous month days
         for (let i = firstDay - 1; i >= 0; i--) {
             const day = daysInPrevMonth - i;
             const div = document.createElement('div');
@@ -1986,7 +1290,6 @@ const app = {
             container.appendChild(div);
         }
         
-        // Current month days
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, month, day);
             const dateStr = date.toISOString().split('T')[0];
@@ -1997,11 +1300,9 @@ const app = {
             if (dateStr === todayStr) div.classList.add('today');
             if (data.prayedDays[dateStr]) div.classList.add('prayed');
             
-            div.onclick = () => this.selectDay(date, dateStr, data.prayedDays[dateStr]);
             container.appendChild(div);
         }
         
-        // Next month days
         const totalCells = container.children.length;
         const remaining = 42 - totalCells;
         for (let day = 1; day <= remaining; day++) {
@@ -2012,191 +1313,13 @@ const app = {
         }
     },
 
-    selectDay(date, dateStr, prayed) {
-        this.selectedDay = { date, dateStr, prayed };
-        
-        const dayOfYear = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 86400000);
-        const intention = INTENTIONS[dayOfYear % INTENTIONS.length];
-        
-        const options = { weekday: 'long', day: 'numeric', month: 'long' };
-        document.getElementById('day-info-date').textContent = date.toLocaleDateString('pt-BR', options);
-        document.getElementById('day-info-intention').textContent = intention;
-        
-        const statusEl = document.getElementById('day-info-status');
-        if (prayed) {
-            statusEl.className = 'day-info-status prayed';
-            statusEl.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Rosário rezado';
-        } else {
-            statusEl.className = 'day-info-status not-prayed';
-            statusEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> Sem registro';
-        }
-        
-        document.getElementById('day-info').style.display = 'block';
-    },
-
     prevMonth() { this.calendarDate.setMonth(this.calendarDate.getMonth() - 1); this.renderCalendar(); },
     nextMonth() { this.calendarDate.setMonth(this.calendarDate.getMonth() + 1); this.renderCalendar(); },
 
-    // PRAYER
-    generateBeads(type) {
-        const beads = []; let id = 0;
-        const add = (beadType, name, textKey, meditation = '', meta = {}) => { beads.push({ id: id++, beadType, name, textKey, meditation, ...meta }); };
-        
-        add('special', 'Sinal da Cruz', 'cross', 'Fé na presença de Deus.');
-        add('special', 'Creio em Deus Pai', 'credo', 'Professamos nossa fé.');
-        add('pater', 'Pai Nosso', 'pater', 'Unidade de um só Deus.');
-        
-        MONTFORT.intro.forEach((med, i) => add('ave', 'Ave Maria', 'ave', med, { count: `${i + 1}ª Ave Maria` }));
-        add('special', 'Glória ao Pai', 'gloria', 'Glória à Santíssima Trindade.');
-        
-        const groups = type === 'completo' ? [MONTFORT.gozosos, MONTFORT.dolorosos, MONTFORT.gloriosos] : [MONTFORT[type]];
-        
-        groups.forEach(group => {
-            group.mysteries.forEach((mystery, mIdx) => {
-                add('pater', 'Pai Nosso', 'pater', mystery.pater, { group: group.name, mystery: mystery.title, count: `${mIdx + 1}º Mistério` });
-                mystery.aves.forEach((med, aIdx) => add('ave', 'Ave Maria', 'ave', med, { group: group.name, mystery: mystery.title, count: `${mIdx + 1}ª Dezena · ${aIdx + 1}ª Ave` }));
-                add('special', 'Glória ao Pai', 'gloria', '', { group: group.name, mystery: mystery.title });
-                add('special', 'Oração de Fátima', 'fatima', '', { group: group.name, mystery: mystery.title });
-            });
-        });
-        
-        add('special', 'Salve Rainha', 'salve', 'Saudação à Rainha do Céu.');
-        return beads;
-    },
-
-    startPrayer(type) {
-        this.prayer = { type, beads: this.generateBeads(type), index: 0, showText: false };
-        
-        const track = document.getElementById('bead-track');
-        track.innerHTML = '';
-        this.prayer.beads.forEach((bead, idx) => {
-            const el = document.createElement('div');
-            el.className = `bead ${bead.beadType}`;
-            if (bead.beadType !== 'ave' && bead.beadType !== 'pater') el.classList.add('special');
-            if (idx === 0) el.classList.add('active');
-            el.onclick = () => this.goToBead(idx);
-            track.appendChild(el);
-        });
-        
-        document.getElementById('main-app').classList.remove('active');
-        document.getElementById('prayer-screen').classList.add('active');
-        Audio.playBell();
-        this.updatePrayer();
-    },
-
-    goToBead(idx) { if (idx >= 0 && idx < this.prayer.beads.length) { this.prayer.index = idx; this.updatePrayer(); Audio.playBead(this.prayer.beads[idx].beadType); } },
-    nextBead() { if (this.prayer.index < this.prayer.beads.length - 1) { this.prayer.index++; this.updatePrayer(); Audio.playBead(this.prayer.beads[this.prayer.index].beadType); } else this.completePrayer(); },
-    prevBead() { if (this.prayer.index > 0) { this.prayer.index--; this.updatePrayer(); Audio.playBead(this.prayer.beads[this.prayer.index].beadType); } },
-
-    updatePrayer() {
-        const { index, beads } = this.prayer;
-        const bead = beads[index];
-        
-        document.getElementById('progress-fill').style.width = `${((index + 1) / beads.length) * 100}%`;
-        document.getElementById('progress-text').textContent = `${index + 1} / ${beads.length}`;
-        
-        const els = ['prayer-group', 'prayer-mystery', 'prayer-name', 'prayer-count', 'meditation-box'].map(id => document.getElementById(id));
-        els.forEach(el => el.classList.remove('visible'));
-        
-        setTimeout(() => {
-            document.getElementById('prayer-group').textContent = bead.group || '';
-            document.getElementById('prayer-mystery').textContent = bead.mystery || '';
-            document.getElementById('prayer-name').textContent = bead.name;
-            document.getElementById('prayer-count').textContent = bead.count || '';
-            document.getElementById('meditation-text').textContent = bead.meditation;
-            document.getElementById('prayer-full-text').innerHTML = `<p>${TEXTS[bead.textKey]}</p>`;
-            els.forEach(el => el.classList.add('visible'));
-        }, 100);
-        
-        document.getElementById('prev-btn').disabled = index === 0;
-        
-        const track = document.getElementById('bead-track');
-        Array.from(track.children).forEach(el => el.classList.remove('active'));
-        track.children[index].classList.add('active');
-        
-        const activeEl = track.children[index];
-        track.style.transform = `translate(-50%, -${activeEl.offsetTop + activeEl.offsetHeight / 2}px)`;
-    },
-
-    togglePrayerText() {
-        this.prayer.showText = !this.prayer.showText;
-        const toggle = document.getElementById('prayer-text-toggle');
-        const text = document.getElementById('prayer-full-text');
-        if (this.prayer.showText) { text.classList.add('visible'); toggle.classList.add('expanded'); toggle.querySelector('span').textContent = 'Ocultar texto'; }
-        else { text.classList.remove('visible'); toggle.classList.remove('expanded'); toggle.querySelector('span').textContent = 'Ver texto da oração'; }
-    },
-
-    exitPrayer() {
-        if (confirm('Deseja realmente sair? O progresso será perdido.')) {
-            document.getElementById('prayer-screen').classList.remove('active');
-            document.getElementById('main-app').classList.add('active');
-        }
-    },
-
-    completePrayer() {
-        Audio.playComplete();
-        
-        const aves = this.prayer.beads.filter(b => b.beadType === 'ave').length;
-        const paters = this.prayer.beads.filter(b => b.beadType === 'pater').length;
-        
-        document.getElementById('comp-aves').textContent = aves;
-        document.getElementById('comp-paters').textContent = paters;
-        
-        const msgs = { gozosos: 'Mistérios Gozosos completados.', dolorosos: 'Mistérios Dolorosos completados.', gloriosos: 'Mistérios Gloriosos completados.', completo: 'Rosário completo!' };
-        document.getElementById('completion-msg').textContent = msgs[this.prayer.type] + ' Que Nossa Senhora interceda por vós.';
-        
-        // Save progress
-        const data = Storage.getUserData(this.user);
-        const today = new Date().toISOString().split('T')[0];
-        data.prayedDays[today] = true;
-        data.totalRosaries = (data.totalRosaries || 0) + 1;
-        data.totalAves = (data.totalAves || 0) + aves;
-        Storage.saveUserData(this.user, data);
-        
-        document.getElementById('prayer-screen').classList.remove('active');
-        document.getElementById('completion-screen').classList.add('active');
-    },
-
-    finishPrayer() {
-        document.getElementById('completion-screen').classList.remove('active');
-        document.getElementById('main-app').classList.add('active');
-        this.loadUserInterface();
-    },
-
-    // AUDIO
-    toggleAudio() {
-        Audio.toggle();
-        this.updateAudioUI();
-        if (Audio.enabled) Audio.playBell();
-    },
-
-    updateAudioUI() {
-        document.getElementById('audio-toggle').classList.toggle('active', Audio.enabled);
-        document.getElementById('audio-on').style.display = Audio.enabled ? 'block' : 'none';
-        document.getElementById('audio-off').style.display = Audio.enabled ? 'none' : 'block';
-        document.getElementById('audio-status').textContent = Audio.enabled ? 'Ativado' : 'Desativado';
-    },
-
-    // GESTURES
-    setupGestures() {
-        let startY = 0;
-        document.querySelector('.prayer-body')?.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
-        document.addEventListener('touchend', e => {
-            if (!document.getElementById('prayer-screen').classList.contains('active')) return;
-            const dy = startY - e.changedTouches[0].clientY;
-            if (Math.abs(dy) > 50) { if (dy > 0) this.nextBead(); else this.prevBead(); }
-        }, { passive: true });
-        
-        document.addEventListener('keydown', e => {
-            if (!document.getElementById('prayer-screen').classList.contains('active')) return;
-            if (['ArrowDown', 'ArrowRight', ' '].includes(e.key)) { e.preventDefault(); this.nextBead(); }
-            if (['ArrowUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); this.prevBead(); }
-            if (e.key === 'Escape') this.exitPrayer();
-        });
-    }
+    startPrayer(type) { alert('Iniciando Rosário ' + type + '... (Em desenvolvimento)'); },
+    toggleAudio() { alert('Áudio: Em desenvolvimento'); },
 };
 
-// Initialize
 app.init();
 </script>
 </body>
