@@ -203,108 +203,6 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== MODAL DE SELEÇÃO DE ROSÁRIO ===== */
-        #rosary-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            z-index: 250;
-            padding: 24px;
-        }
-
-        #rosary-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .rosary-modal-content {
-            width: 100%;
-            max-width: 400px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-gold);
-            border-radius: 16px;
-            padding: 28px 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-        }
-
-        .rosary-modal-title {
-            font-family: var(--font-display);
-            font-size: 1.2rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--text-primary);
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .rosary-modal-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .rosary-modal-btn {
-            width: 100%;
-            padding: 18px 20px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            font-family: var(--font-display);
-            font-size: 0.9rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s var(--ease-smooth);
-            text-align: center;
-        }
-
-        .rosary-modal-btn:hover {
-            border-color: var(--gold-dim);
-            color: var(--gold);
-            background: rgba(212, 168, 85, 0.05);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .rosary-modal-btn.full {
-            background: linear-gradient(135deg, rgba(107, 45, 61, 0.2) 0%, rgba(107, 45, 61, 0.08) 100%);
-            border-color: rgba(138, 61, 80, 0.3);
-            color: var(--cream);
-        }
-
-        .rosary-modal-btn.full:hover {
-            background: linear-gradient(135deg, rgba(107, 45, 61, 0.3) 0%, rgba(107, 45, 61, 0.12) 100%);
-            border-color: var(--gold-dim);
-        }
-
-        .rosary-modal-close {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 32px;
-            height: 32px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: color 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .rosary-modal-close:hover {
-            color: var(--gold);
-        }
-
         /* ===== HOME COM SCROLL E SHADOW ===== */
         .home-screen-content {
             overflow-y: auto;
@@ -1304,6 +1202,8 @@
             opacity: 1;
             padding: 18px 20px;
             margin-bottom: 18px;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .prayer-full-text p {
@@ -1614,17 +1514,38 @@
                     <p style="font-family: var(--font-display); font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px;" id="home-today-day">Segunda-feira</p>
                     <p style="font-family: var(--font-body); font-size: 1.1rem; color: var(--gold);" id="home-today-mystery">Mistérios Gozosos</p>
                 </div>
+            </div>
+        </div>
 
-                <!-- Botões de Início Rápido -->
+        <!-- TAB ROSÁRIO -->
+        <div id="tab-rosary" class="tab-content">
+            <div style="padding: 24px 24px 100px 24px; min-height: 100%;">
+                <h2 style="font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-primary); text-align: center; margin-bottom: 32px;">
+                    Escolha o Rosário
+                </h2>
+
+                <!-- Mistério do Dia -->
+                <div style="width: 100%; max-width: 360px; margin: 0 auto 32px; text-align: center; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px;">
+                    <p style="font-family: var(--font-display); font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;" id="rosary-today-day">Segunda-feira</p>
+                    <p style="font-family: var(--font-body); font-size: 1.15rem; color: var(--gold); margin-bottom: 4px;" id="rosary-today-mystery">Mistérios Gozosos</p>
+                    <p style="font-family: var(--font-body); font-size: 0.85rem; color: var(--text-dim); font-style: italic;">Recomendado para hoje</p>
+                </div>
+
+                <!-- Botões dos Mistérios -->
                 <div style="width: 100%; max-width: 360px; margin: 0 auto;">
-                    <p style="font-family: var(--font-display); font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-dim); text-align: center; margin-bottom: 14px;">Iniciar Oração</p>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <button type="button" class="btn-mystery" onclick="app.start('gozosos')" style="padding: 18px 14px; font-size: 0.8rem;">Gozosos</button>
-                        <button type="button" class="btn-mystery" onclick="app.start('dolorosos')" style="padding: 18px 14px; font-size: 0.8rem;">Dolorosos</button>
-                        <button type="button" class="btn-mystery" onclick="app.start('gloriosos')" style="padding: 18px 14px; font-size: 0.8rem;">Gloriosos</button>
-                        <button type="button" class="btn-mystery btn-complete" onclick="app.start('completo')" style="grid-column: 1 / -1; padding: 20px 14px; font-size: 0.85rem;">
+                    <div style="display: flex; flex-direction: column; gap: 14px;">
+                        <button type="button" class="btn-mystery" onclick="app.start('gozosos')" style="padding: 20px 18px; font-size: 0.9rem; width: 100%;">
+                            Mistérios Gozosos
+                        </button>
+                        <button type="button" class="btn-mystery" onclick="app.start('dolorosos')" style="padding: 20px 18px; font-size: 0.9rem; width: 100%;">
+                            Mistérios Dolorosos
+                        </button>
+                        <button type="button" class="btn-mystery" onclick="app.start('gloriosos')" style="padding: 20px 18px; font-size: 0.9rem; width: 100%;">
+                            Mistérios Gloriosos
+                        </button>
+                        <button type="button" class="btn-mystery btn-complete" onclick="app.start('completo')" style="padding: 24px 18px; font-size: 0.95rem; width: 100%; margin-top: 8px;">
                             Rosário Completo
-                            <small>Gozosos, Dolorosos e Gloriosos</small>
+                            <small style="display: block; margin-top: 6px; font-size: 0.75rem; opacity: 0.8;">Gozosos, Dolorosos e Gloriosos</small>
                         </button>
                     </div>
                 </div>
@@ -1770,7 +1691,7 @@
             </svg>
             <span class="nav-label">Início</span>
         </button>
-        <button type="button" class="nav-item" id="nav-rosary-btn">
+        <button type="button" class="nav-item" id="nav-rosary-btn" data-tab="rosary">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
                 <circle cx="12" cy="3" r="2.5"/>
@@ -1799,33 +1720,6 @@
             <span class="nav-label">Perfil</span>
         </button>
     </nav>
-</div>
-
-<!-- MODAL DE SELEÇÃO DE ROSÁRIO -->
-<div id="rosary-modal">
-    <div class="rosary-modal-content" style="position: relative;">
-        <button type="button" class="rosary-modal-close" onclick="closeRosaryModal()">
-            <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-        </button>
-        <h2 class="rosary-modal-title">Escolha o Rosário</h2>
-        <div class="rosary-modal-options">
-            <button type="button" class="rosary-modal-btn" onclick="startFromModal('gozosos')">
-                Mistérios Gozosos
-            </button>
-            <button type="button" class="rosary-modal-btn" onclick="startFromModal('dolorosos')">
-                Mistérios Dolorosos
-            </button>
-            <button type="button" class="rosary-modal-btn" onclick="startFromModal('gloriosos')">
-                Mistérios Gloriosos
-            </button>
-            <button type="button" class="rosary-modal-btn full" onclick="startFromModal('completo')">
-                Rosário Completo
-            </button>
-        </div>
-    </div>
 </div>
 
 <!-- TELA DE ORAÇÃO (sobrepõe tudo quando ativa) -->
@@ -2106,9 +2000,11 @@ function updateUserInterface() {
     const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
     const today = new Date();
     document.getElementById('home-today-day').textContent = days[today.getDay()];
+    document.getElementById('rosary-today-day').textContent = days[today.getDay()];
     
     const dayMap = { 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
     document.getElementById('home-today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
+    document.getElementById('rosary-today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
     
     // Renderizar Calendário
     renderCalendar();
@@ -2822,26 +2718,6 @@ const app = {
 
 app.init();
 window.app = app;
-
-// Funções do modal de rosário
-window.closeRosaryModal = function() {
-    document.getElementById('rosary-modal').classList.remove('active');
-};
-
-window.startFromModal = function(type) {
-    window.closeRosaryModal();
-    if (window.app && window.app.start) {
-        window.app.start(type);
-    }
-};
-
-// Fechar modal ao clicar fora
-document.addEventListener('click', (e) => {
-    const modal = document.getElementById('rosary-modal');
-    if (e.target === modal) {
-        window.closeRosaryModal();
-    }
-});
 </script>
 </body>
 </html>
