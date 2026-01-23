@@ -203,6 +203,130 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ===== MODAL DE SELEÇÃO DE ROSÁRIO ===== */
+        #rosary-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 250;
+            padding: 24px;
+        }
+
+        #rosary-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .rosary-modal-content {
+            width: 100%;
+            max-width: 400px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 16px;
+            padding: 28px 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .rosary-modal-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .rosary-modal-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rosary-modal-btn {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s var(--ease-smooth);
+            text-align: center;
+        }
+
+        .rosary-modal-btn:hover {
+            border-color: var(--gold-dim);
+            color: var(--gold);
+            background: rgba(212, 168, 85, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .rosary-modal-btn.full {
+            background: linear-gradient(135deg, rgba(107, 45, 61, 0.2) 0%, rgba(107, 45, 61, 0.08) 100%);
+            border-color: rgba(138, 61, 80, 0.3);
+            color: var(--cream);
+        }
+
+        .rosary-modal-btn.full:hover {
+            background: linear-gradient(135deg, rgba(107, 45, 61, 0.3) 0%, rgba(107, 45, 61, 0.12) 100%);
+            border-color: var(--gold-dim);
+        }
+
+        .rosary-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rosary-modal-close:hover {
+            color: var(--gold);
+        }
+
+        /* ===== HOME COM SCROLL E SHADOW ===== */
+        .home-screen-content {
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 100%;
+            padding: 24px;
+            position: relative;
+        }
+
+        /* Shadow gradient quando há conteúdo abaixo */
+        .home-screen-content::after {
+            content: '';
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to top, rgba(8, 7, 9, 0.9) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 50;
+        }
+
         /* ===== ESTRUTURA PRINCIPAL COM NAVBAR ===== */
         #main-app {
             position: fixed; inset: 0;
@@ -1619,7 +1743,7 @@
             </svg>
             <span class="nav-label">Início</span>
         </button>
-        <button type="button" class="nav-item" id="nav-rosary-btn" data-tab="home">
+        <button type="button" class="nav-item" id="nav-rosary-btn">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
                 <circle cx="12" cy="3" r="2.5"/>
@@ -1648,6 +1772,33 @@
             <span class="nav-label">Perfil</span>
         </button>
     </nav>
+</div>
+
+<!-- MODAL DE SELEÇÃO DE ROSÁRIO -->
+<div id="rosary-modal">
+    <div class="rosary-modal-content" style="position: relative;">
+        <button type="button" class="rosary-modal-close" onclick="closeRosaryModal()">
+            <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+        <h2 class="rosary-modal-title">Escolha o Rosário</h2>
+        <div class="rosary-modal-options">
+            <button type="button" class="rosary-modal-btn" onclick="startFromModal('gozosos')">
+                Mistérios Gozosos
+            </button>
+            <button type="button" class="rosary-modal-btn" onclick="startFromModal('dolorosos')">
+                Mistérios Dolorosos
+            </button>
+            <button type="button" class="rosary-modal-btn" onclick="startFromModal('gloriosos')">
+                Mistérios Gloriosos
+            </button>
+            <button type="button" class="rosary-modal-btn full" onclick="startFromModal('completo')">
+                Rosário Completo
+            </button>
+        </div>
+    </div>
 </div>
 
 <!-- TELA DE ORAÇÃO (sobrepõe tudo quando ativa) -->
@@ -2076,6 +2227,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Botão Rosário na navbar - abre modal
+    document.getElementById('nav-rosary-btn').addEventListener('click', () => {
+        document.getElementById('rosary-modal').classList.add('active');
+    });
+
     // Navegação do Calendário
     document.getElementById('prev-month-btn').addEventListener('click', () => {
         currentCalendarMonth--;
@@ -2101,6 +2257,26 @@ window.firebaseAuth = { logoutUser };
 window.updateUserInterface = updateUserInterface;
 window.renderCalendar = renderCalendar;
 
+// Funções do modal de rosário
+window.closeRosaryModal = function() {
+    document.getElementById('rosary-modal').classList.remove('active');
+};
+
+window.startFromModal = function(type) {
+    closeRosaryModal();
+    if (window.app && window.app.start) {
+        window.app.start(type);
+    }
+};
+
+// Fechar modal ao clicar fora
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('rosary-modal');
+    if (e.target === modal) {
+        closeRosaryModal();
+    }
+});
+
 // Exportar funções globalmente
 window.firebaseAuth = { logoutUser };
 </script>
@@ -2118,7 +2294,7 @@ const AudioSystem = {
         if (this.ctx.state === 'suspended') this.ctx.resume();
     },
     
-    // Som de conta - madeira/pedra suave
+    // Som de conta - madeira de terço
     playBead(type = 'ave') {
         if (!this.enabled) return;
         this.init();
@@ -2129,29 +2305,32 @@ const AudioSystem = {
         const filter = this.ctx.createBiquadFilter();
         
         filter.type = 'lowpass';
-        osc.type = 'sine';
+        osc.type = 'triangle'; // Som mais orgânico
         
         if (type === 'pater') {
-            // Som mais rico e ressonante para Pai Nosso
-            osc.frequency.setValueAtTime(200, now);
-            osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
-            filter.frequency.setValueAtTime(900, now);
-            gain.gain.setValueAtTime(0.18, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+            // Som de madeira mais grossa/densa para Pai Nosso
+            osc.frequency.setValueAtTime(180, now);
+            osc.frequency.exponentialRampToValueAtTime(90, now + 0.08);
+            filter.frequency.setValueAtTime(600, now);
+            filter.Q.setValueAtTime(3, now);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
         } else if (type === 'special') {
-            // Som cristalino para contas especiais
-            osc.frequency.setValueAtTime(280, now);
-            osc.frequency.exponentialRampToValueAtTime(140, now + 0.15);
-            filter.frequency.setValueAtTime(700, now);
-            gain.gain.setValueAtTime(0.14, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+            // Som de madeira média para contas especiais
+            osc.frequency.setValueAtTime(220, now);
+            osc.frequency.exponentialRampToValueAtTime(110, now + 0.06);
+            filter.frequency.setValueAtTime(500, now);
+            filter.Q.setValueAtTime(4, now);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
         } else {
-            // Som suave de madeira para Ave Maria
-            osc.frequency.setValueAtTime(160, now);
-            osc.frequency.exponentialRampToValueAtTime(80, now + 0.12);
-            filter.frequency.setValueAtTime(550, now);
-            gain.gain.setValueAtTime(0.12, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+            // Som de madeira leve/seca para Ave Maria
+            osc.frequency.setValueAtTime(260, now);
+            osc.frequency.exponentialRampToValueAtTime(130, now + 0.05);
+            filter.frequency.setValueAtTime(450, now);
+            filter.Q.setValueAtTime(5, now);
+            gain.gain.setValueAtTime(0.18, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
         }
         
         osc.connect(filter);
@@ -2159,20 +2338,22 @@ const AudioSystem = {
         gain.connect(this.ctx.destination);
         
         osc.start(now);
-        osc.stop(now + 0.4);
+        osc.stop(now + 0.2);
         
-        // Adiciona textura de toque
-        this.addClickTexture(type);
+        // Adiciona textura de toque de madeira
+        this.addWoodTexture(type);
     },
     
-    addClickTexture(type) {
+    addWoodTexture(type) {
         const now = this.ctx.currentTime;
-        const bufferSize = this.ctx.sampleRate * 0.04;
+        const bufferSize = this.ctx.sampleRate * 0.02;
         const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
         const data = noiseBuffer.getChannelData(0);
         
+        // Ruído mais acentuado no início (percussivo)
         for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * 0.25 * (1 - i / bufferSize);
+            const envelope = Math.exp(-i / (bufferSize * 0.15));
+            data[i] = (Math.random() * 2 - 1) * 0.4 * envelope;
         }
         
         const noise = this.ctx.createBufferSource();
@@ -2182,12 +2363,13 @@ const AudioSystem = {
         const noiseFilter = this.ctx.createBiquadFilter();
         
         noiseFilter.type = 'bandpass';
-        noiseFilter.frequency.setValueAtTime(type === 'pater' ? 2500 : 3500, now);
-        noiseFilter.Q.setValueAtTime(1, now);
+        // Frequências mais baixas para som de madeira
+        noiseFilter.frequency.setValueAtTime(type === 'pater' ? 800 : 1200, now);
+        noiseFilter.Q.setValueAtTime(2, now);
         
-        const vol = type === 'pater' ? 0.1 : 0.06;
+        const vol = type === 'pater' ? 0.15 : 0.1;
         noiseGain.gain.setValueAtTime(vol, now);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
         
         noise.connect(noiseFilter);
         noiseFilter.connect(noiseGain);
@@ -2335,12 +2517,40 @@ const app = {
     
     setupGestures() {
         let startY = 0;
+        let startX = 0;
         const body = document.getElementById('prayer-body');
-        body.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+        
+        body.addEventListener('touchstart', e => { 
+            startY = e.touches[0].clientY;
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+        
+        body.addEventListener('touchmove', e => {
+            // Prevenir scroll durante swipe vertical
+            const dy = Math.abs(startY - e.touches[0].clientY);
+            const dx = Math.abs(startX - e.touches[0].clientX);
+            if (dy > dx && dy > 10) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
         body.addEventListener('touchend', e => {
             if (!this.state.type) return;
-            const dy = startY - e.changedTouches[0].clientY;
-            if (Math.abs(dy) > 45) { if (dy > 0) this.next(); else this.prev(); }
+            const endY = e.changedTouches[0].clientY;
+            const endX = e.changedTouches[0].clientX;
+            const dy = startY - endY;
+            const dx = Math.abs(startX - endX);
+            
+            // Só processar se movimento vertical for maior que horizontal
+            if (Math.abs(dy) > 30 && Math.abs(dy) > dx) {
+                if (dy > 0) {
+                    // Swipe para cima = próxima
+                    this.next();
+                } else {
+                    // Swipe para baixo = anterior
+                    this.prev();
+                }
+            }
         }, { passive: true });
         
         // Scroll wheel
@@ -2475,6 +2685,10 @@ const app = {
                 this.els.textToggle.classList.remove('expanded');
                 this.els.textToggle.querySelector('span').textContent = 'Ver texto da oração';
             }
+            
+            // Mostrar botão de texto apenas para Glória e Fátima
+            const showTextButton = bead.textKey === 'gloria' || bead.textKey === 'fatima';
+            this.els.textToggle.style.display = showTextButton ? 'flex' : 'none';
             
             animatedEls.forEach(el => el.classList.add('visible'));
         }, 120);
