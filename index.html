@@ -684,6 +684,7 @@
             transition: all 0.45s var(--ease-smooth);
             position: relative;
             flex-shrink: 0;
+            background: transparent;
         }
 
         /* Aura de luz ao redor da conta ativa */
@@ -706,20 +707,18 @@
 
         @keyframes bead-aura {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.25); }
+            50% { opacity: 0.6; transform: scale(1.25); }
         }
 
-        /* Reflexo de luz superior */
+        /* Brilho interno sutil */
         .bead::after {
             content: '';
             position: absolute;
-            top: 12%;
-            left: 18%;
-            width: 35%;
-            height: 30%;
+            inset: 3px;
             border-radius: 50%;
             opacity: 0;
             transition: opacity 0.3s;
+            pointer-events: none;
         }
 
         .bead:hover::after,
@@ -727,149 +726,187 @@
             opacity: 1;
         }
 
-        /* ===== CONTA AVE MARIA - Madeira polida escura ===== */
+        /* ===== CONTA AVE MARIA - Círculo dourado hollow pequeno ===== */
         .bead.ave {
             width: var(--bead-size-small);
             height: var(--bead-size-small);
-            background: 
-                radial-gradient(ellipse at 28% 22%, rgba(255,255,255,0.18) 0%, transparent 45%),
-                radial-gradient(ellipse at 70% 75%, rgba(0,0,0,0.3) 0%, transparent 50%),
-                radial-gradient(circle at 35% 35%, #5a5450, #454240, #353330, #252320);
+            border: 2.5px solid var(--gold);
             box-shadow: 
-                inset -5px -5px 12px rgba(0, 0, 0, 0.7),
-                inset 4px 4px 10px rgba(255, 255, 255, 0.06),
-                0 5px 15px rgba(0, 0, 0, 0.5),
-                0 2px 5px rgba(0, 0, 0, 0.3);
+                0 0 12px rgba(212, 168, 85, 0.4),
+                0 0 20px rgba(212, 168, 85, 0.15),
+                inset 0 0 8px rgba(212, 168, 85, 0.2);
         }
 
         .bead.ave::before {
-            background: radial-gradient(circle, rgba(212, 168, 85, 0.45) 0%, transparent 65%);
+            background: radial-gradient(circle, rgba(212, 168, 85, 0.5) 0%, transparent 70%);
         }
 
         .bead.ave::after {
-            background: radial-gradient(ellipse, rgba(255,255,255,0.35) 0%, transparent 70%);
+            background: radial-gradient(circle at 30% 30%, rgba(255, 230, 150, 0.4) 0%, transparent 60%);
         }
 
         .bead.ave:hover {
-            transform: scale(1.1);
+            transform: scale(1.12);
+            border-color: var(--gold-bright);
             box-shadow: 
-                inset -5px -5px 12px rgba(0, 0, 0, 0.6),
-                inset 4px 4px 10px rgba(255, 255, 255, 0.1),
-                0 8px 25px rgba(0, 0, 0, 0.5),
-                0 0 20px rgba(212, 168, 85, 0.15);
+                0 0 20px rgba(212, 168, 85, 0.6),
+                0 0 35px rgba(212, 168, 85, 0.3),
+                inset 0 0 15px rgba(212, 168, 85, 0.3);
         }
 
         .bead.ave.active {
             width: var(--bead-size);
             height: var(--bead-size);
-            transform: scale(1.15);
-            background: 
-                radial-gradient(ellipse at 28% 22%, rgba(255,255,255,0.28) 0%, transparent 40%),
-                radial-gradient(ellipse at 70% 75%, rgba(0,0,0,0.25) 0%, transparent 50%),
-                radial-gradient(circle at 35% 35%, #706a65, #5a5550, #454240, #353330);
+            transform: scale(1.2);
+            border-width: 3px;
+            border-color: var(--gold-bright);
             box-shadow: 
-                inset -5px -5px 12px rgba(0, 0, 0, 0.5),
-                inset 4px 4px 10px rgba(255, 255, 255, 0.12),
-                0 0 40px rgba(212, 168, 85, 0.5),
-                0 0 70px rgba(212, 168, 85, 0.25),
-                0 10px 30px rgba(0, 0, 0, 0.5);
+                0 0 30px rgba(212, 168, 85, 0.8),
+                0 0 50px rgba(212, 168, 85, 0.5),
+                0 0 80px rgba(212, 168, 85, 0.25),
+                inset 0 0 25px rgba(212, 168, 85, 0.4);
+            animation: bead-pulse 2s ease-in-out infinite;
         }
 
-        /* ===== CONTA PAI NOSSO - Ouro polido ===== */
+        @keyframes bead-pulse {
+            0%, 100% { 
+                border-color: var(--gold-bright);
+                box-shadow: 
+                    0 0 30px rgba(212, 168, 85, 0.8),
+                    0 0 50px rgba(212, 168, 85, 0.5),
+                    0 0 80px rgba(212, 168, 85, 0.25),
+                    inset 0 0 25px rgba(212, 168, 85, 0.4);
+            }
+            50% { 
+                border-color: #ffe890;
+                box-shadow: 
+                    0 0 40px rgba(212, 168, 85, 1),
+                    0 0 70px rgba(212, 168, 85, 0.6),
+                    0 0 100px rgba(212, 168, 85, 0.3),
+                    inset 0 0 35px rgba(212, 168, 85, 0.5);
+            }
+        }
+
+        /* ===== CONTA PAI NOSSO - Círculo dourado hollow maior ===== */
         .bead.pater {
-            width: calc(var(--bead-size-small) + 12px);
-            height: calc(var(--bead-size-small) + 12px);
-            background: 
-                radial-gradient(ellipse at 22% 18%, rgba(255,255,255,0.6) 0%, transparent 35%),
-                radial-gradient(ellipse at 75% 80%, rgba(100, 70, 20, 0.4) 0%, transparent 45%),
-                radial-gradient(circle at 35% 35%, var(--gold-bright), var(--gold-light), var(--gold), var(--gold-dim));
+            width: calc(var(--bead-size-small) + 14px);
+            height: calc(var(--bead-size-small) + 14px);
+            border: 3px solid var(--gold-bright);
             box-shadow: 
-                inset -5px -5px 15px rgba(100, 70, 20, 0.5),
-                inset 5px 5px 12px rgba(255, 255, 255, 0.4),
-                0 5px 20px rgba(0, 0, 0, 0.5),
-                0 0 25px rgba(212, 168, 85, 0.35);
+                0 0 18px rgba(212, 168, 85, 0.6),
+                0 0 30px rgba(212, 168, 85, 0.3),
+                inset 0 0 12px rgba(212, 168, 85, 0.3);
         }
 
         .bead.pater::before {
-            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 60%);
+            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 65%);
         }
 
         .bead.pater::after {
-            background: radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, transparent 65%);
-            opacity: 0.8;
+            background: radial-gradient(circle at 25% 25%, rgba(255, 240, 180, 0.6) 0%, transparent 55%);
         }
 
         .bead.pater:hover {
-            transform: scale(1.1);
+            transform: scale(1.12);
+            border-color: #ffe890;
             box-shadow: 
-                inset -5px -5px 15px rgba(100, 70, 20, 0.4),
-                inset 5px 5px 12px rgba(255, 255, 255, 0.5),
-                0 8px 30px rgba(0, 0, 0, 0.5),
-                0 0 40px rgba(212, 168, 85, 0.5);
+                0 0 25px rgba(212, 168, 85, 0.8),
+                0 0 45px rgba(212, 168, 85, 0.5),
+                inset 0 0 20px rgba(212, 168, 85, 0.4);
         }
 
         .bead.pater.active {
             width: var(--bead-size-pater);
             height: var(--bead-size-pater);
-            transform: scale(1.15);
-            background: 
-                radial-gradient(ellipse at 22% 18%, rgba(255,255,255,0.75) 0%, transparent 30%),
-                radial-gradient(ellipse at 75% 80%, rgba(100, 70, 20, 0.3) 0%, transparent 45%),
-                radial-gradient(circle at 35% 35%, #ffe890, var(--gold-bright), var(--gold-light), var(--gold));
+            transform: scale(1.2);
+            border-width: 4px;
+            border-color: #ffe890;
             box-shadow: 
-                inset -5px -5px 15px rgba(100, 70, 20, 0.35),
-                inset 5px 5px 12px rgba(255, 255, 255, 0.55),
-                0 0 55px rgba(212, 168, 85, 0.7),
-                0 0 90px rgba(212, 168, 85, 0.4),
-                0 12px 35px rgba(0, 0, 0, 0.5);
+                0 0 40px rgba(212, 168, 85, 1),
+                0 0 65px rgba(212, 168, 85, 0.7),
+                0 0 100px rgba(212, 168, 85, 0.4),
+                inset 0 0 30px rgba(212, 168, 85, 0.5);
+            animation: bead-pulse-pater 2s ease-in-out infinite;
         }
 
-        /* ===== CONTA ESPECIAL - Bordô/Rubi ===== */
+        @keyframes bead-pulse-pater {
+            0%, 100% { 
+                border-color: #ffe890;
+                box-shadow: 
+                    0 0 40px rgba(212, 168, 85, 1),
+                    0 0 65px rgba(212, 168, 85, 0.7),
+                    0 0 100px rgba(212, 168, 85, 0.4),
+                    inset 0 0 30px rgba(212, 168, 85, 0.5);
+            }
+            50% { 
+                border-color: #fff5c0;
+                box-shadow: 
+                    0 0 50px rgba(255, 230, 150, 1),
+                    0 0 85px rgba(212, 168, 85, 0.8),
+                    0 0 120px rgba(212, 168, 85, 0.5),
+                    inset 0 0 40px rgba(212, 168, 85, 0.6);
+            }
+        }
+
+        /* ===== CONTA ESPECIAL - Círculo dourado hollow médio com toque burgundy ===== */
         .bead.special {
-            width: calc(var(--bead-size-small) + 8px);
-            height: calc(var(--bead-size-small) + 8px);
-            background: 
-                radial-gradient(ellipse at 25% 20%, rgba(255,255,255,0.3) 0%, transparent 40%),
-                radial-gradient(ellipse at 72% 78%, rgba(40, 15, 20, 0.4) 0%, transparent 45%),
-                radial-gradient(circle at 35% 35%, var(--burgundy-bright), var(--burgundy-light), var(--burgundy), #4a1a28);
+            width: calc(var(--bead-size-small) + 10px);
+            height: calc(var(--bead-size-small) + 10px);
+            border: 2.5px solid var(--gold);
             box-shadow: 
-                inset -4px -4px 12px rgba(40, 15, 20, 0.6),
-                inset 4px 4px 10px rgba(255, 255, 255, 0.15),
-                0 5px 15px rgba(0, 0, 0, 0.5),
-                0 0 18px rgba(138, 61, 80, 0.3);
+                0 0 15px rgba(212, 168, 85, 0.5),
+                0 0 25px rgba(138, 61, 80, 0.3),
+                inset 0 0 10px rgba(212, 168, 85, 0.25);
         }
 
         .bead.special::before {
-            background: radial-gradient(circle, var(--burgundy-glow) 0%, transparent 60%);
+            background: radial-gradient(circle, rgba(212, 168, 85, 0.4) 0%, rgba(138, 61, 80, 0.2) 40%, transparent 70%);
         }
 
         .bead.special::after {
-            background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 65%);
+            background: radial-gradient(circle at 28% 28%, rgba(255, 230, 150, 0.5) 0%, transparent 55%);
         }
 
         .bead.special:hover {
-            transform: scale(1.1);
+            transform: scale(1.12);
+            border-color: var(--gold-bright);
             box-shadow: 
-                inset -4px -4px 12px rgba(40, 15, 20, 0.5),
-                inset 4px 4px 10px rgba(255, 255, 255, 0.2),
-                0 8px 25px rgba(0, 0, 0, 0.5),
-                0 0 30px rgba(138, 61, 80, 0.4);
+                0 0 22px rgba(212, 168, 85, 0.7),
+                0 0 38px rgba(138, 61, 80, 0.4),
+                inset 0 0 18px rgba(212, 168, 85, 0.35);
         }
 
         .bead.special.active {
-            width: calc(var(--bead-size) + 8px);
-            height: calc(var(--bead-size) + 8px);
-            transform: scale(1.15);
-            background: 
-                radial-gradient(ellipse at 25% 20%, rgba(255,255,255,0.45) 0%, transparent 35%),
-                radial-gradient(ellipse at 72% 78%, rgba(40, 15, 20, 0.3) 0%, transparent 45%),
-                radial-gradient(circle at 35% 35%, #c55a70, var(--burgundy-bright), var(--burgundy-light), var(--burgundy));
+            width: calc(var(--bead-size) + 10px);
+            height: calc(var(--bead-size) + 10px);
+            transform: scale(1.2);
+            border-width: 3.5px;
+            border-color: var(--gold-bright);
             box-shadow: 
-                inset -4px -4px 12px rgba(40, 15, 20, 0.4),
-                inset 4px 4px 10px rgba(255, 255, 255, 0.25),
-                0 0 50px rgba(138, 61, 80, 0.6),
-                0 0 80px rgba(138, 61, 80, 0.35),
-                0 10px 30px rgba(0, 0, 0, 0.5);
+                0 0 35px rgba(212, 168, 85, 0.85),
+                0 0 55px rgba(138, 61, 80, 0.5),
+                0 0 85px rgba(212, 168, 85, 0.35),
+                inset 0 0 28px rgba(212, 168, 85, 0.45);
+            animation: bead-pulse-special 2.2s ease-in-out infinite;
+        }
+
+        @keyframes bead-pulse-special {
+            0%, 100% { 
+                border-color: var(--gold-bright);
+                box-shadow: 
+                    0 0 35px rgba(212, 168, 85, 0.85),
+                    0 0 55px rgba(138, 61, 80, 0.5),
+                    0 0 85px rgba(212, 168, 85, 0.35),
+                    inset 0 0 28px rgba(212, 168, 85, 0.45);
+            }
+            50% { 
+                border-color: #ffe890;
+                box-shadow: 
+                    0 0 45px rgba(212, 168, 85, 1),
+                    0 0 70px rgba(138, 61, 80, 0.6),
+                    0 0 105px rgba(212, 168, 85, 0.45),
+                    inset 0 0 38px rgba(212, 168, 85, 0.55);
+            }
         }
 
         /* Conteúdo principal */
@@ -2018,14 +2055,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Botão Rosário na navbar - inicia rosário do dia
+    // Botão Rosário na navbar - vai para home
     document.getElementById('nav-rosary-btn').addEventListener('click', () => {
-        const today = new Date().getDay();
-        const dayMap = { 0: 'gloriosos', 1: 'gozosos', 2: 'dolorosos', 3: 'gloriosos', 4: 'gozosos', 5: 'dolorosos', 6: 'gozosos' };
-        const todayRosary = dayMap[today];
-        if (window.app && window.app.start) {
-            window.app.start(todayRosary);
-        }
+        // Atualizar nav items
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        document.querySelector('.nav-item[data-tab="home"]').classList.add('active');
+        
+        // Atualizar tab contents
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        document.getElementById('tab-home').classList.add('active');
     });
 
     // Navegação do Calendário
