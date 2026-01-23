@@ -203,16 +203,115 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== TELA INICIAL ===== */
-        #home-screen {
+        /* ===== ESTRUTURA PRINCIPAL COM NAVBAR ===== */
+        #main-app {
             position: fixed; inset: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 28px;
-            z-index: 100;
+            display: flex; flex-direction: column;
             transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+            z-index: 100;
         }
 
-        #home-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #main-app.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        .app-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 70px;
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px;
+            z-index: 150;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-icon {
+            width: 26px;
+            height: 26px;
+            color: var(--text-dim);
+            transition: all 0.3s;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-family: var(--font-display);
+            font-size: 0.5rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            transition: all 0.3s;
+        }
+
+        .nav-item.active .nav-icon {
+            color: var(--gold);
+            filter: drop-shadow(0 0 8px var(--gold-glow));
+        }
+
+        .nav-item.active .nav-label {
+            color: var(--gold);
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s var(--ease-out);
+        }
+
+        .nav-item.active::before {
+            width: 40px;
+        }
+
+        /* ===== TELA INICIAL (HOME TAB) ===== */
+        .home-screen-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            padding: 28px;
+        }
 
         /* Cruz decorativa */
         .home-cross {
@@ -494,6 +593,7 @@
             background: var(--bg-deep);
             opacity: 0; visibility: hidden;
             transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+            z-index: 200;
         }
 
         #prayer-screen.active { opacity: 1; visibility: visible; }
@@ -1073,7 +1173,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 28px;
             background: var(--bg-deep);
-            z-index: 100;
+            z-index: 200;
             opacity: 0; visibility: hidden;
             transition: opacity 0.6s var(--ease-out), visibility 0.6s;
         }
@@ -1262,7 +1362,12 @@
     </div>
 </div>
 
-<div id="home-screen" class="hidden">
+<!-- APLICATIVO PRINCIPAL -->
+<div id="main-app" class="hidden">
+    <div class="app-content">
+        <!-- TAB HOME -->
+        <div id="tab-home" class="tab-content active">
+            <div class="home-screen-content">
     <div class="home-cross">
         <div class="home-cross-glow"></div>
     </div>
@@ -1287,10 +1392,74 @@
             </button>
         </div>
     </div>
-    <button class="btn-mystery" onclick="firebaseAuth.logoutUser()" style="margin-top: 24px; padding: 14px; font-size: 0.75rem; background: rgba(180, 60, 60, 0.1); border-color: rgba(180, 60, 60, 0.2); color: #c07070;">
-        Sair da Conta
-    </button>
 </div>
+
+        <!-- TAB CALENDÁRIO -->
+        <div id="tab-calendar" class="tab-content">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100%; padding: 40px 20px; text-align: center;">
+                <p style="color: var(--text-muted); font-style: italic; font-size: 1rem;">
+                    📅 Calendário<br>(Em desenvolvimento)
+                </p>
+            </div>
+        </div>
+
+        <!-- TAB PERFIL -->
+        <div id="tab-profile" class="tab-content">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100%; padding: 40px 20px; text-align: center;">
+                <div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 2rem; color: var(--bg-deep);" id="profile-avatar">
+                    👤
+                </div>
+                <h2 style="font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.1em; color: var(--text-primary); margin-bottom: 28px;" id="profile-name">
+                    Usuário
+                </h2>
+                <button type="button" style="width: 100%; max-width: 300px; padding: 16px; background: linear-gradient(135deg, rgba(180, 60, 60, 0.2) 0%, rgba(180, 60, 60, 0.08) 100%); border: 1px solid rgba(180, 60, 60, 0.3); border-radius: 8px; font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: #c07070; cursor: pointer; transition: all 0.3s;" onclick="firebaseAuth.logoutUser()" onmouseover="this.style.background='rgba(180, 60, 60, 0.15)'; this.style.borderColor='rgba(180, 60, 60, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='linear-gradient(135deg, rgba(180, 60, 60, 0.2) 0%, rgba(180, 60, 60, 0.08) 100%)'; this.style.borderColor='rgba(180, 60, 60, 0.3)'; this.style.transform='translateY(0)';">
+                    Sair da Conta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+        <button type="button" class="nav-item active" data-tab="home">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span class="nav-label">Início</span>
+        </button>
+        <button type="button" class="nav-item" id="nav-rosary-btn">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="12" cy="3" r="2.5"/>
+                <circle cx="19.5" cy="7.5" r="2"/>
+                <circle cx="19.5" cy="16.5" r="2"/>
+                <circle cx="12" cy="21" r="2.5"/>
+                <circle cx="4.5" cy="16.5" r="2"/>
+                <circle cx="4.5" cy="7.5" r="2"/>
+            </svg>
+            <span class="nav-label">Rosário</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="calendar">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span class="nav-label">Calendário</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="profile">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span class="nav-label">Perfil</span>
+        </button>
+    </nav>
+</div>
+
+<!-- TELA DE ORAÇÃO (sobrepõe tudo quando ativa) -->
 
 <div id="prayer-screen">
     <div class="rosary-rail">
@@ -1491,7 +1660,7 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('login-btn').textContent = 'Entrar';
         
         document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('home-screen').classList.remove('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
         
         // Carregar dados do usuário
         const userRef = ref(database, 'users/' + user.uid);
@@ -1499,9 +1668,14 @@ onAuthStateChanged(auth, async (user) => {
         if (snapshot.exists()) {
             window.userProfile = snapshot.val();
             window.currentUser = user;
+            
+            // Atualizar UI do perfil
+            const displayName = snapshot.val().displayName || snapshot.val().username;
+            document.getElementById('profile-name').textContent = displayName;
+            document.getElementById('profile-avatar').textContent = displayName.charAt(0).toUpperCase();
         }
     } else {
-        document.getElementById('home-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.add('hidden');
         document.getElementById('auth-screen').classList.remove('hidden');
         window.userProfile = null;
         window.currentUser = null;
@@ -1547,6 +1721,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         registerUser(username, displayName, password);
+    });
+
+    // Navegação de tabs
+    document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Atualizar nav items
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Atualizar tab contents
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    // Botão Rosário na navbar - inicia rosário do dia
+    document.getElementById('nav-rosary-btn').addEventListener('click', () => {
+        const today = new Date().getDay();
+        const dayMap = { 0: 'gloriosos', 1: 'gozosos', 2: 'dolorosos', 3: 'gloriosos', 4: 'gozosos', 5: 'dolorosos', 6: 'gozosos' };
+        const todayRosary = dayMap[today];
+        if (window.app && window.app.start) {
+            window.app.start(todayRosary);
+        }
     });
 });
 
@@ -1751,7 +1948,7 @@ const app = {
     
     init() {
         this.els = {
-            home: document.getElementById('home-screen'),
+            mainApp: document.getElementById('main-app'),
             prayer: document.getElementById('prayer-screen'),
             completion: document.getElementById('completion-screen'),
             track: document.getElementById('bead-track'),
@@ -1864,7 +2061,7 @@ const app = {
             this.els.track.appendChild(el);
         });
         
-        this.els.home.classList.add('hidden');
+        this.els.mainApp.style.display = 'none';
         this.els.prayer.classList.add('active');
         AudioSystem.playBell();
         this.update();
@@ -1955,7 +2152,7 @@ const app = {
         this.state.type = null;
         this.els.prayer.classList.remove('active');
         this.els.completion.classList.remove('active');
-        this.els.home.classList.remove('hidden');
+        this.els.mainApp.style.display = '';
     },
     
     complete() {
@@ -1979,6 +2176,7 @@ const app = {
 };
 
 app.init();
+window.app = app;
 </script>
 </body>
 </html>
