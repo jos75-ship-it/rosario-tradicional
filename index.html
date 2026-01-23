@@ -310,19 +310,46 @@
             overflow-y: auto;
             overflow-x: hidden;
             height: 100%;
-            padding: 24px;
+            padding: 24px 24px 100px 24px; /* Padding extra no final */
             position: relative;
         }
 
-        /* Shadow gradient quando há conteúdo abaixo */
+        /* Ajustes de tamanho para as caixas */
+        .tab-content {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Shadow gradient para todas as tabs */
+        .tab-content::after {
+            content: '';
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, rgba(8, 7, 9, 1) 0%, rgba(8, 7, 9, 0.8) 50%, transparent 100%);
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Shadow específico para home */
         .home-screen-content::after {
             content: '';
             position: fixed;
             bottom: 70px;
             left: 0;
             right: 0;
-            height: 40px;
-            background: linear-gradient(to top, rgba(8, 7, 9, 0.9) 0%, transparent 100%);
+            height: 60px;
+            background: linear-gradient(to top, rgba(8, 7, 9, 1) 0%, rgba(8, 7, 9, 0.8) 50%, transparent 100%);
             pointer-events: none;
             z-index: 50;
         }
@@ -1561,7 +1588,7 @@
                 </div>
 
                 <!-- Streak Card -->
-                <div style="width: 100%; max-width: 360px; margin: 0 auto 24px; background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 24px; text-align: center; position: relative; overflow: hidden;">
+                <div style="width: 100%; max-width: 360px; margin: 0 auto 24px; background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 32px 24px; text-align: center; position: relative; overflow: visible; min-height: 200px;">
                     <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim));"></div>
                     <svg style="width: 50px; height: 50px; margin: 0 auto 12px; color: var(--gold);" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -1572,7 +1599,7 @@
                 </div>
 
                 <!-- Intenção do Dia -->
-                <div style="width: 100%; max-width: 360px; margin: 0 auto 24px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px;">
+                <div style="width: 100%; max-width: 360px; margin: 0 auto 24px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 24px; min-height: 120px;">
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
                         <svg style="width: 24px; height: 24px; color: var(--burgundy-light);" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -1606,7 +1633,7 @@
 
         <!-- TAB CALENDÁRIO -->
         <div id="tab-calendar" class="tab-content">
-            <div style="padding: 24px; min-height: 100%;">
+            <div style="padding: 24px 24px 100px 24px; min-height: 100%;">
                 <h2 style="font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-primary); text-align: center; margin-bottom: 24px;">
                     Calendário de Oração
                 </h2>
@@ -1671,7 +1698,7 @@
 
         <!-- TAB PERFIL -->
         <div id="tab-profile" class="tab-content">
-            <div style="padding: 24px; min-height: 100%; display: flex; flex-direction: column; align-items: center;">
+            <div style="padding: 24px 24px 100px 24px; min-height: 100%; display: flex; flex-direction: column; align-items: center;">
                 <!-- Avatar e Nome -->
                 <div style="text-align: center; margin-bottom: 32px;">
                     <div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 2rem; color: var(--bg-deep);" id="profile-avatar">
@@ -1683,7 +1710,7 @@
                 </div>
 
                 <!-- Streak Card -->
-                <div style="width: 100%; max-width: 360px; margin-bottom: 24px; background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 24px; text-align: center; position: relative; overflow: hidden;">
+                <div style="width: 100%; max-width: 360px; margin-bottom: 24px; background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 32px 24px; text-align: center; position: relative; overflow: visible; min-height: 200px;">
                     <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim));"></div>
                     <svg style="width: 50px; height: 50px; margin: 0 auto 12px; color: var(--gold);" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -2256,29 +2283,6 @@ document.addEventListener('DOMContentLoaded', () => {
 window.firebaseAuth = { logoutUser };
 window.updateUserInterface = updateUserInterface;
 window.renderCalendar = renderCalendar;
-
-// Funções do modal de rosário
-window.closeRosaryModal = function() {
-    document.getElementById('rosary-modal').classList.remove('active');
-};
-
-window.startFromModal = function(type) {
-    closeRosaryModal();
-    if (window.app && window.app.start) {
-        window.app.start(type);
-    }
-};
-
-// Fechar modal ao clicar fora
-document.addEventListener('click', (e) => {
-    const modal = document.getElementById('rosary-modal');
-    if (e.target === modal) {
-        closeRosaryModal();
-    }
-});
-
-// Exportar funções globalmente
-window.firebaseAuth = { logoutUser };
 </script>
 
 <script>
@@ -2680,15 +2684,26 @@ const app = {
             this.els.meditationText.textContent = bead.meditation;
             this.els.fullText.innerHTML = `<p>${TEXTS[bead.textKey]}</p>`;
             
-            if (!this.state.showText) {
-                this.els.fullText.classList.remove('visible');
-                this.els.textToggle.classList.remove('expanded');
-                this.els.textToggle.querySelector('span').textContent = 'Ver texto da oração';
-            }
+            // Lógica de exibição do texto
+            const isShortPrayer = bead.textKey === 'gloria' || bead.textKey === 'fatima';
             
-            // Mostrar botão de texto apenas para Glória e Fátima
-            const showTextButton = bead.textKey === 'gloria' || bead.textKey === 'fatima';
-            this.els.textToggle.style.display = showTextButton ? 'flex' : 'none';
+            if (isShortPrayer) {
+                // Glória e Fátima: sempre mostrar texto, esconder botão
+                this.els.fullText.classList.add('visible');
+                this.els.textToggle.style.display = 'none';
+            } else {
+                // Outras orações: esconder texto por padrão, mostrar botão
+                this.els.textToggle.style.display = 'flex';
+                if (!this.state.showText) {
+                    this.els.fullText.classList.remove('visible');
+                    this.els.textToggle.classList.remove('expanded');
+                    this.els.textToggle.querySelector('span').textContent = 'Ver texto da oração';
+                } else {
+                    this.els.fullText.classList.add('visible');
+                    this.els.textToggle.classList.add('expanded');
+                    this.els.textToggle.querySelector('span').textContent = 'Esconder texto';
+                }
+            }
             
             animatedEls.forEach(el => el.classList.add('visible'));
         }, 120);
@@ -2807,6 +2822,26 @@ const app = {
 
 app.init();
 window.app = app;
+
+// Funções do modal de rosário
+window.closeRosaryModal = function() {
+    document.getElementById('rosary-modal').classList.remove('active');
+};
+
+window.startFromModal = function(type) {
+    window.closeRosaryModal();
+    if (window.app && window.app.start) {
+        window.app.start(type);
+    }
+};
+
+// Fechar modal ao clicar fora
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('rosary-modal');
+    if (e.target === modal) {
+        window.closeRosaryModal();
+    }
+});
 </script>
 </body>
 </html>
