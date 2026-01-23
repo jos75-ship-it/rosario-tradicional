@@ -2,8 +2,10 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Santo Rosário · Método Montfort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,7 +14,6 @@
             --bg-secondary: #151316;
             --bg-elevated: #1d1a1f;
             --bg-card: #1a171c;
-            --bg-input: #0f0d10;
             
             --text-primary: #f4f1eb;
             --text-secondary: #c2b8aa;
@@ -31,9 +32,6 @@
             --burgundy-bright: #a04d62;
             --burgundy-glow: rgba(138, 61, 80, 0.5);
             
-            --success: #4a9e6b;
-            --success-dim: #2d6b45;
-            
             --cream: #faf5e8;
             --border-subtle: rgba(212, 168, 85, 0.1);
             --border-gold: rgba(212, 168, 85, 0.25);
@@ -43,8 +41,13 @@
             
             --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
             
-            --nav-height: 70px;
+            --bead-size: 48px;
+            --bead-size-small: 36px;
+            --bead-size-pater: 56px;
+            --bead-gap: 20px;
+            --rail-width: 110px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -58,204 +61,111 @@
             line-height: 1.6;
         }
 
+        /* Textura de fundo refinada */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
             background: 
                 radial-gradient(ellipse at 15% 15%, rgba(107, 45, 61, 0.12) 0%, transparent 45%),
-                radial-gradient(ellipse at 85% 85%, rgba(212, 168, 85, 0.08) 0%, transparent 45%);
+                radial-gradient(ellipse at 85% 85%, rgba(212, 168, 85, 0.08) 0%, transparent 45%),
+                radial-gradient(ellipse at 50% 50%, rgba(20, 18, 22, 0.5) 0%, transparent 100%);
             pointer-events: none;
             z-index: 0;
         }
 
-        .screen {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s var(--ease-out), visibility 0.4s;
-            z-index: 10;
-        }
-
-        .screen.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
+        /* ===== TELA DE AUTENTICAÇÃO ===== */
         #auth-screen {
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
-            z-index: 100;
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 28px;
+            z-index: 200;
+            transition: opacity 0.6s var(--ease-out), visibility 0.6s;
         }
 
-        .auth-container {
-            width: 100%;
-            max-width: 380px;
-            text-align: center;
-        }
+        #auth-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-        .auth-logo {
-            width: 60px;
-            height: 80px;
-            position: relative;
-            margin: 0 auto 24px;
-        }
+        .auth-container { width: 100%; max-width: 380px; text-align: center; }
 
+        .auth-logo { width: 50px; height: 70px; position: relative; margin: 0 auto 24px; }
+        
         .auth-logo::before,
         .auth-logo::after {
-            content: '';
-            position: absolute;
+            content: ''; position: absolute;
             background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-dim) 100%);
             border-radius: 2px;
         }
-
-        .auth-logo::before {
-            width: 4px;
-            height: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .auth-logo::after {
-            width: 40px;
-            height: 4px;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+        
+        .auth-logo::before { width: 4px; height: 100%; left: 50%; transform: translateX(-50%); }
+        .auth-logo::after { width: 40px; height: 4px; top: 20px; left: 50%; transform: translateX(-50%); }
 
         .auth-title {
-            font-family: var(--font-display);
-            font-size: 1.8rem;
-            font-weight: 500;
-            letter-spacing: 0.2em;
-            color: var(--text-primary);
-            margin-bottom: 6px;
+            font-family: var(--font-display); font-size: 1.8rem; font-weight: 500;
+            letter-spacing: 0.2em; color: var(--text-primary); margin-bottom: 6px;
         }
 
         .auth-subtitle {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            font-style: italic;
-            color: var(--text-muted);
-            margin-bottom: 20px;
+            font-family: var(--font-body); font-size: 1rem; font-style: italic;
+            color: var(--text-muted); margin-bottom: 20px;
         }
 
         .auth-info {
-            background: rgba(212, 168, 85, 0.1);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 24px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
+            background: rgba(212, 168, 85, 0.1); border: 1px solid var(--border-subtle);
+            border-radius: 8px; padding: 16px; margin-bottom: 24px;
+            font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;
         }
 
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 28px;
-            border-bottom: 1px solid var(--border-subtle);
-        }
+        .auth-tabs { display: flex; margin-bottom: 28px; border-bottom: 1px solid var(--border-subtle); }
 
         .auth-tab {
-            flex: 1;
-            padding: 14px;
-            background: none;
-            border: none;
-            font-family: var(--font-display);
-            font-size: 0.75rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
+            flex: 1; padding: 14px; background: none; border: none;
+            font-family: var(--font-display); font-size: 0.75rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--text-muted); cursor: pointer;
+            transition: all 0.3s; position: relative;
         }
 
         .auth-tab::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 2px;
-            background: var(--gold);
-            transition: width 0.3s var(--ease-out);
+            content: ''; position: absolute; bottom: -1px;
+            left: 50%; transform: translateX(-50%); width: 0; height: 2px;
+            background: var(--gold); transition: width 0.3s var(--ease-out);
         }
 
-        .auth-tab.active {
-            color: var(--gold);
-        }
+        .auth-tab.active { color: var(--gold); }
+        .auth-tab.active::after { width: 60%; }
 
-        .auth-tab.active::after {
-            width: 60%;
-        }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
 
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        .input-group {
-            margin-bottom: 18px;
-            text-align: left;
-        }
+        .input-group { margin-bottom: 18px; text-align: left; }
 
         .input-label {
-            display: block;
-            font-family: var(--font-display);
-            font-size: 0.6rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 8px;
+            display: block; font-family: var(--font-display);
+            font-size: 0.6rem; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
         }
 
         .input-field {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-subtle);
-            border-radius: 4px;
-            font-family: var(--font-body);
-            font-size: 1.05rem;
-            color: var(--text-primary);
-            transition: all 0.3s;
+            width: 100%; padding: 14px 16px; background: #0f0d10;
+            border: 1px solid var(--border-subtle); border-radius: 4px;
+            font-family: var(--font-body); font-size: 1.05rem;
+            color: var(--text-primary); transition: all 0.3s;
         }
 
         .input-field:focus {
-            outline: none;
-            border-color: var(--gold-dim);
+            outline: none; border-color: var(--gold-dim);
             box-shadow: 0 0 0 3px rgba(212, 168, 85, 0.1);
         }
 
-        .input-field::placeholder {
-            color: var(--text-dim);
-        }
+        .input-field::placeholder { color: var(--text-dim); }
 
         .auth-btn {
-            width: 100%;
-            padding: 16px;
-            margin-top: 8px;
+            width: 100%; padding: 16px; margin-top: 8px;
             background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
-            border: none;
-            border-radius: 4px;
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--bg-deep);
-            cursor: pointer;
-            transition: all 0.3s;
+            border: none; border-radius: 4px;
+            font-family: var(--font-display); font-size: 0.85rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--bg-deep); cursor: pointer; transition: all 0.3s;
         }
 
         .auth-btn:hover {
@@ -263,434 +173,1051 @@
             box-shadow: 0 8px 25px rgba(212, 168, 85, 0.3);
         }
 
-        .auth-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .auth-error, .auth-success {
+            margin-top: 16px; padding: 12px; border-radius: 4px;
+            font-size: 0.9rem; display: none;
         }
 
         .auth-error {
-            margin-top: 16px;
-            padding: 12px;
             background: rgba(180, 60, 60, 0.15);
             border: 1px solid rgba(180, 60, 60, 0.3);
-            border-radius: 4px;
-            font-size: 0.9rem;
             color: #e07070;
-            display: none;
-        }
-
-        .auth-error.visible {
-            display: block;
         }
 
         .auth-success {
-            margin-top: 16px;
-            padding: 12px;
             background: rgba(74, 158, 107, 0.15);
             border: 1px solid rgba(74, 158, 107, 0.3);
-            border-radius: 4px;
-            font-size: 0.9rem;
             color: #70e070;
-            display: none;
         }
 
-        .auth-success.visible {
-            display: block;
+        .auth-error.visible, .auth-success.visible { display: block; }
+
+        .loading {
+            display: inline-block; width: 20px; height: 20px;
+            border: 3px solid rgba(212, 168, 85, 0.3);
+            border-radius: 50%; border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
         }
 
-        #main-app {
-            padding-bottom: var(--nav-height);
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== TELA INICIAL ===== */
+        #home-screen {
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 28px;
+            z-index: 100;
+            transition: opacity 0.6s var(--ease-out), visibility 0.6s;
         }
 
-        .app-content {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
+        #home-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-        .tab-content {
-            display: none;
-            width: 100%;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .home-content {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100%;
-        }
-
-        .home-header {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .home-greeting {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .home-user {
-            font-family: var(--font-display);
-            font-size: 1.4rem;
-            color: var(--text-primary);
-            letter-spacing: 0.1em;
-        }
-
-        .streak-card {
-            width: 100%;
-            max-width: 360px;
-            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            text-align: center;
+        /* Cruz decorativa */
+        .home-cross {
+            width: 50px;
+            height: 70px;
             position: relative;
-            overflow: hidden;
+            margin-bottom: 24px;
         }
 
-        .streak-card::before {
+        .home-cross::before,
+        .home-cross::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim));
+            background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-dim) 100%);
+            border-radius: 2px;
         }
 
-        .streak-icon {
-            width: 50px;
-            height: 50px;
-            margin: 0 auto 12px;
-            color: var(--gold);
+        .home-cross::before {
+            width: 4px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
-        .streak-number {
+        .home-cross::after {
+            width: 36px;
+            height: 4px;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .home-cross-glow {
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+            opacity: 0.5;
+            animation: cross-glow 4s ease-in-out infinite;
+        }
+
+        @keyframes cross-glow {
+            0%, 100% { opacity: 0.4; transform: scale(0.95); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        .home-title {
             font-family: var(--font-display);
-            font-size: 3.5rem;
-            font-weight: 600;
-            color: var(--gold);
-            line-height: 1;
-            text-shadow: 0 0 30px var(--gold-glow);
-        }
-
-        .streak-label {
-            font-family: var(--font-display);
-            font-size: 0.7rem;
+            font-size: 2.2rem;
+            font-weight: 500;
             letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-top: 8px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
         }
 
-        .streak-subtitle {
-            font-family: var(--font-body);
-            font-size: 0.95rem;
-            font-style: italic;
-            color: var(--text-dim);
-            margin-top: 12px;
-        }
-
-        .intention-card {
-            width: 100%;
-            max-width: 360px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-
-        .intention-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .intention-icon {
-            width: 24px;
-            height: 24px;
-            color: var(--burgundy-light);
-        }
-
-        .intention-title {
-            font-family: var(--font-display);
-            font-size: 0.65rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .intention-text {
+        .home-subtitle {
             font-family: var(--font-body);
             font-size: 1.1rem;
             font-style: italic;
-            color: var(--text-secondary);
-            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 10px;
         }
 
-        .today-card {
-            width: 100%;
-            max-width: 360px;
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .today-day {
+        .home-method {
             font-family: var(--font-display);
             font-size: 0.6rem;
             letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 4px;
-        }
-
-        .today-mystery {
-            font-family: var(--font-body);
-            font-size: 1.1rem;
             color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 36px;
+            padding: 10px 20px;
+            border: 1px solid var(--border-gold);
+            background: linear-gradient(135deg, rgba(212, 168, 85, 0.08) 0%, rgba(212, 168, 85, 0.02) 100%);
+            position: relative;
         }
 
-        .quick-start {
+        .home-method::before,
+        .home-method::after {
+            content: '✦';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold-dim);
+            font-size: 0.5rem;
+        }
+
+        .home-method::before { left: 8px; }
+        .home-method::after { right: 8px; }
+
+        .today-info {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .today-info strong {
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .menu-section {
             width: 100%;
             max-width: 360px;
+            margin-bottom: 24px;
         }
 
-        .quick-label {
+        .menu-label {
             font-family: var(--font-display);
             font-size: 0.55rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
+            letter-spacing: 0.35em;
             color: var(--text-dim);
+            text-transform: uppercase;
             text-align: center;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
-        .quick-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+        .menu-label::before,
+        .menu-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
         }
 
-        .quick-btn {
-            padding: 18px 14px;
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* ===== BOTÕES ELEGANTES - ESTILO ORIGINAL MELHORADO ===== */
+        .btn-mystery {
             background: rgba(255,255,255,0.02);
             border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            font-family: var(--font-display);
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
             color: var(--text-secondary);
+            padding: 22px 28px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.35s var(--ease-smooth);
+            transition: all 0.5s var(--ease-smooth);
             position: relative;
             overflow: hidden;
         }
 
-        .quick-btn::before {
+        /* Efeito de luz que passa */
+        .btn-mystery::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 168, 85, 0.1), transparent);
-            transition: left 0.6s;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(212, 168, 85, 0.15) 50%, 
+                transparent 100%);
+            transition: left 0.7s var(--ease-smooth);
         }
 
-        .quick-btn:hover::before {
-            left: 100%;
-        }
-
-        .quick-btn:hover {
-            border-color: var(--gold-dim);
-            color: var(--gold);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .quick-btn.full {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, rgba(107, 45, 61, 0.2) 0%, rgba(107, 45, 61, 0.08) 100%);
-            border-color: rgba(138, 61, 80, 0.3);
-            color: var(--cream);
-        }
-
-        .quick-btn.full:hover {
-            background: linear-gradient(135deg, rgba(107, 45, 61, 0.3) 0%, rgba(107, 45, 61, 0.12) 100%);
-        }
-
-        .calendar-content,
-        .profile-content {
-            padding: 24px;
-            text-align: center;
-            min-height: 100%;
-        }
-
-        .placeholder {
-            color: var(--text-muted);
-            font-style: italic;
-            padding: 40px 20px;
-            font-size: 1rem;
-        }
-
-        .profile-header {
-            margin-bottom: 32px;
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 16px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-display);
-            font-size: 2rem;
-            color: var(--bg-deep);
-        }
-
-        .profile-name {
-            font-family: var(--font-display);
-            font-size: 1.4rem;
-            letter-spacing: 0.1em;
-            color: var(--text-primary);
-            margin-bottom: 28px;
-        }
-
-        .profile-btn {
-            width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
-            padding: 16px;
-            background: linear-gradient(135deg, rgba(180, 60, 60, 0.2) 0%, rgba(180, 60, 60, 0.08) 100%);
-            border: 1px solid rgba(180, 60, 60, 0.3);
-            border-radius: 8px;
-            font-family: var(--font-display);
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #c07070;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .profile-btn:hover {
-            background: rgba(180, 60, 60, 0.15);
-            border-color: rgba(180, 60, 60, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: var(--nav-height);
-            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
-            border-top: 1px solid var(--border-subtle);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 0 10px;
-            z-index: 50;
-        }
-
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 0;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .nav-icon {
-            width: 26px;
-            height: 26px;
-            color: var(--text-dim);
-            transition: all 0.3s;
-            margin-bottom: 4px;
-        }
-
-        .nav-label {
-            font-family: var(--font-display);
-            font-size: 0.5rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            transition: all 0.3s;
-        }
-
-        .nav-item.active .nav-icon {
-            color: var(--gold);
-            filter: drop-shadow(0 0 8px var(--gold-glow));
-        }
-
-        .nav-item.active .nav-label {
-            color: var(--gold);
-        }
-
-        .nav-item::before {
+        /* Linha dourada inferior */
+        .btn-mystery::after {
             content: '';
             position: absolute;
-            top: 0;
+            bottom: 0;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 2px;
-            background: var(--gold);
-            transition: width 0.3s var(--ease-out);
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            transition: width 0.5s var(--ease-smooth);
         }
 
-        .nav-item.active::before {
-            width: 40px;
+        .btn-mystery:hover::before {
+            left: 100%;
         }
 
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(212, 168, 85, 0.3);
+        .btn-mystery:hover::after {
+            width: 70%;
+        }
+
+        .btn-mystery:hover {
+            border-color: var(--gold-dim);
+            color: var(--gold);
+            background: rgba(212, 168, 85, 0.06);
+            transform: translateY(-4px);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.4),
+                0 0 50px rgba(212, 168, 85, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-mystery:active {
+            transform: translateY(-2px);
+            transition: transform 0.1s;
+        }
+
+        /* Botão do Rosário Completo */
+        .btn-complete {
+            background: linear-gradient(135deg, rgba(107, 45, 61, 0.2) 0%, rgba(107, 45, 61, 0.08) 100%);
+            border: 1px solid rgba(138, 61, 80, 0.35);
+            color: var(--cream);
+            padding: 24px 28px;
+            margin-top: 4px;
+        }
+
+        .btn-complete::before {
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(212, 168, 85, 0.2) 50%, 
+                transparent 100%);
+        }
+
+        .btn-complete:hover {
+            background: linear-gradient(135deg, rgba(107, 45, 61, 0.3) 0%, rgba(107, 45, 61, 0.12) 100%);
+            border-color: var(--gold-dim);
+            box-shadow: 
+                0 18px 45px rgba(0, 0, 0, 0.45),
+                0 0 60px rgba(212, 168, 85, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+
+        .btn-complete small {
+            display: block;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-style: italic;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            text-transform: none;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Botão de áudio */
+        .audio-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            border-top-color: var(--gold);
-            animation: spin 1s ease-in-out infinite;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s var(--ease-smooth);
+            z-index: 200;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .audio-toggle:hover {
+            border-color: var(--gold-dim);
+            color: var(--gold);
+            transform: scale(1.05);
+        }
+
+        .audio-toggle.active {
+            color: var(--gold);
+            border-color: var(--gold-dim);
+            background: rgba(212, 168, 85, 0.12);
+            box-shadow: 0 0 20px rgba(212, 168, 85, 0.2);
+        }
+
+        .audio-toggle svg { width: 22px; height: 22px; }
+
+        /* ===== TELA DE ORAÇÃO ===== */
+        #prayer-screen {
+            position: fixed; inset: 0;
+            display: flex; flex-direction: row;
+            background: var(--bg-deep);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+        }
+
+        #prayer-screen.active { opacity: 1; visibility: visible; }
+
+        /* Trilho do Rosário */
+        .rosary-rail {
+            position: relative;
+            width: var(--rail-width);
+            height: 100%;
+            background: linear-gradient(90deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
+            border-right: 1px solid rgba(212, 168, 85, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .rosary-rail::before,
+        .rosary-rail::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            height: 140px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .rosary-rail::before {
+            top: 0;
+            background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(8, 7, 9, 0.8) 50%, transparent 100%);
+        }
+
+        .rosary-rail::after {
+            bottom: 0;
+            background: linear-gradient(0deg, var(--bg-deep) 0%, rgba(8, 7, 9, 0.8) 50%, transparent 100%);
+        }
+
+        /* Corrente dourada */
+        .rosary-chain {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 3px;
+            height: calc(100% + 300px);
+            transform: translate(-50%, -50%);
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                var(--gold-dark) 3%,
+                var(--gold-dim) 15%,
+                var(--gold) 50%,
+                var(--gold-dim) 85%,
+                var(--gold-dark) 97%,
+                transparent 100%);
+            opacity: 0.4;
+            border-radius: 2px;
+        }
+
+        /* Guia central */
+        .center-guide {
+            position: absolute;
+            top: 50%;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212, 168, 85, 0.2), transparent);
+            transform: translateY(-50%);
+            z-index: 5;
+        }
+
+        /* Container das contas */
+        #bead-track {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, 0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--bead-gap);
+            transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+            padding: 100px 0;
+        }
+
+        /* ===== CONTAS BRILHANTES E REALISTAS ===== */
+        .bead {
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.45s var(--ease-smooth);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        /* Aura de luz ao redor da conta ativa */
+        .bead::before {
+            content: '';
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            transform: scale(0.5);
+            z-index: -1;
+        }
+
+        .bead.active::before {
+            opacity: 1;
+            transform: scale(1);
+            animation: bead-aura 2.5s ease-in-out infinite;
+        }
+
+        @keyframes bead-aura {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.25); }
+        }
+
+        /* Reflexo de luz superior */
+        .bead::after {
+            content: '';
+            position: absolute;
+            top: 12%;
+            left: 18%;
+            width: 35%;
+            height: 30%;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .bead:hover::after,
+        .bead.active::after {
+            opacity: 1;
+        }
+
+        /* ===== CONTA AVE MARIA - Madeira polida escura ===== */
+        .bead.ave {
+            width: var(--bead-size-small);
+            height: var(--bead-size-small);
+            background: 
+                radial-gradient(ellipse at 28% 22%, rgba(255,255,255,0.18) 0%, transparent 45%),
+                radial-gradient(ellipse at 70% 75%, rgba(0,0,0,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 35% 35%, #5a5450, #454240, #353330, #252320);
+            box-shadow: 
+                inset -5px -5px 12px rgba(0, 0, 0, 0.7),
+                inset 4px 4px 10px rgba(255, 255, 255, 0.06),
+                0 5px 15px rgba(0, 0, 0, 0.5),
+                0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .bead.ave::before {
+            background: radial-gradient(circle, rgba(212, 168, 85, 0.45) 0%, transparent 65%);
+        }
+
+        .bead.ave::after {
+            background: radial-gradient(ellipse, rgba(255,255,255,0.35) 0%, transparent 70%);
+        }
+
+        .bead.ave:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                inset -5px -5px 12px rgba(0, 0, 0, 0.6),
+                inset 4px 4px 10px rgba(255, 255, 255, 0.1),
+                0 8px 25px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(212, 168, 85, 0.15);
+        }
+
+        .bead.ave.active {
+            width: var(--bead-size);
+            height: var(--bead-size);
+            transform: scale(1.15);
+            background: 
+                radial-gradient(ellipse at 28% 22%, rgba(255,255,255,0.28) 0%, transparent 40%),
+                radial-gradient(ellipse at 70% 75%, rgba(0,0,0,0.25) 0%, transparent 50%),
+                radial-gradient(circle at 35% 35%, #706a65, #5a5550, #454240, #353330);
+            box-shadow: 
+                inset -5px -5px 12px rgba(0, 0, 0, 0.5),
+                inset 4px 4px 10px rgba(255, 255, 255, 0.12),
+                0 0 40px rgba(212, 168, 85, 0.5),
+                0 0 70px rgba(212, 168, 85, 0.25),
+                0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ===== CONTA PAI NOSSO - Ouro polido ===== */
+        .bead.pater {
+            width: calc(var(--bead-size-small) + 12px);
+            height: calc(var(--bead-size-small) + 12px);
+            background: 
+                radial-gradient(ellipse at 22% 18%, rgba(255,255,255,0.6) 0%, transparent 35%),
+                radial-gradient(ellipse at 75% 80%, rgba(100, 70, 20, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 35% 35%, var(--gold-bright), var(--gold-light), var(--gold), var(--gold-dim));
+            box-shadow: 
+                inset -5px -5px 15px rgba(100, 70, 20, 0.5),
+                inset 5px 5px 12px rgba(255, 255, 255, 0.4),
+                0 5px 20px rgba(0, 0, 0, 0.5),
+                0 0 25px rgba(212, 168, 85, 0.35);
+        }
+
+        .bead.pater::before {
+            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 60%);
+        }
+
+        .bead.pater::after {
+            background: radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, transparent 65%);
+            opacity: 0.8;
+        }
+
+        .bead.pater:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                inset -5px -5px 15px rgba(100, 70, 20, 0.4),
+                inset 5px 5px 12px rgba(255, 255, 255, 0.5),
+                0 8px 30px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(212, 168, 85, 0.5);
+        }
+
+        .bead.pater.active {
+            width: var(--bead-size-pater);
+            height: var(--bead-size-pater);
+            transform: scale(1.15);
+            background: 
+                radial-gradient(ellipse at 22% 18%, rgba(255,255,255,0.75) 0%, transparent 30%),
+                radial-gradient(ellipse at 75% 80%, rgba(100, 70, 20, 0.3) 0%, transparent 45%),
+                radial-gradient(circle at 35% 35%, #ffe890, var(--gold-bright), var(--gold-light), var(--gold));
+            box-shadow: 
+                inset -5px -5px 15px rgba(100, 70, 20, 0.35),
+                inset 5px 5px 12px rgba(255, 255, 255, 0.55),
+                0 0 55px rgba(212, 168, 85, 0.7),
+                0 0 90px rgba(212, 168, 85, 0.4),
+                0 12px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ===== CONTA ESPECIAL - Bordô/Rubi ===== */
+        .bead.special {
+            width: calc(var(--bead-size-small) + 8px);
+            height: calc(var(--bead-size-small) + 8px);
+            background: 
+                radial-gradient(ellipse at 25% 20%, rgba(255,255,255,0.3) 0%, transparent 40%),
+                radial-gradient(ellipse at 72% 78%, rgba(40, 15, 20, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 35% 35%, var(--burgundy-bright), var(--burgundy-light), var(--burgundy), #4a1a28);
+            box-shadow: 
+                inset -4px -4px 12px rgba(40, 15, 20, 0.6),
+                inset 4px 4px 10px rgba(255, 255, 255, 0.15),
+                0 5px 15px rgba(0, 0, 0, 0.5),
+                0 0 18px rgba(138, 61, 80, 0.3);
+        }
+
+        .bead.special::before {
+            background: radial-gradient(circle, var(--burgundy-glow) 0%, transparent 60%);
+        }
+
+        .bead.special::after {
+            background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 65%);
+        }
+
+        .bead.special:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                inset -4px -4px 12px rgba(40, 15, 20, 0.5),
+                inset 4px 4px 10px rgba(255, 255, 255, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(138, 61, 80, 0.4);
+        }
+
+        .bead.special.active {
+            width: calc(var(--bead-size) + 8px);
+            height: calc(var(--bead-size) + 8px);
+            transform: scale(1.15);
+            background: 
+                radial-gradient(ellipse at 25% 20%, rgba(255,255,255,0.45) 0%, transparent 35%),
+                radial-gradient(ellipse at 72% 78%, rgba(40, 15, 20, 0.3) 0%, transparent 45%),
+                radial-gradient(circle at 35% 35%, #c55a70, var(--burgundy-bright), var(--burgundy-light), var(--burgundy));
+            box-shadow: 
+                inset -4px -4px 12px rgba(40, 15, 20, 0.4),
+                inset 4px 4px 10px rgba(255, 255, 255, 0.25),
+                0 0 50px rgba(138, 61, 80, 0.6),
+                0 0 80px rgba(138, 61, 80, 0.35),
+                0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Conteúdo principal */
+        .prayer-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            position: relative;
+        }
+
+        .prayer-header {
+            padding: 18px 24px;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            color: var(--gold);
+            transform: translateX(-3px);
+        }
+
+        .back-btn svg { width: 16px; height: 16px; }
+
+        .progress-compact {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-bar-mini {
+            width: 90px;
+            height: 3px;
+            background: var(--bg-elevated);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill-mini {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-bright));
+            transition: width 0.5s var(--ease-out);
+            border-radius: 2px;
+        }
+
+        .progress-text {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 0.08em;
+        }
+
+        .prayer-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 32px 32px;
+            overflow-y: auto;
+        }
+
+        .prayer-group {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--gold-dim);
+            margin-bottom: 8px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.45s var(--ease-out);
+        }
+
+        .prayer-group.visible { opacity: 1; transform: translateY(0); }
+
+        .prayer-mystery {
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-bottom: 18px;
+            min-height: 1.5em;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.45s var(--ease-out) 0.05s;
+        }
+
+        .prayer-mystery.visible { opacity: 1; transform: translateY(0); }
+
+        .prayer-name {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            opacity: 0;
+            transform: translateY(-12px);
+            transition: all 0.45s var(--ease-out) 0.1s;
+        }
+
+        .prayer-name.visible { opacity: 1; transform: translateY(0); }
+
+        .prayer-count {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 0.18em;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.45s var(--ease-out) 0.15s;
+        }
+
+        .prayer-count.visible { opacity: 1; transform: translateY(0); }
+
+        /* Caixa de meditação refinada */
+        .meditation-box {
+            background: linear-gradient(135deg, rgba(212, 168, 85, 0.1) 0%, rgba(212, 168, 85, 0.03) 100%);
+            border-left: 3px solid var(--gold);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateX(-15px);
+            transition: all 0.5s var(--ease-out) 0.2s;
+            position: relative;
+        }
+
+        .meditation-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, var(--gold-dim), transparent);
+        }
+
+        .meditation-box.visible { opacity: 1; transform: translateX(0); }
+
+        .meditation-label {
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .meditation-text {
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--text-primary);
+            line-height: 1.75;
+        }
+
+        /* Toggle do texto da oração */
+        .prayer-text-toggle {
+            background: none;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: all 0.35s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 14px;
+        }
+
+        .prayer-text-toggle:hover {
+            border-color: var(--border-gold);
+            color: var(--gold);
+            background: rgba(212, 168, 85, 0.04);
+        }
+
+        .prayer-text-toggle svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.35s var(--ease-out);
+        }
+
+        .prayer-text-toggle.expanded svg { transform: rotate(180deg); }
+
+        .prayer-full-text {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.45s var(--ease-out), opacity 0.35s, padding 0.35s;
+            opacity: 0;
+            background: var(--bg-card);
+            border-radius: 6px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .prayer-full-text.visible {
+            max-height: 420px;
+            opacity: 1;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+        }
+
+        .prayer-full-text p {
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.85;
+        }
+
+        /* Footer com navegação */
+        .prayer-footer {
+            padding: 18px 24px;
+            background: linear-gradient(0deg, var(--bg-primary) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-shrink: 0;
+        }
+
+        .nav-btn {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.35s var(--ease-smooth);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--bg-elevated);
+            border-color: var(--border-gold);
+            color: var(--gold);
+            transform: scale(1.08);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+        .nav-btn svg { width: 24px; height: 24px; }
+
+        .nav-btn.primary {
+            width: 68px;
+            height: 68px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+            border: none;
+            color: var(--bg-deep);
+            box-shadow: 0 4px 20px rgba(212, 168, 85, 0.3);
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 100%);
+            transform: scale(1.1);
+            box-shadow: 0 0 35px rgba(212, 168, 85, 0.5), 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-hint {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-style: italic;
+            white-space: nowrap;
+        }
+
+        /* ===== TELA DE CONCLUSÃO ===== */
+        #completion-screen {
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 28px;
+            background: var(--bg-deep);
+            z-index: 100;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+        }
+
+        #completion-screen.active { opacity: 1; visibility: visible; }
+
+        .completion-icon {
+            width: 100px;
+            height: 100px;
+            color: var(--gold);
+            margin-bottom: 28px;
+            animation: completion-glow 2.5s ease-in-out infinite;
+        }
+
+        @keyframes completion-glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 168, 85, 0.4)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 40px rgba(212, 168, 85, 0.7)); transform: scale(1.06); }
+        }
+
+        .completion-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            letter-spacing: 0.18em;
+            margin-bottom: 10px;
+        }
+
+        .completion-subtitle {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 340px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .completion-stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 36px;
+        }
+
+        .stat { text-align: center; }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 2.4rem;
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(212, 168, 85, 0.3);
+        }
+
+        .stat-label {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .btn-home {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            color: var(--gold);
+            padding: 16px 32px;
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.35s;
+        }
+
+        .btn-home:hover {
+            background: rgba(212, 168, 85, 0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 768px) {
+            :root {
+                --bead-size: 54px;
+                --bead-size-small: 44px;
+                --bead-size-pater: 62px;
+                --bead-gap: 18px;
+                --rail-width: 85px;
+            }
+
+            .rosary-rail {
+                order: 2;
+                width: var(--rail-width);
+                background: linear-gradient(-90deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
+                border-right: none;
+                border-left: 1px solid rgba(212, 168, 85, 0.06);
+            }
+
+            .rosary-rail::before, .rosary-rail::after { height: 110px; }
+            .prayer-main { order: 1; }
+            .prayer-body { padding: 24px 20px; }
+            .prayer-name { font-size: 1.8rem; }
+            .meditation-text { font-size: 1.1rem; }
+            .nav-btn { width: 52px; height: 52px; }
+            .nav-btn.primary { width: 62px; height: 62px; }
+            .nav-hint { display: none; }
+            .progress-bar-mini { width: 70px; }
+            .audio-toggle { bottom: 110px; right: 14px; width: 44px; height: 44px; }
+            .home-title { font-size: 1.8rem; }
+        }
+
+        @media (max-width: 380px) {
+            :root {
+                --rail-width: 75px;
+                --bead-size: 50px;
+                --bead-size-small: 40px;
+                --bead-size-pater: 56px;
+            }
+
+            .prayer-body { padding: 18px 16px; }
+            .prayer-name { font-size: 1.5rem; }
+            .meditation-text { font-size: 1rem; }
+            .home-title { font-size: 1.6rem; }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .rosary-rail { width: 75px; }
+            .prayer-header, .prayer-footer { padding: 12px 18px; }
+            .prayer-body { padding: 14px 18px; }
+            .prayer-name { font-size: 1.5rem; margin-bottom: 5px; }
+            .meditation-box { padding: 14px 16px; margin-bottom: 14px; }
         }
     </style>
 </head>
 <body>
 
-<!-- AUTH SCREEN -->
-<div id="auth-screen" class="screen active">
+<!-- TELA DE AUTENTICAÇÃO -->
+<div id="auth-screen">
     <div class="auth-container">
         <div class="auth-logo"></div>
         <h1 class="auth-title">Rosário</h1>
         <p class="auth-subtitle">Método de São Luís de Montfort</p>
         
         <div class="auth-info">
-            ✨ <strong>Autenticação Segura:</strong> Seus dados são protegidos com Firebase Authentication!
+            ✨ <strong>Autenticação Segura:</strong> Seus dados são protegidos com Firebase!
         </div>
 
         <div class="auth-tabs">
@@ -735,455 +1262,723 @@
     </div>
 </div>
 
-<!-- MAIN APP -->
-<div id="main-app" class="screen">
-    <div class="app-content" id="app-content">
-        <!-- HOME TAB -->
-        <div id="tab-home" class="tab-content active">
-            <div class="home-content">
-                <div class="home-header">
-                    <p class="home-greeting">Bem-vindo(a),</p>
-                    <h2 class="home-user" id="home-user-name">Peregrino</h2>
-                </div>
-                
-                <div class="streak-card">
-                    <svg class="streak-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                    <div class="streak-number" id="streak-count">0</div>
-                    <div class="streak-label">Dias Consecutivos</div>
-                    <p class="streak-subtitle" id="streak-message">Comece hoje sua jornada de oração</p>
-                </div>
-                
-                <div class="intention-card">
-                    <div class="intention-header">
-                        <svg class="intention-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                        <span class="intention-title">Intenção do Dia</span>
-                    </div>
-                    <p class="intention-text" id="today-intention">Carregando...</p>
-                </div>
-                
-                <div class="today-card">
-                    <p class="today-day" id="today-day">Segunda-feira</p>
-                    <p class="today-mystery" id="today-mystery">Mistérios Gozosos</p>
-                </div>
-                
-                <div class="quick-start">
-                    <p class="quick-label">Iniciar Oração</p>
-                    <div class="quick-grid">
-                        <button type="button" class="quick-btn" data-prayer="gozosos">Gozosos</button>
-                        <button type="button" class="quick-btn" data-prayer="dolorosos">Dolorosos</button>
-                        <button type="button" class="quick-btn" data-prayer="gloriosos">Gloriosos</button>
-                        <button type="button" class="quick-btn full" data-prayer="completo">Rosário Completo</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CALENDAR TAB -->
-        <div id="tab-calendar" class="tab-content">
-            <div class="calendar-content">
-                <p class="placeholder">📅 Calendário<br>(Em desenvolvimento)</p>
-            </div>
-        </div>
-
-        <!-- PROFILE TAB -->
-        <div id="tab-profile" class="tab-content">
-            <div class="profile-content">
-                <div class="profile-header">
-                    <div class="profile-avatar" id="profile-avatar">👤</div>
-                    <h2 class="profile-name" id="profile-name">Usuário</h2>
-                </div>
-                <button type="button" class="profile-btn" id="logout-btn">Sair da Conta</button>
-            </div>
+<div id="home-screen" class="hidden">
+    <div class="home-cross">
+        <div class="home-cross-glow"></div>
+    </div>
+    <h1 class="home-title">Rosário</h1>
+    <p class="home-subtitle">Em honra da Santíssima Virgem Maria</p>
+    <div class="home-method">Método de São Luís de Montfort</div>
+    <p class="today-info" id="today-info"></p>
+    <div class="menu-section">
+        <div class="menu-label">Mistérios</div>
+        <div class="menu-grid">
+            <button class="btn-mystery" onclick="app.start('gozosos')">Gozosos</button>
+            <button class="btn-mystery" onclick="app.start('dolorosos')">Dolorosos</button>
+            <button class="btn-mystery" onclick="app.start('gloriosos')">Gloriosos</button>
         </div>
     </div>
-    
-    <!-- BOTTOM NAVIGATION -->
-    <nav class="bottom-nav">
-        <button type="button" class="nav-item active" data-tab="home">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
-            <span class="nav-label">Início</span>
-        </button>
-        <button type="button" class="nav-item" id="rosary-picker-btn">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                <circle cx="12" cy="3" r="2.5"/>
-                <circle cx="19.5" cy="7.5" r="2"/>
-                <circle cx="19.5" cy="16.5" r="2"/>
-                <circle cx="12" cy="21" r="2.5"/>
-                <circle cx="4.5" cy="16.5" r="2"/>
-                <circle cx="4.5" cy="7.5" r="2"/>
-            </svg>
-            <span class="nav-label">Rosário</span>
-        </button>
-        <button type="button" class="nav-item" data-tab="calendar">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            <span class="nav-label">Calendário</span>
-        </button>
-        <button type="button" class="nav-item" data-tab="profile">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-            </svg>
-            <span class="nav-label">Perfil</span>
-        </button>
-    </nav>
+    <div class="menu-section">
+        <div class="menu-label">Rosário Completo</div>
+        <div class="menu-grid">
+            <button class="btn-mystery btn-complete" onclick="app.start('completo')">
+                Todos os Mistérios
+                <small>Gozosos, Dolorosos e Gloriosos</small>
+            </button>
+        </div>
+    </div>
+    <button class="btn-mystery" onclick="firebaseAuth.logoutUser()" style="margin-top: 24px; padding: 14px; font-size: 0.75rem; background: rgba(180, 60, 60, 0.1); border-color: rgba(180, 60, 60, 0.2); color: #c07070;">
+        Sair da Conta
+    </button>
 </div>
 
-<!-- FIREBASE SDK v9 (modular) -->
+<div id="prayer-screen">
+    <div class="rosary-rail">
+        <div class="rosary-chain"></div>
+        <div class="center-guide"></div>
+        <div id="bead-track"></div>
+    </div>
+    <div class="prayer-main">
+        <header class="prayer-header">
+            <button class="back-btn" onclick="app.confirmExit()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Sair
+            </button>
+            <div class="progress-compact">
+                <div class="progress-bar-mini"><div class="progress-fill-mini" id="progress-fill"></div></div>
+                <span class="progress-text" id="progress-text">1/59</span>
+            </div>
+        </header>
+        <div class="prayer-body" id="prayer-body">
+            <div class="prayer-group" id="prayer-group"></div>
+            <div class="prayer-mystery" id="prayer-mystery"></div>
+            <h2 class="prayer-name" id="prayer-name"></h2>
+            <div class="prayer-count" id="prayer-count"></div>
+            <div class="meditation-box" id="meditation-box">
+                <div class="meditation-label">Meditação</div>
+                <p class="meditation-text" id="meditation-text"></p>
+            </div>
+            <button class="prayer-text-toggle" id="prayer-text-toggle" onclick="app.toggleText()">
+                <span>Ver texto da oração</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="prayer-full-text" id="prayer-full-text"></div>
+            <p class="nav-hint">Toque nas contas ou use as setas para navegar</p>
+        </div>
+        <footer class="prayer-footer">
+            <button class="nav-btn" id="prev-btn" onclick="app.prev()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="nav-btn primary" id="next-btn" onclick="app.next()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+        </footer>
+    </div>
+</div>
+
+<div id="completion-screen">
+    <svg class="completion-icon" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="50" cy="50" r="42"/>
+        <path d="M28 50l16 16 28-32" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h2 class="completion-title">Deo Gratias</h2>
+    <p class="completion-subtitle" id="completion-msg"></p>
+    <div class="completion-stats">
+        <div class="stat"><div class="stat-value" id="stat-aves">0</div><div class="stat-label">Ave Marias</div></div>
+        <div class="stat"><div class="stat-value" id="stat-paters">0</div><div class="stat-label">Pai Nossos</div></div>
+    </div>
+    <button class="btn-home" onclick="app.home()">Voltar ao Início</button>
+</div>
+
+<button class="audio-toggle" id="audio-toggle" onclick="app.toggleAudio()" title="Ativar/Desativar sons (M)">
+    <svg id="audio-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;">
+        <path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+    </svg>
+    <svg id="audio-icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+    </svg>
+</button>
+
+<!-- Firebase SDK v9 (modular) -->
 <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-    import { getDatabase, ref, set, get, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getDatabase, ref, set, get, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-    // FIREBASE CONFIG
-    const firebaseConfig = {
-        apiKey: "AIzaSyAD_SvPlYGGZM1JMZmIjfai-a3TPPKDxLg",
-        authDomain: "rosario-app-a9da0.firebaseapp.com",
-        databaseURL: "https://rosario-app-a9da0-default-rtdb.firebaseio.com",
-        projectId: "rosario-app-a9da0",
-        storageBucket: "rosario-app-a9da0.firebasestorage.app",
-        messagingSenderId: "928215518242",
-        appId: "1:928215518242:web:09c61bfbfc0fc947570e7b"
+// Firebase Config
+const firebaseConfig = {
+    apiKey: "AIzaSyAD_SvPlYGGZM1JMZmIjfai-a3TPPKDxLg",
+    authDomain: "rosario-app-a9da0.firebaseapp.com",
+    databaseURL: "https://rosario-app-a9da0-default-rtdb.firebaseio.com",
+    projectId: "rosario-app-a9da0",
+    storageBucket: "rosario-app-a9da0.firebasestorage.app",
+    messagingSenderId: "928215518242",
+    appId: "1:928215518242:web:09c61bfbfc0fc947570e7b"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const database = getDatabase(firebaseApp);
+
+// Converter username para email interno
+function usernameToEmail(username) {
+    return username.toLowerCase().replace(/\s+/g, '') + '@rosario.app';
+}
+
+// Mensagens de erro em português
+function getFirebaseErrorMessage(errorCode) {
+    const errors = {
+        'auth/email-already-in-use': 'Este nome de usuário já está em uso!',
+        'auth/invalid-email': 'Nome de usuário inválido!',
+        'auth/operation-not-allowed': 'Operação não permitida!',
+        'auth/weak-password': 'Senha muito fraca! Use no mínimo 6 caracteres.',
+        'auth/user-disabled': 'Usuário desabilitado!',
+        'auth/user-not-found': 'Usuário não encontrado!',
+        'auth/wrong-password': 'Senha incorreta!',
+        'auth/invalid-credential': 'Credenciais inválidas! Verifique seu usuário e senha.',
+        'auth/too-many-requests': 'Muitas tentativas. Aguarde um momento e tente novamente.'
     };
+    return errors[errorCode] || 'Erro ao processar solicitação. Tente novamente.';
+}
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const database = getDatabase(app);
+function showElement(id) { document.getElementById(id).classList.add('visible'); }
+function hideElement(id) { document.getElementById(id).classList.remove('visible'); }
 
-    // DADOS
-    const INTENTIONS = [
-        "Pelos que sofrem perseguição por causa da fé.",
-        "Pela conversão dos pecadores e a salvação das almas.",
-        "Pelas vocações sacerdotais e religiosas.",
-        "Pela paz no mundo e o fim das guerras.",
-        "Pelos enfermos e todos que cuidam deles.",
-        "Pelas almas do purgatório, especialmente as mais abandonadas.",
-        "Pela santificação das famílias.",
-        "Pelos jovens, para que encontrem seu caminho em Cristo.",
-        "Pela Igreja e pelo Santo Padre.",
-        "Pelos missionários em terras distantes.",
-    ];
+function showError(id, message) {
+    const el = document.getElementById(id);
+    el.textContent = message;
+    showElement(id);
+    setTimeout(() => hideElement(id), 5000);
+}
 
-    // APP STATE
-    const appState = {
-        currentUser: null,
-        userProfile: null
-    };
+function showSuccess(id, message) {
+    const el = document.getElementById(id);
+    el.textContent = message;
+    showElement(id);
+}
 
-    // UTILITY FUNCTIONS
-    function showElement(id) {
-        document.getElementById(id).classList.add('visible');
+function setButtonLoading(btnId, isLoading) {
+    const btn = document.getElementById(btnId);
+    btn.disabled = isLoading;
+    if (isLoading) btn.innerHTML = '<span class="loading"></span>';
+}
+
+// Autenticação
+async function registerUser(username, displayName, password) {
+    try {
+        setButtonLoading('register-btn', true);
+        
+        const email = usernameToEmail(username);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await set(ref(database, 'users/' + user.uid), {
+            username: username,
+            displayName: displayName,
+            createdAt: new Date().toISOString(),
+            prayedDays: {},
+            totalRosaries: 0,
+            totalAves: 0,
+            currentStreak: 0,
+            longestStreak: 0
+        });
+
+        showSuccess('register-success', 'Conta criada com sucesso! Entrando...');
+        
+        setTimeout(() => {
+            document.getElementById('register-form').reset();
+            hideElement('register-success');
+        }, 2000);
+
+    } catch (error) {
+        console.error('Erro no registro:', error);
+        showError('register-error', getFirebaseErrorMessage(error.code));
+    } finally {
+        setButtonLoading('register-btn', false);
+        document.getElementById('register-btn').textContent = 'Criar Conta';
     }
+}
 
-    function hideElement(id) {
-        document.getElementById(id).classList.remove('visible');
+async function loginUser(username, password) {
+    try {
+        setButtonLoading('login-btn', true);
+        const email = usernameToEmail(username);
+        await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+        console.error('Erro no login:', error);
+        showError('login-error', getFirebaseErrorMessage(error.code));
+        setButtonLoading('login-btn', false);
+        document.getElementById('login-btn').textContent = 'Entrar';
     }
+}
 
-    function setButtonLoading(btnId, isLoading) {
-        const btn = document.getElementById(btnId);
-        btn.disabled = isLoading;
-        if (isLoading) {
-            btn.innerHTML = '<span class="loading"></span>';
-        }
-    }
-
-    function showError(id, message) {
-        const el = document.getElementById(id);
-        el.textContent = message;
-        showElement(id);
-        setTimeout(() => hideElement(id), 5000);
-    }
-
-    function showSuccess(id, message) {
-        const el = document.getElementById(id);
-        el.textContent = message;
-        showElement(id);
-    }
-
-    function getFirebaseErrorMessage(errorCode) {
-        const errors = {
-            'auth/email-already-in-use': 'Este nome de usuário já está em uso!',
-            'auth/invalid-email': 'Nome de usuário inválido!',
-            'auth/operation-not-allowed': 'Operação não permitida!',
-            'auth/weak-password': 'Senha muito fraca! Use no mínimo 6 caracteres.',
-            'auth/user-disabled': 'Usuário desabilitado!',
-            'auth/user-not-found': 'Usuário não encontrado!',
-            'auth/wrong-password': 'Senha incorreta!',
-            'auth/invalid-credential': 'Credenciais inválidas! Verifique seu usuário e senha.',
-            'auth/too-many-requests': 'Muitas tentativas. Aguarde um momento e tente novamente.'
-        };
-        return errors[errorCode] || 'Erro ao processar solicitação. Tente novamente.';
-    }
-
-    // Converter username para email (para usar Firebase Auth)
-    function usernameToEmail(username) {
-        return username.toLowerCase().replace(/\s+/g, '') + '@rosario.app';
-    }
-
-    // AUTH FUNCTIONS
-    async function registerUser(username, displayName, password) {
+async function logoutUser() {
+    if (confirm('Deseja realmente sair?')) {
         try {
-            setButtonLoading('register-btn', true);
-            
-            const email = usernameToEmail(username);
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Salvar perfil no Realtime Database
-            await set(ref(database, 'users/' + user.uid), {
-                username: username,
-                displayName: displayName,
-                createdAt: new Date().toISOString(),
-                prayedDays: {},
-                totalRosaries: 0,
-                totalAves: 0,
-                currentStreak: 0,
-                longestStreak: 0
-            });
-
-            showSuccess('register-success', 'Conta criada com sucesso! Entrando...');
-            
-            // Resetar formulário
-            setTimeout(() => {
-                document.getElementById('register-form').reset();
-                hideElement('register-success');
-            }, 2000);
-
+            await signOut(auth);
+            document.querySelectorAll('.input-field').forEach(f => f.value = '');
         } catch (error) {
-            console.error('Erro no registro:', error);
-            showError('register-error', getFirebaseErrorMessage(error.code));
-        } finally {
-            setButtonLoading('register-btn', false);
-            document.getElementById('register-btn').textContent = 'Criar Conta';
+            console.error('Erro ao sair:', error);
+            alert('Erro ao sair da conta. Tente novamente.');
         }
     }
+}
 
-    async function loginUser(username, password) {
-        try {
-            setButtonLoading('login-btn', true);
-            
-            const email = usernameToEmail(username);
-            await signInWithEmailAndPassword(auth, email, password);
-
-        } catch (error) {
-            console.error('Erro no login:', error);
-            showError('login-error', getFirebaseErrorMessage(error.code));
-            setButtonLoading('login-btn', false);
-            document.getElementById('login-btn').textContent = 'Entrar';
-        }
-    }
-
-    async function logoutUser() {
-        if (confirm('Deseja realmente sair?')) {
-            try {
-                await signOut(auth);
-                document.querySelectorAll('.input-field').forEach(f => f.value = '');
-            } catch (error) {
-                console.error('Erro ao sair:', error);
-                alert('Erro ao sair da conta. Tente novamente.');
-            }
-        }
-    }
-
-    async function loadUserProfile(uid) {
-        try {
-            const userRef = ref(database, 'users/' + uid);
-            const snapshot = await get(userRef);
-            
-            if (snapshot.exists()) {
-                appState.userProfile = snapshot.val();
-                updateUI();
-            } else {
-                console.error('Perfil de usuário não encontrado');
-            }
-        } catch (error) {
-            console.error('Erro ao carregar perfil:', error);
-        }
-    }
-
-    function updateUI() {
-        const profile = appState.userProfile;
-        if (!profile) return;
-
-        // Atualizar nome do usuário
-        const displayName = profile.displayName || profile.username;
-        document.getElementById('home-user-name').textContent = displayName;
-        document.getElementById('profile-name').textContent = displayName;
+// Auth State Observer
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        setButtonLoading('login-btn', false);
+        document.getElementById('login-btn').textContent = 'Entrar';
         
-        // Atualizar avatar
-        const initial = displayName.charAt(0).toUpperCase();
-        document.getElementById('profile-avatar').textContent = initial;
-
-        // Atualizar streak
-        const streak = profile.currentStreak || 0;
-        document.getElementById('streak-count').textContent = streak;
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('home-screen').classList.remove('hidden');
         
-        const streakMsg = streak === 0 ? 'Comece hoje sua jornada de oração' :
-                         streak === 1 ? 'Continue orando! Você começou bem!' :
-                         streak < 7 ? 'Ótimo progresso! Continue assim!' :
-                         streak < 30 ? 'Parabéns! Você está firme na fé!' :
-                         'Incrível! Que exemplo de perseverança!';
-        document.getElementById('streak-message').textContent = streakMsg;
-
-        // Atualizar intenção do dia
-        const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-        document.getElementById('today-intention').textContent = INTENTIONS[dayOfYear % INTENTIONS.length];
-
-        // Atualizar dia e mistério
-        const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-        const today = new Date();
-        document.getElementById('today-day').textContent = days[today.getDay()];
-        
-        const dayMap = { 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
-        document.getElementById('today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
-    }
-
-    // NAVIGATION
-    function switchTab(tabName) {
-        // Atualizar nav items
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        
-        // Atualizar tab contents
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-
-        // Ativar tab selecionada
-        const tabContent = document.getElementById('tab-' + tabName);
-        if (tabContent) {
-            tabContent.classList.add('active');
+        // Carregar dados do usuário
+        const userRef = ref(database, 'users/' + user.uid);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+            window.userProfile = snapshot.val();
+            window.currentUser = user;
         }
-
-        // Ativar nav item correspondente
-        const navItem = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
-        if (navItem) {
-            navItem.classList.add('active');
-        }
+    } else {
+        document.getElementById('home-screen').classList.add('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
+        window.userProfile = null;
+        window.currentUser = null;
     }
+});
 
-    function showRosaryPicker() {
-        // Inicia automaticamente o rosário do dia baseado no dia da semana
-        const today = new Date().getDay();
-        const dayMap = { 0: 'gloriosos', 1: 'gozosos', 2: 'dolorosos', 3: 'gloriosos', 4: 'gozosos', 5: 'dolorosos', 6: 'gozosos' };
-        const todayRosary = dayMap[today];
-        startPrayer(todayRosary);
-    }
-
-    function startPrayer(type) {
-        const typeNames = {
-            'gozosos': 'Mistérios Gozosos',
-            'dolorosos': 'Mistérios Dolorosos',
-            'gloriosos': 'Mistérios Gloriosos',
-            'completo': 'Rosário Completo'
-        };
-        
-        alert(`🙏 ${typeNames[type]} iniciado!\n\n(Funcionalidade de oração em desenvolvimento.\nEm breve você poderá rezar o Rosário guiado pelo app!)`);
-    }
-
-    // EVENT LISTENERS
-    document.addEventListener('DOMContentLoaded', () => {
-        // Auth tabs
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.tab + '-form').classList.add('active');
-            });
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Auth tabs
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab + '-form').classList.add('active');
         });
-
-        // Login form
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value;
-            loginUser(username, password);
-        });
-
-        // Register form
-        document.getElementById('register-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('register-username').value.trim();
-            const displayName = document.getElementById('register-displayname').value.trim();
-            const password = document.getElementById('register-password').value;
-            const confirm = document.getElementById('register-confirm').value;
-            
-            if (password !== confirm) {
-                showError('register-error', 'As senhas não coincidem!');
-                return;
-            }
-            
-            if (username.length < 3) {
-                showError('register-error', 'Nome de usuário muito curto! Use no mínimo 3 caracteres.');
-                return;
-            }
-            
-            registerUser(username, displayName, password);
-        });
-
-        // Navigation buttons
-        document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                switchTab(btn.dataset.tab);
-            });
-        });
-
-        // Rosary picker button
-        document.getElementById('rosary-picker-btn').addEventListener('click', showRosaryPicker);
-
-        // Prayer buttons
-        document.querySelectorAll('.quick-btn[data-prayer]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                startPrayer(btn.dataset.prayer);
-            });
-        });
-
-        // Logout button
-        document.getElementById('logout-btn').addEventListener('click', logoutUser);
     });
 
-    // AUTH STATE OBSERVER
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            // User is signed in
-            appState.currentUser = user;
-            await loadUserProfile(user.uid);
-            
-            // Show main app
-            document.getElementById('auth-screen').classList.remove('active');
-            document.getElementById('main-app').classList.add('active');
-            
-            // Reset login button
-            setButtonLoading('login-btn', false);
-            document.getElementById('login-btn').textContent = 'Entrar';
-            
-        } else {
-            // User is signed out
-            appState.currentUser = null;
-            appState.userProfile = null;
-            
-            // Show auth screen
-            document.getElementById('main-app').classList.remove('active');
-            document.getElementById('auth-screen').classList.add('active');
-        }
+    // Login form
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('login-username').value.trim();
+        const password = document.getElementById('login-password').value;
+        loginUser(username, password);
     });
 
+    // Register form
+    document.getElementById('register-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('register-username').value.trim();
+        const displayName = document.getElementById('register-displayname').value.trim();
+        const password = document.getElementById('register-password').value;
+        const confirm = document.getElementById('register-confirm').value;
+        
+        if (password !== confirm) {
+            showError('register-error', 'As senhas não coincidem!');
+            return;
+        }
+        
+        if (username.length < 3) {
+            showError('register-error', 'Nome de usuário muito curto! Use no mínimo 3 caracteres.');
+            return;
+        }
+        
+        registerUser(username, displayName, password);
+    });
+});
+
+// Exportar funções globalmente
+window.firebaseAuth = { logoutUser };
 </script>
 
+<script>
+// ===== SISTEMA DE ÁUDIO INTERATIVO =====
+const AudioSystem = {
+    ctx: null,
+    enabled: false,
+    
+    init() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+    },
+    
+    // Som de conta - madeira/pedra suave
+    playBead(type = 'ave') {
+        if (!this.enabled) return;
+        this.init();
+        
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+        
+        filter.type = 'lowpass';
+        osc.type = 'sine';
+        
+        if (type === 'pater') {
+            // Som mais rico e ressonante para Pai Nosso
+            osc.frequency.setValueAtTime(200, now);
+            osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+            filter.frequency.setValueAtTime(900, now);
+            gain.gain.setValueAtTime(0.18, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        } else if (type === 'special') {
+            // Som cristalino para contas especiais
+            osc.frequency.setValueAtTime(280, now);
+            osc.frequency.exponentialRampToValueAtTime(140, now + 0.15);
+            filter.frequency.setValueAtTime(700, now);
+            gain.gain.setValueAtTime(0.14, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        } else {
+            // Som suave de madeira para Ave Maria
+            osc.frequency.setValueAtTime(160, now);
+            osc.frequency.exponentialRampToValueAtTime(80, now + 0.12);
+            filter.frequency.setValueAtTime(550, now);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        }
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        osc.start(now);
+        osc.stop(now + 0.4);
+        
+        // Adiciona textura de toque
+        this.addClickTexture(type);
+    },
+    
+    addClickTexture(type) {
+        const now = this.ctx.currentTime;
+        const bufferSize = this.ctx.sampleRate * 0.04;
+        const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * 0.25 * (1 - i / bufferSize);
+        }
+        
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        
+        const noiseGain = this.ctx.createGain();
+        const noiseFilter = this.ctx.createBiquadFilter();
+        
+        noiseFilter.type = 'bandpass';
+        noiseFilter.frequency.setValueAtTime(type === 'pater' ? 2500 : 3500, now);
+        noiseFilter.Q.setValueAtTime(1, now);
+        
+        const vol = type === 'pater' ? 0.1 : 0.06;
+        noiseGain.gain.setValueAtTime(vol, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        
+        noise.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+        
+        noise.start(now);
+    },
+    
+    // Som de sino ao iniciar
+    playBell() {
+        if (!this.enabled) return;
+        this.init();
+        
+        const now = this.ctx.currentTime;
+        const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
+        
+        frequencies.forEach((freq, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            
+            osc.frequency.setValueAtTime(freq, now);
+            osc.type = 'sine';
+            
+            const startTime = now + i * 0.12;
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.1 / (i + 1), startTime + 0.06);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 2.5);
+            
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            
+            osc.start(startTime);
+            osc.stop(startTime + 3);
+        });
+    },
+    
+    // Som de conclusão - acorde ascendente
+    playComplete() {
+        if (!this.enabled) return;
+        this.init();
+        
+        const now = this.ctx.currentTime;
+        const notes = [261.63, 329.63, 392, 523.25]; // C4, E4, G4, C5
+        
+        notes.forEach((freq, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            
+            osc.frequency.setValueAtTime(freq, now);
+            osc.type = 'sine';
+            
+            const startTime = now + i * 0.18;
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.12, startTime + 0.06);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 2);
+            
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            
+            osc.start(startTime);
+            osc.stop(startTime + 2.5);
+        });
+    },
+    
+    toggle() {
+        this.enabled = !this.enabled;
+        return this.enabled;
+    }
+};
+
+// ===== TEXTOS DAS ORAÇÕES =====
+const TEXTS = {
+    cross: `Em nome do Pai, e do Filho, e do Espírito Santo. Amém.`,
+    credo: `Creio em Deus Pai todo-poderoso, Criador do Céu e da terra; e em Jesus Cristo, seu único Filho, Nosso Senhor, que foi concebido pelo poder do Espírito Santo; nasceu da Virgem Maria; padeceu sob Pôncio Pilatos, foi crucificado, morto e sepultado; desceu à mansão dos mortos; ressuscitou ao terceiro dia; subiu aos Céus; está sentado à direita de Deus Pai todo-poderoso, de onde há de vir a julgar os vivos e os mortos. Creio no Espírito Santo; na Santa Igreja Católica; na comunhão dos Santos; na remissão dos pecados; na ressurreição da carne; na vida eterna. Amém.`,
+    pater: `Pai nosso que estais nos Céus, santificado seja o vosso Nome, venha a nós o vosso Reino, seja feita a vossa vontade assim na terra como no Céu. O pão nosso de cada dia nos dai hoje, perdoai-nos as nossas ofensas assim como nós perdoamos a quem nos tem ofendido, e não nos deixeis cair em tentação, mas livrai-nos do Mal. Amém.`,
+    ave: `Ave Maria, cheia de graça, o Senhor é convosco, bendita sois vós entre as mulheres e bendito é o fruto do vosso ventre, Jesus. Santa Maria, Mãe de Deus, rogai por nós pecadores, agora e na hora da nossa morte. Amém.`,
+    gloria: `Glória ao Pai, e ao Filho, e ao Espírito Santo. Assim como era no princípio, agora e sempre, e por todos os séculos dos séculos. Amém.`,
+    fatima: `Ó meu Jesus, perdoai-nos, livrai-nos do fogo do inferno, levai as almas todas para o Céu, principalmente as que mais precisarem da vossa Misericórdia.`,
+    salve: `Salve Rainha, Mãe de Misericórdia, vida, doçura e esperança nossa, salve! A vós bradamos, os degredados filhos de Eva. A vós suspiramos, gemendo e chorando neste vale de lágrimas. Eia pois, advogada nossa, esses vossos olhos misericordiosos a nós volvei. E depois deste desterro, mostrai-nos Jesus, bendito fruto do vosso ventre. Ó clemente, ó piedosa, ó doce sempre Virgem Maria. Rogai por nós, Santa Mãe de Deus, para que sejamos dignos das promessas de Cristo. Amém.`
+};
+
+// ===== MEDITAÇÕES MONTFORT =====
+const MONTFORT = {
+    intro: ["Em honra do Pai Eterno, que gera seu Filho contemplando-Se.", "Em honra do Verbo Eterno, igual ao Pai, que com Ele produz o Espírito Santo.", "Em honra do Espírito Santo, que procede do Pai e do Filho por via de amor."],
+    gozosos: { name: "Mistérios Gozosos", mysteries: [
+        { title: "A Anunciação do Anjo a Nossa Senhora", pater: "A caridade de Deus, imensa.", aves: ["Para lamentar o desgraçado estado de Adão desobediente, sua justa condenação e a de todos os seus filhos.", "Os desejos dos patriarcas e profetas, que pediam a vinda do Messias.", "Os desejos e as preces da Santíssima Virgem, que apressaram a vinda do Messias.", "A caridade do Pai Eterno, que nos deu Seu divino Filho.", "O amor do Filho, que se entregou por nós.", "A embaixada e a saudação do arcanjo Gabriel.", "O temor virginal de Maria.", "A fé e o consentimento da Santíssima Virgem.", "A criação da alma e a formação do Corpo de Jesus Cristo no seio de Maria, pelo Espírito Santo.", "A adoração do Verbo Encarnado, pelos anjos, no seio de Maria."] },
+        { title: "A Visitação de Nossa Senhora a Santa Isabel", pater: "A majestade de Deus, adorável.", aves: ["O gozo do Coração de Maria e a morada durante nove meses, do Verbo em seu seio.", "O sacrifício que Jesus Cristo fez de Si mesmo ao Pai, ao entrar neste Mundo.", "As complacências de Jesus no seio humilde e virginal de Maria, e de Nossa Senhora, no gozo do seu Deus.", "A dúvida de São José acerca da maternidade de Maria.", "A eleição dos escolhidos, combinada entre Jesus e Maria, em seu seio.", "O fervor de Maria na sua visita a Santa Isabel.", "A santificação de João Batista no ventre de sua mãe.", "A gratidão da Santíssima Virgem para com Deus, no Magnificat.", "A sua caridade e humildade em servir sua prima.", "A mútua dependência de Jesus e de Maria, e a devoção que devemos ter para com um e outra."] },
+        { title: "O Nascimento de Jesus em Belém", pater: "As riquezas de Deus, infinitas.", aves: ["Os desprezos e injúrias feitas a Maria e a São José em Belém.", "A pobreza do estábulo onde Deus veio ao mundo.", "A alta contemplação e o excessivo amor de Maria no momento de dar à luz.", "A saída do Verbo Eterno do seio de Maria sem romper o selo de sua virgindade.", "As adorações e cânticos dos anjos no nascimento de Jesus.", "A formosura arrebatadora de Sua divina infância.", "A vinda dos pastores ao estábulo, com seus presentes.", "A circuncisão de Jesus Cristo e Suas dores amorosas.", "A imposição do nome de Jesus Cristo e suas grandezas.", "A adoração dos reis magos e seus presentes."] },
+        { title: "A Apresentação de Jesus no Templo", pater: "A sabedoria de Deus, eterna.", aves: ["A obediência de Jesus e de Maria à Lei.", "O sacrifício que ali fez Jesus de sua humanidade.", "O sacrifício que ali fez Maria de sua honra.", "O gozo e os cânticos de Simeão e Ana, a profetisa.", "O resgate de Jesus pela oferenda de duas rolas.", "A matança dos santos inocentes.", "A fuga de Jesus para o Egito, pela obediência de São José à voz do anjo.", "A estada misteriosa no Egito.", "A Sua volta para Nazaré.", "O seu crescimento em idade, sabedoria e graça."] },
+        { title: "O Encontro de Jesus no Templo", pater: "A santidade de Deus, incompreensível.", aves: ["A Sua vida oculta, laboriosa e obediente na casa de Nazaré.", "A sua perda e encontro no Templo entre os doutores.", "O seu jejum e tentações no deserto.", "O seu Batismo por São João Batista.", "A sua pregação admirável.", "Os seus milagres portentosos.", "A eleição de seus doze Apóstolos e os poderes que lhes deu.", "A sua transfiguração maravilhosa.", "O lava-pés dos Apóstolos.", "A instituição da Sagrada Eucaristia."] }
+    ]},
+    dolorosos: { name: "Mistérios Dolorosos", mysteries: [
+        { title: "A Agonia de Jesus no Horto", pater: "A felicidade de Deus, essencial.", aves: ["Os divinos retiros que fez Jesus em Sua vida, principalmente no horto.", "As suas orações humildes e fervorosas durante Sua vida e nas vésperas da Paixão.", "A paciência e doçura com que suportou Seus Apóstolos, particularmente no horto.", "O tédio de sua Alma durante toda a Sua vida, principalmente no horto.", "Os rios de sangue que a dor fez brotar de seu Ser adorável.", "O consolo que teve por bem aceitar de um anjo na agonia.", "A sua conformidade com a vontade do Pai, apesar da repugnância de Sua natureza.", "A Sua traição por Judas e prisão pelos judeus.", "O valor com que saiu ao encontro dos algozes e a força da palavra com que os lançou por terra.", "O abandono que sofreu de Seus Apóstolos."] },
+        { title: "A Flagelação de Jesus", pater: "A paciência de Deus, admirável.", aves: ["As cordas com que Jesus foi atado.", "A bofetada que recebeu em casa de Caifás.", "As negações de São Pedro.", "As ignomínias que sofreu em casa de Herodes, quando lhe puseram a veste branca.", "O despojamento de Suas vestes.", "Os desprezos e insultos que sofreu de seus verdugos pela Sua nudez.", "As varas espinhosas e os açoites cruéis com que foi golpeado.", "A coluna em que foi atado.", "O sangue que derramou e as chagas que recebeu.", "A Sua queda no próprio sangue por causa da fraqueza."] },
+        { title: "A Coroação de Espinhos", pater: "A formosura de Deus, inefável.", aves: ["O despojamento de Suas vestes pela terceira vez.", "A Sua coroa de espinhos.", "O véu com que Lhe vendaram os olhos.", "As bofetadas e os escarros com que Lhe cobriram o rosto.", "O andrajo que Lhe puseram sobre os ombros.", "A cana que Lhe puseram nas mãos.", "A pedra pontiaguda sobre a qual O sentaram.", "Os ultrajes e os insultos que Lhe fizeram.", "O sangue e os suores que escorriam de Sua cabeça adorável.", "Os cabelos e a barba que Lhe arrancaram."] },
+        { title: "Jesus Carrega a Cruz", pater: "A onipotência de Deus, sem limites.", aves: ["A apresentação de Nosso Senhor diante do povo com o 'Eis o Homem'.", "O haver sido preferido a Barrabás.", "Os falsos testemunhos que contra Ele deram.", "A Sua condenação à morte.", "O amor com que abraçou e beijou a Cruz.", "O trabalho espantoso que teve em carregá-la.", "As quedas de pura debilidade sob seu peso.", "O encontro doloroso com Sua Santa Mãe.", "O véu de Verônica, no qual Seu rosto se estampou.", "As suas lágrimas, as de Sua Santa Mãe e das piedosas mulheres que O seguiram até o Calvário."] },
+        { title: "A Crucificação e Morte de Jesus", pater: "A justiça de Deus, espantosa.", aves: ["As cinco chagas de Jesus e o sangue que derramou na Cruz.", "O seu coração traspassado e a Cruz em que foi crucificado.", "Os cravos e a lança que O atravessaram.", "A vergonha e a infâmia que sofreu, sendo crucificado entre dois ladrões.", "A compaixão de Sua Mãe Santíssima.", "As sete últimas palavras.", "O seu desamparo e Seu silêncio.", "A aflição de todo o Universo.", "A Sua morte cruel e ignominiosa.", "A descida da Cruz e sepultamento."] }
+    ]},
+    gloriosos: { name: "Mistérios Gloriosos", mysteries: [
+        { title: "A Ressurreição de Jesus", pater: "A eternidade de Deus, sem princípio.", aves: ["A descida da Alma de Nosso Senhor aos Infernos.", "O gozo e a saída das almas dos Santos Padres que estavam no limbo.", "A reunião de Sua Alma e de Seu Corpo no sepulcro.", "A sua milagrosa saída do Sepulcro.", "As suas vitórias sobre a morte, o pecado, o mundo e o demônio.", "Os quatro dons gloriosos de Seu Corpo.", "O poder que Lhe deu Seu pai no céu e na terra.", "As aparições com que honrou Sua Santa Mãe.", "As conversações sobre o Céu e a ceia que fez com Seus Apóstolos.", "A autoridade e missão que lhes deu, para que fossem pregar por toda a Terra."] },
+        { title: "A Ascensão de Jesus ao Céu", pater: "A imensidade de Deus, sem limites.", aves: ["A promessa que fez Jesus aos Apóstolos de lhes enviar o Espírito Santo.", "A reunião no Monte das Oliveiras.", "A benção que lhes deu ao se elevar da Terra aos Céus.", "A Sua gloriosa e admirável Ascensão por Sua própria virtude até o Céu Empíreo.", "O recebimento e o triunfo que lhe fez Deus, Seu Pai, e toda a corte celestial.", "O poder triunfante com que abriu as portas do Céu, onde nenhum mortal havia entrado.", "O seu assento à direita do Pai, como Seu Filho querido, igual a Ele mesmo.", "O poder que Lhe deu de julgar os vivos e os mortos.", "A Sua última vinda sobre a Terra, na qual Seu poder e majestade aparecerão em todo o seu esplendor.", "A justiça que fará no último Juízo, recompensando os bons e castigando os maus por toda a eternidade."] },
+        { title: "A Vinda do Espírito Santo", pater: "A providência de Deus, universal.", aves: ["A Verdade do Espírito Santo, Deus que procede do Pai e do Filho.", "O dom do Espírito Santo pelo Pai e pelo Filho sobre os Apóstolos.", "O grande estrondo com que desceu, sinal de Sua força e Seu poder.", "As línguas de fogo que enviou sobre os Apóstolos.", "A plenitude de graças com que distinguiu Maria, Sua fiel esposa.", "A Sua conduta maravilhosa, com os santos e com o próprio Jesus Cristo.", "Os doze frutos do Espírito Santo.", "Os sete dons do Espírito Santo.", "Para pedir em particular o dom da Sabedoria e a vinda de Seu reino aos corações.", "Para obter a vitória sobre os três espíritos que Lhe são opostos: o espírito da carne, do mundo e do demônio."] },
+        { title: "A Assunção de Nossa Senhora", pater: "A liberalidade de Deus, inenarrável.", aves: ["A predestinação eterna de Maria, como obra-prima das mãos de Deus.", "A Sua Conceição Imaculada, a plenitude de graças e o uso da razão no seio de sua mãe.", "A Sua Natividade que regozijou todo o Universo.", "A Sua apresentação e sua vida no Templo.", "A Sua vida admirável e isenta de todo pecado.", "A plenitude de suas virtudes singulares.", "A Sua virgindade fecunda e seu parto sem dor.", "A Sua maternidade divina e sua aliança com a Santíssima Trindade.", "A Sua morte preciosa e cheia de amor.", "A Sua ressurreição e assunção triunfante."] },
+        { title: "A Coroação de Nossa Senhora", pater: "A glória de Deus, inacessível.", aves: ["A tríplice coroa com que a Santíssima Trindade coroou Maria.", "O gozo e a glória nova que recebeu o Céu por seu triunfo.", "Para reconhecê-la como Rainha do Céu e da Terra, dos anjos e dos homens.", "A tesoureira e dispensadora de todas as graças de Deus.", "A Medianeira e advogada dos homens.", "A destruidora e a ruína do demônio e das heresias.", "O refúgio seguro dos pecadores.", "A mãe e nutriz dos cristãos.", "A que é gozo e doçura dos justos.", "A que é asilo universal dos vivos, consolo todo-poderoso dos aflitos, dos moribundos e das almas do purgatório."] }
+    ]}
+};
+
+// ===== APP =====
+const app = {
+    state: { type: null, beads: [], index: 0, showText: false },
+    els: {},
+    
+    init() {
+        this.els = {
+            home: document.getElementById('home-screen'),
+            prayer: document.getElementById('prayer-screen'),
+            completion: document.getElementById('completion-screen'),
+            track: document.getElementById('bead-track'),
+            progressFill: document.getElementById('progress-fill'),
+            progressText: document.getElementById('progress-text'),
+            group: document.getElementById('prayer-group'),
+            mystery: document.getElementById('prayer-mystery'),
+            name: document.getElementById('prayer-name'),
+            count: document.getElementById('prayer-count'),
+            meditationBox: document.getElementById('meditation-box'),
+            meditationText: document.getElementById('meditation-text'),
+            textToggle: document.getElementById('prayer-text-toggle'),
+            fullText: document.getElementById('prayer-full-text'),
+            prevBtn: document.getElementById('prev-btn'),
+            audioToggle: document.getElementById('audio-toggle'),
+            audioIconOn: document.getElementById('audio-icon-on'),
+            audioIconOff: document.getElementById('audio-icon-off')
+        };
+        this.setTodayInfo();
+        this.setupGestures();
+        this.setupKeyboard();
+    },
+    
+    setTodayInfo() {
+        const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+        const mysteries = { 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
+        const d = new Date().getDay();
+        document.getElementById('today-info').innerHTML = `Hoje é <strong>${days[d]}</strong> — Mistérios <strong>${mysteries[d]}</strong>`;
+    },
+    
+    setupGestures() {
+        let startY = 0;
+        const body = document.getElementById('prayer-body');
+        body.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+        body.addEventListener('touchend', e => {
+            if (!this.state.type) return;
+            const dy = startY - e.changedTouches[0].clientY;
+            if (Math.abs(dy) > 45) { if (dy > 0) this.next(); else this.prev(); }
+        }, { passive: true });
+        
+        // Scroll wheel
+        let wheelTimeout;
+        window.addEventListener('wheel', e => {
+            if (!this.state.type || wheelTimeout) return;
+            if (e.deltaY > 0) this.next();
+            else if (e.deltaY < 0) this.prev();
+            wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 180);
+        }, { passive: true });
+    },
+    
+    setupKeyboard() {
+        document.addEventListener('keydown', e => {
+            if (!this.state.type) return;
+            if (['ArrowDown', 'ArrowRight', ' '].includes(e.key)) { e.preventDefault(); this.next(); }
+            if (['ArrowUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); this.prev(); }
+            if (e.key === 'Escape') this.confirmExit();
+            if (e.key.toLowerCase() === 't') this.toggleText();
+            if (e.key.toLowerCase() === 'm') this.toggleAudio();
+        });
+    },
+    
+    toggleAudio() {
+        const enabled = AudioSystem.toggle();
+        this.els.audioToggle.classList.toggle('active', enabled);
+        this.els.audioIconOn.style.display = enabled ? 'block' : 'none';
+        this.els.audioIconOff.style.display = enabled ? 'none' : 'block';
+        if (enabled) AudioSystem.playBell();
+    },
+    
+    generateBeads(type) {
+        const beads = []; let id = 0;
+        const add = (beadType, name, textKey, meditation = '', meta = {}) => { beads.push({ id: id++, beadType, name, textKey, meditation, ...meta }); };
+        
+        add('special', 'Sinal da Cruz', 'cross', 'Fé na presença de Deus; Fé no Evangelho; Fé e obediência ao Papa como Vigário de Jesus Cristo.');
+        add('special', 'Creio em Deus Pai', 'credo', 'Professamos nossa fé no Deus Uno e Trino e em todos os artigos da Santa Fé Católica.');
+        add('pater', 'Pai Nosso', 'pater', 'Unidade de um só Deus, vivo e verdadeiro.');
+        
+        MONTFORT.intro.forEach((med, i) => { add('ave', 'Ave Maria', 'ave', med, { count: `${i + 1}ª Ave Maria · Virtudes Teologais` }); });
+        add('special', 'Glória ao Pai', 'gloria', 'Damos glória à Santíssima Trindade.');
+        
+        let groups = type === 'completo' ? [MONTFORT.gozosos, MONTFORT.dolorosos, MONTFORT.gloriosos] : [MONTFORT[type]];
+        
+        groups.forEach(group => {
+            group.mysteries.forEach((mystery, mIdx) => {
+                const mysteryNum = mIdx + 1;
+                add('pater', 'Pai Nosso', 'pater', mystery.pater, { group: group.name, mystery: mystery.title, count: `${mysteryNum}º Mistério` });
+                mystery.aves.forEach((med, aIdx) => { add('ave', 'Ave Maria', 'ave', med, { group: group.name, mystery: mystery.title, count: `${mysteryNum}ª Dezena · ${aIdx + 1}ª Ave Maria` }); });
+                add('special', 'Glória ao Pai', 'gloria', '', { group: group.name, mystery: mystery.title, count: `${mysteryNum}ª Dezena` });
+                add('special', 'Oração de Fátima', 'fatima', 'Oração ensinada por Nossa Senhora aos pastorinhos de Fátima.', { group: group.name, mystery: mystery.title, count: `${mysteryNum}ª Dezena` });
+            });
+        });
+        
+        add('special', 'Salve Rainha', 'salve', 'Saudemos a Rainha do Céu e da Terra, nossa Mãe e Advogada.');
+        return beads;
+    },
+    
+    start(type) {
+        this.state.type = type;
+        this.state.beads = this.generateBeads(type);
+        this.state.index = 0;
+        this.state.showText = false;
+        
+        this.els.track.innerHTML = '';
+        this.state.beads.forEach((bead, idx) => {
+            const el = document.createElement('div');
+            el.className = `bead ${bead.beadType}`;
+            if (bead.beadType !== 'ave' && bead.beadType !== 'pater') el.classList.add('special');
+            if (idx === 0) el.classList.add('active');
+            el.onclick = () => this.goTo(idx);
+            this.els.track.appendChild(el);
+        });
+        
+        this.els.home.classList.add('hidden');
+        this.els.prayer.classList.add('active');
+        AudioSystem.playBell();
+        this.update();
+    },
+    
+    goTo(idx) {
+        if (idx >= 0 && idx < this.state.beads.length) {
+            this.state.index = idx;
+            this.update();
+            AudioSystem.playBead(this.state.beads[idx].beadType);
+        }
+    },
+    
+    next() {
+        if (this.state.index < this.state.beads.length - 1) {
+            this.state.index++;
+            this.update();
+            AudioSystem.playBead(this.state.beads[this.state.index].beadType);
+        } else {
+            this.complete();
+        }
+    },
+    
+    prev() {
+        if (this.state.index > 0) {
+            this.state.index--;
+            this.update();
+            AudioSystem.playBead(this.state.beads[this.state.index].beadType);
+        }
+    },
+    
+    update() {
+        const idx = this.state.index;
+        const bead = this.state.beads[idx];
+        const total = this.state.beads.length;
+        
+        const pct = ((idx + 1) / total) * 100;
+        this.els.progressFill.style.width = `${pct}%`;
+        this.els.progressText.textContent = `${idx + 1} / ${total}`;
+        
+        const animatedEls = [this.els.group, this.els.mystery, this.els.name, this.els.count, this.els.meditationBox];
+        animatedEls.forEach(el => el.classList.remove('visible'));
+        
+        setTimeout(() => {
+            this.els.group.textContent = bead.group || '';
+            this.els.mystery.textContent = bead.mystery || '';
+            this.els.name.textContent = bead.name;
+            this.els.count.textContent = bead.count || '';
+            this.els.meditationText.textContent = bead.meditation;
+            this.els.fullText.innerHTML = `<p>${TEXTS[bead.textKey]}</p>`;
+            
+            if (!this.state.showText) {
+                this.els.fullText.classList.remove('visible');
+                this.els.textToggle.classList.remove('expanded');
+                this.els.textToggle.querySelector('span').textContent = 'Ver texto da oração';
+            }
+            
+            animatedEls.forEach(el => el.classList.add('visible'));
+        }, 120);
+        
+        this.els.prevBtn.disabled = idx === 0;
+        
+        const beadEls = this.els.track.children;
+        Array.from(beadEls).forEach(el => el.classList.remove('active'));
+        beadEls[idx].classList.add('active');
+        
+        const activeEl = beadEls[idx];
+        const beadCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
+        this.els.track.style.transform = `translate(-50%, -${beadCenter}px)`;
+    },
+    
+    toggleText() {
+        this.state.showText = !this.state.showText;
+        if (this.state.showText) {
+            this.els.fullText.classList.add('visible');
+            this.els.textToggle.classList.add('expanded');
+            this.els.textToggle.querySelector('span').textContent = 'Ocultar texto';
+        } else {
+            this.els.fullText.classList.remove('visible');
+            this.els.textToggle.classList.remove('expanded');
+            this.els.textToggle.querySelector('span').textContent = 'Ver texto da oração';
+        }
+    },
+    
+    confirmExit() { if (confirm('Deseja realmente sair do Rosário?')) this.home(); },
+    
+    home() {
+        this.state.type = null;
+        this.els.prayer.classList.remove('active');
+        this.els.completion.classList.remove('active');
+        this.els.home.classList.remove('hidden');
+    },
+    
+    complete() {
+        AudioSystem.playComplete();
+        const aves = this.state.beads.filter(b => b.beadType === 'ave').length;
+        const paters = this.state.beads.filter(b => b.beadType === 'pater').length;
+        document.getElementById('stat-aves').textContent = aves;
+        document.getElementById('stat-paters').textContent = paters;
+        
+        const msgs = {
+            gozosos: 'Você completou os Mistérios Gozosos. Que a alegria de Maria esteja convosco.',
+            dolorosos: 'Você completou os Mistérios Dolorosos. Que os sofrimentos de Cristo vos fortaleçam.',
+            gloriosos: 'Você completou os Mistérios Gloriosos. Que a glória do Céu vos aguarde.',
+            completo: 'Você completou o Santo Rosário inteiro! Que Nossa Senhora interceda por vós.'
+        };
+        document.getElementById('completion-msg').textContent = msgs[this.state.type];
+        
+        this.els.prayer.classList.remove('active');
+        this.els.completion.classList.add('active');
+    }
+};
+
+app.init();
+</script>
 </body>
 </html>
