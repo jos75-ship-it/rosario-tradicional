@@ -1392,7 +1392,8 @@
             </button>
         </div>
     </div>
-</div>
+            </div>
+        </div>
 
         <!-- TAB CALENDÁRIO -->
         <div id="tab-calendar" class="tab-content">
@@ -2061,7 +2062,6 @@ const app = {
             this.els.track.appendChild(el);
         });
         
-        this.els.mainApp.style.display = 'none';
         this.els.prayer.classList.add('active');
         AudioSystem.playBell();
         this.update();
@@ -2152,7 +2152,6 @@ const app = {
         this.state.type = null;
         this.els.prayer.classList.remove('active');
         this.els.completion.classList.remove('active');
-        this.els.mainApp.style.display = '';
     },
     
     complete() {
