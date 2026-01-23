@@ -39,7 +39,7 @@
             --border-gold: rgba(212, 168, 85, 0.25);
             
             --font-display: 'Cinzel', serif;
-            --font-body: 'Cormorant Garamont', serif;
+            --font-body: 'Cormorant Garamond', serif;
             
             --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
@@ -664,6 +664,20 @@
         .nav-item.active::before {
             width: 40px;
         }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(212, 168, 85, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -676,40 +690,43 @@
         <p class="auth-subtitle">Método de São Luís de Montfort</p>
         
         <div class="auth-info">
-            ✨ <strong>Cloud Enabled:</strong> Seus dados são salvos automaticamente na nuvem!
+            ✨ <strong>Autenticação Segura:</strong> Seus dados são protegidos com Firebase Authentication!
         </div>
 
         <div class="auth-tabs">
-            <button class="auth-tab active" data-tab="login">Entrar</button>
-            <button class="auth-tab" data-tab="register">Criar Conta</button>
+            <button class="auth-tab active" data-tab="login" type="button">Entrar</button>
+            <button class="auth-tab" data-tab="register" type="button">Criar Conta</button>
         </div>
 
         <form id="login-form" class="auth-form active">
             <div class="input-group">
-                <label class="input-label">Nome</label>
-                <input type="text" class="input-field" id="login-username" placeholder="Seu nome" required>
+                <label class="input-label">Nome de Usuário</label>
+                <input type="text" class="input-field" id="login-username" placeholder="Seu nome de usuário" required autocomplete="username">
             </div>
             <div class="input-group">
                 <label class="input-label">Senha</label>
-                <input type="password" class="input-field" id="login-password" placeholder="Sua senha" required>
+                <input type="password" class="input-field" id="login-password" placeholder="Sua senha" required autocomplete="current-password">
             </div>
             <button type="submit" class="auth-btn" id="login-btn">Entrar</button>
             <div class="auth-error" id="login-error"></div>
-            <div class="auth-success" id="login-success"></div>
         </form>
 
         <form id="register-form" class="auth-form">
             <div class="input-group">
-                <label class="input-label">Escolha um Nome</label>
-                <input type="text" class="input-field" id="register-username" placeholder="Ex: Maria" required minlength="2">
+                <label class="input-label">Nome de Usuário</label>
+                <input type="text" class="input-field" id="register-username" placeholder="Escolha um nome" required minlength="3" autocomplete="username">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Nome Completo</label>
+                <input type="text" class="input-field" id="register-displayname" placeholder="Seu nome completo" required minlength="2" autocomplete="name">
             </div>
             <div class="input-group">
                 <label class="input-label">Crie uma Senha</label>
-                <input type="password" class="input-field" id="register-password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                <input type="password" class="input-field" id="register-password" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password">
             </div>
             <div class="input-group">
                 <label class="input-label">Confirme a Senha</label>
-                <input type="password" class="input-field" id="register-confirm" placeholder="Repita a senha" required>
+                <input type="password" class="input-field" id="register-confirm" placeholder="Repita a senha" required autocomplete="new-password">
             </div>
             <button type="submit" class="auth-btn" id="register-btn">Criar Conta</button>
             <div class="auth-error" id="register-error"></div>
@@ -756,10 +773,10 @@
                 <div class="quick-start">
                     <p class="quick-label">Iniciar Oração</p>
                     <div class="quick-grid">
-                        <button type="button" class="quick-btn" onclick="app.startPrayer('gozosos')">Gozosos</button>
-                        <button type="button" class="quick-btn" onclick="app.startPrayer('dolorosos')">Dolorosos</button>
-                        <button type="button" class="quick-btn" onclick="app.startPrayer('gloriosos')">Gloriosos</button>
-                        <button type="button" class="quick-btn full" onclick="app.startPrayer('completo')">Rosário Completo</button>
+                        <button type="button" class="quick-btn" data-prayer="gozosos">Gozosos</button>
+                        <button type="button" class="quick-btn" data-prayer="dolorosos">Dolorosos</button>
+                        <button type="button" class="quick-btn" data-prayer="gloriosos">Gloriosos</button>
+                        <button type="button" class="quick-btn full" data-prayer="completo">Rosário Completo</button>
                     </div>
                 </div>
             </div>
@@ -779,21 +796,21 @@
                     <div class="profile-avatar" id="profile-avatar">👤</div>
                     <h2 class="profile-name" id="profile-name">Usuário</h2>
                 </div>
-                <button type="button" class="profile-btn" onclick="app.logout()">Sair da Conta</button>
+                <button type="button" class="profile-btn" id="logout-btn">Sair da Conta</button>
             </div>
         </div>
     </div>
     
     <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
-        <button type="button" class="nav-item active" onclick="app.switchTab('home')">
+        <button type="button" class="nav-item active" data-tab="home">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 <polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
             <span class="nav-label">Início</span>
         </button>
-        <button type="button" class="nav-item" onclick="app.showRosaryPicker()">
+        <button type="button" class="nav-item" id="rosary-picker-btn">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
                 <circle cx="12" cy="3" r="2.5"/>
@@ -805,7 +822,7 @@
             </svg>
             <span class="nav-label">Rosário</span>
         </button>
-        <button type="button" class="nav-item" onclick="app.switchTab('calendar')">
+        <button type="button" class="nav-item" data-tab="calendar">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
@@ -814,7 +831,7 @@
             </svg>
             <span class="nav-label">Calendário</span>
         </button>
-        <button type="button" class="nav-item" onclick="app.switchTab('profile')">
+        <button type="button" class="nav-item" data-tab="profile">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
@@ -824,205 +841,352 @@
     </nav>
 </div>
 
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+<!-- FIREBASE SDK v9 (modular) -->
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getDatabase, ref, set, get, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-<script>
-// FIREBASE CONFIG
-const firebaseConfig = {
-  apiKey: "AIzaSyAD_SvPlYGGZM1JMZmIjfai-a3TPPKDxLg",
-  authDomain: "rosario-app-a9da0.firebaseapp.com",
-  databaseURL: "https://rosario-app-a9da0-default-rtdb.firebaseio.com",
-  projectId: "rosario-app-a9da0",
-  storageBucket: "rosario-app-a9da0.appspot.com",
-  messagingSenderId: "928215518242",
-  appId: "1:928215518242:web:09c61bfbfc0fc947570e7b"
-};
+    // FIREBASE CONFIG
+    const firebaseConfig = {
+        apiKey: "AIzaSyAD_SvPlYGGZM1JMZmIjfai-a3TPPKDxLg",
+        authDomain: "rosario-app-a9da0.firebaseapp.com",
+        databaseURL: "https://rosario-app-a9da0-default-rtdb.firebaseio.com",
+        projectId: "rosario-app-a9da0",
+        storageBucket: "rosario-app-a9da0.firebasestorage.app",
+        messagingSenderId: "928215518242",
+        appId: "1:928215518242:web:09c61bfbfc0fc947570e7b"
+    };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const database = firebase.database();
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
 
-// DADOS
-const INTENTIONS = [
-    "Pelos que sofrem perseguição por causa da fé.",
-    "Pela conversão dos pecadores e a salvação das almas.",
-    "Pelas vocações sacerdotais e religiosas.",
-    "Pela paz no mundo e o fim das guerras.",
-    "Pelos enfermos e todos que cuidam deles.",
-    "Pelas almas do purgatório, especialmente as mais abandonadas.",
-    "Pela santificação das famílias.",
-    "Pelos jovens, para que encontrem seu caminho em Cristo.",
-    "Pela Igreja e pelo Santo Padre.",
-    "Pelos missionários em terras distantes.",
-];
+    // DADOS
+    const INTENTIONS = [
+        "Pelos que sofrem perseguição por causa da fé.",
+        "Pela conversão dos pecadores e a salvação das almas.",
+        "Pelas vocações sacerdotais e religiosas.",
+        "Pela paz no mundo e o fim das guerras.",
+        "Pelos enfermos e todos que cuidam deles.",
+        "Pelas almas do purgatório, especialmente as mais abandonadas.",
+        "Pela santificação das famílias.",
+        "Pelos jovens, para que encontrem seu caminho em Cristo.",
+        "Pela Igreja e pelo Santo Padre.",
+        "Pelos missionários em terras distantes.",
+    ];
 
-// APP
-const app = {
-    user: null,
-    userName: null,
+    // APP STATE
+    const appState = {
+        currentUser: null,
+        userProfile: null
+    };
 
-    init() {
-        this.setupAuth();
-        this.checkSession();
-    },
+    // UTILITY FUNCTIONS
+    function showElement(id) {
+        document.getElementById(id).classList.add('visible');
+    }
 
-    setupAuth() {
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.onclick = () => {
-                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.tab + '-form').classList.add('active');
-            };
-        });
+    function hideElement(id) {
+        document.getElementById(id).classList.remove('visible');
+    }
 
-        document.getElementById('login-form').onsubmit = (e) => {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value;
-            
-            this.loginWithUsernamePassword(username, password);
+    function setButtonLoading(btnId, isLoading) {
+        const btn = document.getElementById(btnId);
+        btn.disabled = isLoading;
+        if (isLoading) {
+            btn.innerHTML = '<span class="loading"></span>';
+        }
+    }
+
+    function showError(id, message) {
+        const el = document.getElementById(id);
+        el.textContent = message;
+        showElement(id);
+        setTimeout(() => hideElement(id), 5000);
+    }
+
+    function showSuccess(id, message) {
+        const el = document.getElementById(id);
+        el.textContent = message;
+        showElement(id);
+    }
+
+    function getFirebaseErrorMessage(errorCode) {
+        const errors = {
+            'auth/email-already-in-use': 'Este nome de usuário já está em uso!',
+            'auth/invalid-email': 'Nome de usuário inválido!',
+            'auth/operation-not-allowed': 'Operação não permitida!',
+            'auth/weak-password': 'Senha muito fraca! Use no mínimo 6 caracteres.',
+            'auth/user-disabled': 'Usuário desabilitado!',
+            'auth/user-not-found': 'Usuário não encontrado!',
+            'auth/wrong-password': 'Senha incorreta!',
+            'auth/invalid-credential': 'Credenciais inválidas! Verifique seu usuário e senha.',
+            'auth/too-many-requests': 'Muitas tentativas. Aguarde um momento e tente novamente.'
         };
+        return errors[errorCode] || 'Erro ao processar solicitação. Tente novamente.';
+    }
 
-        document.getElementById('register-form').onsubmit = (e) => {
-            e.preventDefault();
-            const username = document.getElementById('register-username').value.trim();
-            const password = document.getElementById('register-password').value;
-            const confirm = document.getElementById('register-confirm').value;
-            
-            if (password !== confirm) {
-                this.showError('register-error', 'Senhas não coincidem!');
-                return;
-            }
-            
-            this.registerWithUsernamePassword(username, password);
-        };
-    },
+    // Converter username para email (para usar Firebase Auth)
+    function usernameToEmail(username) {
+        return username.toLowerCase().replace(/\s+/g, '') + '@rosario.app';
+    }
 
-    loginWithUsernamePassword(username, password) {
-        database.ref('users').orderByChild('name').equalTo(username).once('value', (snapshot) => {
-            if (snapshot.exists()) {
-                const userData = Object.values(snapshot.val())[0];
-                const storedPassword = userData.password;
-                
-                if (storedPassword === password) {
-                    this.user = { uid: Object.keys(snapshot.val())[0] };
-                    this.userName = username;
-                    this.loginSuccess();
-                } else {
-                    this.showError('login-error', 'Senha incorreta!');
-                }
-            } else {
-                this.showError('login-error', 'Usuário não encontrado!');
-            }
-        });
-    },
-
-    registerWithUsernamePassword(username, password) {
-        database.ref('users').orderByChild('name').equalTo(username).once('value', (snapshot) => {
-            if (snapshot.exists()) {
-                this.showError('register-error', 'Este nome já está em uso!');
-                return;
-            }
+    // AUTH FUNCTIONS
+    async function registerUser(username, displayName, password) {
+        try {
+            setButtonLoading('register-btn', true);
             
-            const newUserRef = database.ref('users').push();
-            newUserRef.set({
-                name: username,
-                password: password,
+            const email = usernameToEmail(username);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Salvar perfil no Realtime Database
+            await set(ref(database, 'users/' + user.uid), {
+                username: username,
+                displayName: displayName,
                 createdAt: new Date().toISOString(),
                 prayedDays: {},
                 totalRosaries: 0,
-                totalAves: 0
+                totalAves: 0,
+                currentStreak: 0,
+                longestStreak: 0
             });
+
+            showSuccess('register-success', 'Conta criada com sucesso! Entrando...');
             
-            this.user = { uid: newUserRef.key };
-            this.userName = username;
-            this.showSuccess('register-success', 'Conta criada com sucesso!');
-            setTimeout(() => this.loginSuccess(), 800);
-        });
-    },
+            // Resetar formulário
+            setTimeout(() => {
+                document.getElementById('register-form').reset();
+                hideElement('register-success');
+            }, 2000);
 
-    loginSuccess() {
-        document.getElementById('auth-screen').classList.remove('active');
-        document.getElementById('main-app').classList.add('active');
-        this.loadUserInterface();
-    },
-
-    checkSession() {
-        const stored = localStorage.getItem('rosario_user');
-        if (stored) {
-            const data = JSON.parse(stored);
-            this.user = data.user;
-            this.userName = data.userName;
-            this.loginSuccess();
+        } catch (error) {
+            console.error('Erro no registro:', error);
+            showError('register-error', getFirebaseErrorMessage(error.code));
+        } finally {
+            setButtonLoading('register-btn', false);
+            document.getElementById('register-btn').textContent = 'Criar Conta';
         }
-    },
+    }
 
-    loadUserInterface() {
-        document.getElementById('home-user-name').textContent = this.userName;
-        document.getElementById('profile-name').textContent = this.userName;
+    async function loginUser(username, password) {
+        try {
+            setButtonLoading('login-btn', true);
+            
+            const email = usernameToEmail(username);
+            await signInWithEmailAndPassword(auth, email, password);
+
+        } catch (error) {
+            console.error('Erro no login:', error);
+            showError('login-error', getFirebaseErrorMessage(error.code));
+            setButtonLoading('login-btn', false);
+            document.getElementById('login-btn').textContent = 'Entrar';
+        }
+    }
+
+    async function logoutUser() {
+        if (confirm('Deseja realmente sair?')) {
+            try {
+                await signOut(auth);
+                document.querySelectorAll('.input-field').forEach(f => f.value = '');
+            } catch (error) {
+                console.error('Erro ao sair:', error);
+                alert('Erro ao sair da conta. Tente novamente.');
+            }
+        }
+    }
+
+    async function loadUserProfile(uid) {
+        try {
+            const userRef = ref(database, 'users/' + uid);
+            const snapshot = await get(userRef);
+            
+            if (snapshot.exists()) {
+                appState.userProfile = snapshot.val();
+                updateUI();
+            } else {
+                console.error('Perfil de usuário não encontrado');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar perfil:', error);
+        }
+    }
+
+    function updateUI() {
+        const profile = appState.userProfile;
+        if (!profile) return;
+
+        // Atualizar nome do usuário
+        const displayName = profile.displayName || profile.username;
+        document.getElementById('home-user-name').textContent = displayName;
+        document.getElementById('profile-name').textContent = displayName;
         
+        // Atualizar avatar
+        const initial = displayName.charAt(0).toUpperCase();
+        document.getElementById('profile-avatar').textContent = initial;
+
+        // Atualizar streak
+        const streak = profile.currentStreak || 0;
+        document.getElementById('streak-count').textContent = streak;
+        
+        const streakMsg = streak === 0 ? 'Comece hoje sua jornada de oração' :
+                         streak === 1 ? 'Continue orando! Você começou bem!' :
+                         streak < 7 ? 'Ótimo progresso! Continue assim!' :
+                         streak < 30 ? 'Parabéns! Você está firme na fé!' :
+                         'Incrível! Que exemplo de perseverança!';
+        document.getElementById('streak-message').textContent = streakMsg;
+
+        // Atualizar intenção do dia
         const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
         document.getElementById('today-intention').textContent = INTENTIONS[dayOfYear % INTENTIONS.length];
 
+        // Atualizar dia e mistério
         const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
         const today = new Date();
         document.getElementById('today-day').textContent = days[today.getDay()];
         
         const dayMap = { 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
         document.getElementById('today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
-
-        localStorage.setItem('rosario_user', JSON.stringify({ user: this.user, userName: this.userName }));
-    },
-
-    switchTab(tabName) {
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        
-        event.target.closest('.nav-item').classList.add('active');
-        document.getElementById('tab-' + tabName).classList.add('active');
-    },
-
-    showRosaryPicker() {
-        const choice = prompt('Escolha: gozosos, dolorosos, gloriosos ou completo?', 'gozosos');
-        if (choice && ['gozosos', 'dolorosos', 'gloriosos', 'completo'].includes(choice.toLowerCase())) {
-            this.startPrayer(choice.toLowerCase());
-        }
-    },
-
-    startPrayer(type) {
-        alert('🙏 Rosário de ' + type + ' iniciado!\n\n(Funcionalidade em desenvolvimento)');
-    },
-
-    logout() {
-        if (confirm('Deseja realmente sair?')) {
-            this.user = null;
-            this.userName = null;
-            localStorage.removeItem('rosario_user');
-            document.getElementById('auth-screen').classList.add('active');
-            document.getElementById('main-app').classList.remove('active');
-            document.querySelectorAll('.input-field').forEach(f => f.value = '');
-        }
-    },
-
-    showError(id, msg) {
-        const el = document.getElementById(id);
-        el.textContent = msg;
-        el.classList.add('visible');
-        setTimeout(() => el.classList.remove('visible'), 4000);
-    },
-
-    showSuccess(id, msg) {
-        const el = document.getElementById(id);
-        el.textContent = msg;
-        el.classList.add('visible');
     }
-};
 
-app.init();
+    // NAVIGATION
+    function switchTab(tabName) {
+        // Atualizar nav items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Atualizar tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+
+        // Ativar tab selecionada
+        const tabContent = document.getElementById('tab-' + tabName);
+        if (tabContent) {
+            tabContent.classList.add('active');
+        }
+
+        // Ativar nav item correspondente
+        const navItem = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
+        if (navItem) {
+            navItem.classList.add('active');
+        }
+    }
+
+    function showRosaryPicker() {
+        const types = ['gozosos', 'dolorosos', 'gloriosos', 'completo'];
+        const choice = prompt('Escolha o tipo de Rosário:\n\n1. Gozosos\n2. Dolorosos\n3. Gloriosos\n4. Completo\n\nDigite o nome:', 'gozosos');
+        
+        if (choice && types.includes(choice.toLowerCase())) {
+            startPrayer(choice.toLowerCase());
+        } else if (choice) {
+            alert('Opção inválida! Escolha entre: gozosos, dolorosos, gloriosos ou completo.');
+        }
+    }
+
+    function startPrayer(type) {
+        const typeNames = {
+            'gozosos': 'Mistérios Gozosos',
+            'dolorosos': 'Mistérios Dolorosos',
+            'gloriosos': 'Mistérios Gloriosos',
+            'completo': 'Rosário Completo'
+        };
+        
+        alert(`🙏 ${typeNames[type]} iniciado!\n\n(Funcionalidade de oração em desenvolvimento.\nEm breve você poderá rezar o Rosário guiado pelo app!)`);
+    }
+
+    // EVENT LISTENERS
+    document.addEventListener('DOMContentLoaded', () => {
+        // Auth tabs
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + '-form').classList.add('active');
+            });
+        });
+
+        // Login form
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            loginUser(username, password);
+        });
+
+        // Register form
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value.trim();
+            const displayName = document.getElementById('register-displayname').value.trim();
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            if (password !== confirm) {
+                showError('register-error', 'As senhas não coincidem!');
+                return;
+            }
+            
+            if (username.length < 3) {
+                showError('register-error', 'Nome de usuário muito curto! Use no mínimo 3 caracteres.');
+                return;
+            }
+            
+            registerUser(username, displayName, password);
+        });
+
+        // Navigation buttons
+        document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchTab(btn.dataset.tab);
+            });
+        });
+
+        // Rosary picker button
+        document.getElementById('rosary-picker-btn').addEventListener('click', showRosaryPicker);
+
+        // Prayer buttons
+        document.querySelectorAll('.quick-btn[data-prayer]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                startPrayer(btn.dataset.prayer);
+            });
+        });
+
+        // Logout button
+        document.getElementById('logout-btn').addEventListener('click', logoutUser);
+    });
+
+    // AUTH STATE OBSERVER
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // User is signed in
+            appState.currentUser = user;
+            await loadUserProfile(user.uid);
+            
+            // Show main app
+            document.getElementById('auth-screen').classList.remove('active');
+            document.getElementById('main-app').classList.add('active');
+            
+            // Reset login button
+            setButtonLoading('login-btn', false);
+            document.getElementById('login-btn').textContent = 'Entrar';
+            
+        } else {
+            // User is signed out
+            appState.currentUser = null;
+            appState.userProfile = null;
+            
+            // Show auth screen
+            document.getElementById('main-app').classList.remove('active');
+            document.getElementById('auth-screen').classList.add('active');
+        }
+    });
+
 </script>
+
 </body>
 </html>
