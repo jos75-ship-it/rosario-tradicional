@@ -203,6 +203,131 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ===== MODAL DE AVATAR ===== */
+        #avatar-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 300;
+            padding: 24px;
+        }
+
+        #avatar-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .avatar-modal-content {
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .avatar-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .avatar-modal-close:hover {
+            color: var(--gold);
+        }
+
+        .avatar-modal-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .avatar-option {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid var(--border-subtle);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-smooth);
+        }
+
+        .avatar-option:hover {
+            border-color: var(--gold-dim);
+            background: rgba(212, 168, 85, 0.05);
+            transform: scale(1.08);
+        }
+
+        .avatar-option.selected {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(212, 168, 85, 0.15) 0%, rgba(212, 168, 85, 0.05) 100%);
+            box-shadow: 0 0 20px rgba(212, 168, 85, 0.3);
+            transform: scale(1.1);
+        }
+
+        .avatar-save-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold) 100%);
+            border: 1px solid var(--gold-light);
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--bg-deep);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .avatar-save-btn:hover {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 168, 85, 0.4);
+        }
+
+        .avatar-save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         /* ===== HOME COM SCROLL E SHADOW ===== */
         .home-screen-content {
             overflow-y: auto;
@@ -1622,12 +1747,15 @@
             <div style="padding: 24px 24px 100px 24px; min-height: 100%; display: flex; flex-direction: column; align-items: center;">
                 <!-- Avatar e Nome -->
                 <div style="text-align: center; margin-bottom: 32px;">
-                    <div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 2rem; color: var(--bg-deep);" id="profile-avatar">
+                    <div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 2rem; color: var(--bg-deep); cursor: pointer; transition: all 0.3s;" id="profile-avatar" onclick="openAvatarModal()" onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='0 8px 25px rgba(212, 168, 85, 0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
                         👤
                     </div>
                     <h2 style="font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.1em; color: var(--text-primary); margin-bottom: 8px;" id="profile-name">
                         Usuário
                     </h2>
+                    <p style="font-family: var(--font-body); font-size: 0.75rem; color: var(--text-dim); font-style: italic; cursor: pointer;" onclick="openAvatarModal()">
+                        Clique no avatar para alterar
+                    </p>
                 </div>
 
                 <!-- Streak Card -->
@@ -1720,6 +1848,20 @@
             <span class="nav-label">Perfil</span>
         </button>
     </nav>
+</div>
+
+<!-- MODAL DE SELEÇÃO DE AVATAR -->
+<div id="avatar-modal">
+    <div class="avatar-modal-content">
+        <button type="button" class="avatar-modal-close" onclick="closeAvatarModal()">×</button>
+        <h2 class="avatar-modal-title">Escolha seu Avatar</h2>
+        <div class="avatar-grid" id="avatar-grid">
+            <!-- Avatares serão inseridos aqui via JavaScript -->
+        </div>
+        <button type="button" class="avatar-save-btn" id="avatar-save-btn" onclick="saveAvatar()">
+            Salvar Avatar
+        </button>
+    </div>
 </div>
 
 <!-- TELA DE ORAÇÃO (sobrepõe tudo quando ativa) -->
@@ -1867,6 +2009,7 @@ async function registerUser(username, displayName, password) {
         await set(ref(database, 'users/' + user.uid), {
             username: username,
             displayName: displayName,
+            avatar: '👤',
             createdAt: new Date().toISOString(),
             prayedDays: {},
             totalRosaries: 0,
@@ -1951,13 +2094,14 @@ function updateUserInterface() {
 
     const displayName = profile.displayName || profile.username;
     const initial = displayName.charAt(0).toUpperCase();
+    const avatar = profile.avatar || initial;
     
     // Atualizar Home
     document.getElementById('home-user-name').textContent = displayName;
     
     // Atualizar Perfil
     document.getElementById('profile-name').textContent = displayName;
-    document.getElementById('profile-avatar').textContent = initial;
+    document.getElementById('profile-avatar').textContent = avatar;
     
     // Atualizar Streak
     const streak = profile.currentStreak || 0;
@@ -2718,6 +2862,116 @@ const app = {
 
 app.init();
 window.app = app;
+
+// ===== SISTEMA DE AVATARES =====
+const AVATARS = [
+    '👤', // Padrão
+    '🙏', // Mãos rezando
+    '📿', // Rosário
+    '✝️', // Cruz
+    '⛪', // Igreja
+    '🕊️', // Pomba (Espírito Santo)
+    '🌟', // Estrela
+    '❤️', // Coração
+    '🌹', // Rosa (Nossa Senhora)
+    '📖', // Bíblia
+    '🕯️', // Vela
+    '👑', // Coroa (Cristo Rei)
+    '😇', // Anjo
+    '🌙', // Lua
+    '☀️', // Sol
+    '💫', // Estrela cadente
+];
+
+let selectedAvatar = '👤';
+
+// Renderizar grid de avatares
+function renderAvatarGrid() {
+    const grid = document.getElementById('avatar-grid');
+    grid.innerHTML = '';
+    
+    AVATARS.forEach(avatar => {
+        const option = document.createElement('div');
+        option.className = 'avatar-option';
+        option.textContent = avatar;
+        option.onclick = () => selectAvatar(avatar, option);
+        
+        // Marcar avatar atual como selecionado
+        if (window.userProfile && window.userProfile.avatar === avatar) {
+            option.classList.add('selected');
+            selectedAvatar = avatar;
+        }
+        
+        grid.appendChild(option);
+    });
+}
+
+// Selecionar avatar
+function selectAvatar(avatar, element) {
+    selectedAvatar = avatar;
+    
+    // Remover seleção anterior
+    document.querySelectorAll('.avatar-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    
+    // Adicionar seleção ao novo
+    element.classList.add('selected');
+}
+
+// Abrir modal
+window.openAvatarModal = function() {
+    renderAvatarGrid();
+    document.getElementById('avatar-modal').classList.add('active');
+};
+
+// Fechar modal
+window.closeAvatarModal = function() {
+    document.getElementById('avatar-modal').classList.remove('active');
+};
+
+// Salvar avatar
+window.saveAvatar = async function() {
+    if (!window.currentUser || !selectedAvatar) return;
+    
+    const saveBtn = document.getElementById('avatar-save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Salvando...';
+    
+    try {
+        const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        
+        await update(ref(database, `users/${window.currentUser.uid}`), {
+            avatar: selectedAvatar
+        });
+        
+        // Atualizar perfil local
+        window.userProfile.avatar = selectedAvatar;
+        
+        // Atualizar UI
+        document.getElementById('profile-avatar').textContent = selectedAvatar;
+        
+        // Fechar modal
+        closeAvatarModal();
+        
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Salvar Avatar';
+    } catch (error) {
+        console.error('Erro ao salvar avatar:', error);
+        alert('Erro ao salvar avatar. Tente novamente.');
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Salvar Avatar';
+    }
+};
+
+// Fechar modal ao clicar fora
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('avatar-modal');
+    if (e.target === modal) {
+        closeAvatarModal();
+    }
+});
 </script>
 </body>
 </html>
