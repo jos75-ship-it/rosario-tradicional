@@ -45,11 +45,6 @@
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
             
             --nav-height: 70px;
-            --bead-size: 48px;
-            --bead-size-small: 36px;
-            --bead-size-pater: 56px;
-            --bead-gap: 20px;
-            --rail-width: 100px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -147,7 +142,18 @@
             font-size: 1rem;
             font-style: italic;
             color: var(--text-muted);
-            margin-bottom: 36px;
+            margin-bottom: 20px;
+        }
+
+        .auth-info {
+            background: rgba(212, 168, 85, 0.1);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
         }
 
         .auth-tabs {
@@ -257,6 +263,11 @@
             box-shadow: 0 8px 25px rgba(212, 168, 85, 0.3);
         }
 
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .auth-error {
             margin-top: 16px;
             padding: 12px;
@@ -272,6 +283,21 @@
             display: block;
         }
 
+        .auth-success {
+            margin-top: 16px;
+            padding: 12px;
+            background: rgba(74, 158, 107, 0.15);
+            border: 1px solid rgba(74, 158, 107, 0.3);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #70e070;
+            display: none;
+        }
+
+        .auth-success.visible {
+            display: block;
+        }
+
         #main-app {
             padding-bottom: var(--nav-height);
         }
@@ -280,545 +306,62 @@
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-        }
-
-        /* TAB CONTENT - IMPORTANTE */
-        .tab-content {
-            display: none;
-            width: 100%;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .home-content {
-            padding: 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100%;
+            justify-content: center;
+            padding: 24px;
         }
 
-        .home-header {
+        .welcome-card {
             text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .home-greeting {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .home-user {
-            font-family: var(--font-display);
-            font-size: 1.4rem;
-            color: var(--text-primary);
-            letter-spacing: 0.1em;
-        }
-
-        .streak-card {
-            width: 100%;
-            max-width: 360px;
+            max-width: 500px;
             background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
             border: 1px solid var(--border-subtle);
             border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+            padding: 40px 24px;
         }
 
-        .streak-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim));
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
         }
 
-        .streak-icon {
-            width: 50px;
-            height: 50px;
-            margin: 0 auto 12px;
-            color: var(--gold);
-        }
-
-        .streak-number {
-            font-family: var(--font-display);
-            font-size: 3.5rem;
-            font-weight: 600;
-            color: var(--gold);
-            line-height: 1;
-            text-shadow: 0 0 30px var(--gold-glow);
-        }
-
-        .streak-label {
-            font-family: var(--font-display);
-            font-size: 0.7rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-top: 8px;
-        }
-
-        .streak-subtitle {
-            font-family: var(--font-body);
-            font-size: 0.95rem;
-            font-style: italic;
-            color: var(--text-dim);
-            margin-top: 12px;
-        }
-
-        .intention-card {
-            width: 100%;
-            max-width: 360px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-
-        .intention-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .intention-icon {
-            width: 24px;
-            height: 24px;
-            color: var(--burgundy-light);
-        }
-
-        .intention-title {
-            font-family: var(--font-display);
-            font-size: 0.65rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .intention-text {
-            font-family: var(--font-body);
-            font-size: 1.1rem;
-            font-style: italic;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .today-card {
-            width: 100%;
-            max-width: 360px;
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .today-day {
-            font-family: var(--font-display);
-            font-size: 0.6rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 4px;
-        }
-
-        .today-mystery {
-            font-family: var(--font-body);
-            font-size: 1.1rem;
-            color: var(--gold);
-        }
-
-        .quick-start {
-            width: 100%;
-            max-width: 360px;
-        }
-
-        .quick-label {
-            font-family: var(--font-display);
-            font-size: 0.55rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            text-align: center;
-            margin-bottom: 14px;
-        }
-
-        .quick-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .quick-btn {
-            padding: 18px 14px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            font-family: var(--font-display);
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.35s var(--ease-smooth);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quick-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 168, 85, 0.1), transparent);
-            transition: left 0.6s;
-        }
-
-        .quick-btn:hover::before {
-            left: 100%;
-        }
-
-        .quick-btn:hover {
-            border-color: var(--gold-dim);
-            color: var(--gold);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .quick-btn.full {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, rgba(107, 45, 61, 0.2) 0%, rgba(107, 45, 61, 0.08) 100%);
-            border-color: rgba(138, 61, 80, 0.3);
-            color: var(--cream);
-        }
-
-        .quick-btn.full:hover {
-            background: linear-gradient(135deg, rgba(107, 45, 61, 0.3) 0%, rgba(107, 45, 61, 0.12) 100%);
-        }
-
-        .calendar-content {
-            padding: 20px;
-        }
-
-        .calendar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-        }
-
-        .calendar-nav {
-            background: none;
-            border: 1px solid var(--border-subtle);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .calendar-nav:hover {
-            border-color: var(--gold-dim);
-            color: var(--gold);
-        }
-
-        .calendar-nav svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .calendar-month {
-            font-family: var(--font-display);
-            font-size: 1.1rem;
-            letter-spacing: 0.15em;
-            color: var(--text-primary);
-        }
-
-        .calendar-weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-bottom: 8px;
-        }
-
-        .calendar-weekday {
-            text-align: center;
-            font-family: var(--font-display);
-            font-size: 0.55rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            padding: 8px 0;
-        }
-
-        .calendar-days {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-        }
-
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-card);
-            border: 1px solid transparent;
-            border-radius: 8px;
-            font-family: var(--font-display);
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .calendar-day:hover {
-            border-color: var(--border-gold);
-            background: var(--bg-elevated);
-        }
-
-        .calendar-day.other-month {
-            color: var(--text-dim);
-            background: transparent;
-        }
-
-        .calendar-day.today {
-            border-color: var(--gold-dim);
-            color: var(--gold);
-        }
-
-        .calendar-day.prayed {
-            background: linear-gradient(135deg, rgba(74, 158, 107, 0.2) 0%, rgba(74, 158, 107, 0.08) 100%);
-            border-color: rgba(74, 158, 107, 0.4);
-        }
-
-        .calendar-day.prayed::after {
-            content: '';
-            position: absolute;
-            bottom: 6px;
-            width: 6px;
-            height: 6px;
-            background: var(--success);
-            border-radius: 50%;
-        }
-
-        .calendar-day.today.prayed {
-            background: linear-gradient(135deg, rgba(212, 168, 85, 0.2) 0%, rgba(74, 158, 107, 0.15) 100%);
-            border-color: var(--gold);
-        }
-
-        .calendar-legend {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-subtle);
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-body);
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .legend-dot.prayed {
-            background: var(--success);
-        }
-
-        .legend-dot.today {
-            border: 2px solid var(--gold);
-        }
-
-        .day-info {
-            margin-top: 24px;
-            padding: 20px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-        }
-
-        .day-info-date {
-            font-family: var(--font-display);
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .day-info-intention {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            font-style: italic;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
-
-        .day-info-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-display);
-            font-size: 0.7rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
-
-        .day-info-status.prayed {
-            color: var(--success);
-        }
-
-        .day-info-status.not-prayed {
-            color: var(--text-dim);
-        }
-
-        .day-info-status svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .profile-content {
-            padding: 24px;
-        }
-
-        .profile-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 16px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-display);
-            font-size: 2rem;
-            color: var(--bg-deep);
-        }
-
-        .profile-name {
-            font-family: var(--font-display);
-            font-size: 1.4rem;
-            letter-spacing: 0.1em;
-            color: var(--text-primary);
-        }
-
-        .profile-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 10px;
-            padding: 16px 12px;
-            text-align: center;
-        }
-
-        .stat-value {
+        .welcome-title {
             font-family: var(--font-display);
             font-size: 1.6rem;
-            color: var(--gold);
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: 0.1em;
         }
 
-        .stat-label {
+        .welcome-text {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            line-height: 1.7;
+        }
+
+        .welcome-btn {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+            border: none;
+            border-radius: 4px;
             font-family: var(--font-display);
-            font-size: 0.55rem;
+            font-size: 0.85rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: var(--text-dim);
-            margin-top: 4px;
-        }
-
-        .profile-section {
-            margin-bottom: 24px;
-        }
-
-        .profile-section-title {
-            font-family: var(--font-display);
-            font-size: 0.6rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .profile-btn {
-            width: 100%;
-            padding: 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            font-family: var(--font-display);
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
+            color: var(--bg-deep);
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
         }
 
-        .profile-btn:hover {
-            border-color: var(--gold-dim);
-            color: var(--gold);
+        .welcome-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 168, 85, 0.3);
         }
 
-        .profile-btn svg {
-            width: 18px;
-            height: 18px;
-            color: var(--text-dim);
-        }
-
-        .profile-btn.danger {
-            border-color: rgba(180, 60, 60, 0.3);
-            color: #c07070;
-        }
-
-        .profile-btn.danger:hover {
-            background: rgba(180, 60, 60, 0.1);
-            border-color: rgba(180, 60, 60, 0.5);
-        }
-
-        /* BOTTOM NAVIGATION - CORRIGIDA */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -890,51 +433,25 @@
             width: 40px;
         }
 
-        .prayer-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        .prayer-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 24px 24px;
-            overflow-y: auto;
-        }
-
-        .prayer-footer {
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            flex-shrink: 0;
-        }
-
-        .audio-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
+        .loading {
+            text-align: center;
             color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            z-index: 200;
         }
 
-        .audio-toggle:hover { border-color: var(--gold-dim); color: var(--gold); }
-        .audio-toggle.active { color: var(--gold); border-color: var(--gold-dim); background: rgba(212, 168, 85, 0.1); }
-        .audio-toggle svg { width: 20px; height: 20px; }
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(212, 168, 85, 0.2);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -945,37 +462,46 @@
         <div class="auth-logo"></div>
         <h1 class="auth-title">Rosário</h1>
         <p class="auth-subtitle">Método de São Luís de Montfort</p>
+        
+        <div class="auth-info">
+            ✨ <strong>Cloud Enabled:</strong> Seus dados são salvos automaticamente na nuvem com Firebase!
+        </div>
+
         <div class="auth-tabs">
             <button class="auth-tab active" data-tab="login">Entrar</button>
             <button class="auth-tab" data-tab="register">Criar Conta</button>
         </div>
+
         <form id="login-form" class="auth-form active">
             <div class="input-group">
-                <label class="input-label">Nome de Usuário</label>
-                <input type="text" class="input-field" id="login-username" placeholder="Seu nome" required>
+                <label class="input-label">Email</label>
+                <input type="email" class="input-field" id="login-email" placeholder="seu@email.com" required>
             </div>
             <div class="input-group">
                 <label class="input-label">Senha</label>
                 <input type="password" class="input-field" id="login-password" placeholder="Sua senha" required>
             </div>
-            <button type="submit" class="auth-btn">Entrar</button>
+            <button type="submit" class="auth-btn" id="login-btn">Entrar</button>
             <div class="auth-error" id="login-error"></div>
+            <div class="auth-success" id="login-success"></div>
         </form>
+
         <form id="register-form" class="auth-form">
             <div class="input-group">
-                <label class="input-label">Escolha um Nome</label>
-                <input type="text" class="input-field" id="register-username" placeholder="Ex: Maria" required minlength="2">
+                <label class="input-label">Email</label>
+                <input type="email" class="input-field" id="register-email" placeholder="seu@email.com" required>
             </div>
             <div class="input-group">
                 <label class="input-label">Crie uma Senha</label>
-                <input type="password" class="input-field" id="register-password" placeholder="Mínimo 4 caracteres" required minlength="4">
+                <input type="password" class="input-field" id="register-password" placeholder="Mínimo 6 caracteres" required minlength="6">
             </div>
             <div class="input-group">
                 <label class="input-label">Confirme a Senha</label>
                 <input type="password" class="input-field" id="register-confirm" placeholder="Repita a senha" required>
             </div>
-            <button type="submit" class="auth-btn">Criar Conta</button>
+            <button type="submit" class="auth-btn" id="register-btn">Criar Conta</button>
             <div class="auth-error" id="register-error"></div>
+            <div class="auth-success" id="register-success"></div>
         </form>
     </div>
 </div>
@@ -983,131 +509,31 @@
 <!-- MAIN APP -->
 <div id="main-app" class="screen">
     <div class="app-content" id="app-content">
-        <!-- HOME TAB -->
-        <div id="tab-home" class="tab-content active">
-            <div class="home-content">
-                <div class="home-header">
-                    <p class="home-greeting">Bem-vindo(a),</p>
-                    <h2 class="home-user" id="home-user-name">Peregrino</h2>
-                </div>
-                <div class="streak-card">
-                    <svg class="streak-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                    <div class="streak-number" id="streak-count">0</div>
-                    <div class="streak-label">Dias Consecutivos</div>
-                    <p class="streak-subtitle" id="streak-message">Comece hoje sua jornada de oração</p>
-                </div>
-                <div class="intention-card">
-                    <div class="intention-header">
-                        <svg class="intention-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                        <span class="intention-title">Intenção do Dia</span>
-                    </div>
-                    <p class="intention-text" id="today-intention">Carregando...</p>
-                </div>
-                <div class="today-card">
-                    <p class="today-day" id="today-day">Segunda-feira</p>
-                    <p class="today-mystery" id="today-mystery">Mistérios Gozosos</p>
-                </div>
-                <div class="quick-start">
-                    <p class="quick-label">Iniciar Oração</p>
-                    <div class="quick-grid">
-                        <button class="quick-btn" onclick="app.startPrayer('gozosos')">Gozosos</button>
-                        <button class="quick-btn" onclick="app.startPrayer('dolorosos')">Dolorosos</button>
-                        <button class="quick-btn" onclick="app.startPrayer('gloriosos')">Gloriosos</button>
-                        <button class="quick-btn full" onclick="app.startPrayer('completo')">Rosário Completo</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- CALENDAR TAB -->
-        <div id="tab-calendar" class="tab-content">
-            <div class="calendar-content">
-                <h2 style="text-align:center; margin-bottom:20px; color: var(--gold);">📅 Calendário</h2>
-                <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">Clique em um dia para ver detalhes</p>
-                <div class="calendar-header">
-                    <button class="calendar-nav" onclick="app.prevMonth()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-                    </button>
-                    <span class="calendar-month" id="calendar-month">Janeiro 2025</span>
-                    <button class="calendar-nav" onclick="app.nextMonth()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-                    </button>
-                </div>
-                <div class="calendar-weekdays">
-                    <div class="calendar-weekday">Dom</div>
-                    <div class="calendar-weekday">Seg</div>
-                    <div class="calendar-weekday">Ter</div>
-                    <div class="calendar-weekday">Qua</div>
-                    <div class="calendar-weekday">Qui</div>
-                    <div class="calendar-weekday">Sex</div>
-                    <div class="calendar-weekday">Sáb</div>
-                </div>
-                <div class="calendar-days" id="calendar-days"></div>
-                <div class="calendar-legend">
-                    <div class="legend-item"><div class="legend-dot prayed"></div> Rezou</div>
-                    <div class="legend-item"><div class="legend-dot today"></div> Hoje</div>
-                </div>
-                <div class="day-info" id="day-info" style="display:none;">
-                    <div class="day-info-date" id="day-info-date"></div>
-                    <div class="day-info-intention" id="day-info-intention"></div>
-                    <div class="day-info-status" id="day-info-status"></div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- PROFILE TAB -->
-        <div id="tab-profile" class="tab-content">
-            <div class="profile-content">
-                <div class="profile-header">
-                    <div class="profile-avatar" id="profile-avatar">M</div>
-                    <h2 class="profile-name" id="profile-name">Usuário</h2>
-                </div>
-                <div class="profile-stats">
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-total">0</div>
-                        <div class="stat-label">Rosários</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-streak">0</div>
-                        <div class="stat-label">Streak</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-aves">0</div>
-                        <div class="stat-label">Ave Marias</div>
-                    </div>
-                </div>
-                <div class="profile-section">
-                    <div class="profile-section-title">Configurações</div>
-                    <button class="profile-btn" onclick="app.toggleAudio()">
-                        <span>Sons</span>
-                        <span id="audio-status">Desativado</span>
-                    </button>
-                </div>
-                <div class="profile-section">
-                    <div class="profile-section-title">Conta</div>
-                    <button class="profile-btn danger" onclick="app.logout()">
-                        <span>Sair da Conta</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-                    </button>
-                </div>
-            </div>
+        <div class="welcome-card">
+            <div class="welcome-icon">✨</div>
+            <h2 class="welcome-title">Bem-vindo(a)!</h2>
+            <p class="welcome-text">
+                Você entrou com sucesso! <br>
+                <span id="user-email" style="color: var(--gold); font-weight: bold;"></span>
+            </p>
+            <p class="welcome-text" style="font-size: 0.95rem; color: var(--text-dim);">
+                O resto da aplicação será desenvolvido em breve. <br>
+                Seus dados estão sendo salvos em tempo real no Firebase! 🚀
+            </p>
+            <button class="welcome-btn" onclick="app.logout()">Sair da Conta</button>
         </div>
     </div>
-    
+
     <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
-        <button class="nav-item active" data-tab="home" onclick="app.switchTab('home')">
+        <button class="nav-item active" data-tab="home">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 <polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
             <span class="nav-label">Início</span>
         </button>
-        <button class="nav-item" data-tab="rosary" onclick="app.showRosaryPicker()">
+        <button class="nav-item" data-tab="rosary">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
                 <circle cx="12" cy="3" r="2.5"/>
@@ -1119,7 +545,7 @@
             </svg>
             <span class="nav-label">Rosário</span>
         </button>
-        <button class="nav-item" data-tab="calendar" onclick="app.switchTab('calendar')">
+        <button class="nav-item" data-tab="calendar">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
@@ -1128,7 +554,7 @@
             </svg>
             <span class="nav-label">Calendário</span>
         </button>
-        <button class="nav-item" data-tab="profile" onclick="app.switchTab('profile')">
+        <button class="nav-item" data-tab="profile">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
@@ -1138,31 +564,34 @@
     </nav>
 </div>
 
-<button class="audio-toggle" id="audio-toggle" onclick="app.toggleAudio()">
-    <svg id="audio-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
-    </svg>
-</button>
+<!-- FIREBASE SCRIPTS -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
 
 <script>
-const INTENTIONS = [
-    "Pelos que sofrem perseguição por causa da fé.", "Pela conversão dos pecadores e a salvação das almas.", "Pelas vocações sacerdotais e religiosas.", "Pela paz no mundo e o fim das guerras.", "Pelos enfermos e todos que cuidam deles.", "Pelas almas do purgatório, especialmente as mais abandonadas.", "Pela santificação das famílias.", "Pelos jovens, para que encontrem seu caminho em Cristo.", "Pela Igreja e pelo Santo Padre.", "Pelos missionários em terras distantes."
-];
+// ===== FIREBASE CONFIG =====
+// SUBSTITUA COM SEUS DADOS DO FIREBASE!
+// Instruções em: SETUP_FIREBASE.md
+const firebaseConfig = {
 
-const Storage = {
-    get(key) { try { return JSON.parse(localStorage.getItem(key)); } catch { return null; } },
-    set(key, val) { localStorage.setItem(key, JSON.stringify(val)); },
-    getUsers() { return this.get('rosary_users') || {}; },
-    saveUsers(users) { this.set('rosary_users', users); },
-    getCurrentUser() { return this.get('rosary_current_user'); },
-    setCurrentUser(u) { this.set('rosary_current_user', u); },
-    getUserData(username) { const users = this.getUsers(); return users[username]?.data || { prayedDays: {}, totalRosaries: 0, totalAves: 0 }; },
-    saveUserData(username, data) { const users = this.getUsers(); if (users[username]) { users[username].data = data; this.saveUsers(users); } }
+  apiKey: "AIzaSyAD_SvPlYGGZM1JMZmIjfai-a3TPPKDxLg",
+  authDomain: "rosario-app-a9da0.firebaseapp.com",
+  databaseURL: "https://rosario-app-a9da0-default-rtdb.firebaseio.com",
+  projectId: "rosario-app-a9da0",
+  storageBucket: "rosario-app-a9da0.firebasestorage.app",
+  messagingSenderId: "928215518242",
+  appId: "1:928215518242:web:09c61bfbfc0fc947570e7b"
+
 };
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
 
+// ===== APP =====
 const app = {
     user: null,
-    calendarDate: new Date(),
 
     init() {
         this.setupAuth();
@@ -1170,154 +599,135 @@ const app = {
     },
 
     setupAuth() {
+        // Tabs de auth
         document.querySelectorAll('.auth-tab').forEach(tab => {
             tab.onclick = () => {
                 document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
                 tab.classList.add('active');
                 document.getElementById(tab.dataset.tab + '-form').classList.add('active');
+                // Limpar mensagens
+                document.querySelectorAll('.auth-error, .auth-success').forEach(el => el.classList.remove('visible'));
             };
         });
 
+        // Login
         document.getElementById('login-form').onsubmit = (e) => {
             e.preventDefault();
-            const username = document.getElementById('login-username').value.trim();
+            this.disableButton('login-btn', true);
+            
+            const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
-            const users = Storage.getUsers();
-            if (users[username] && users[username].password === this.hash(password)) {
-                this.login(username);
-            } else {
-                this.showError('login-error', 'Usuário ou senha incorretos.');
-            }
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    this.showSuccess('login-success', 'Login realizado com sucesso!');
+                    setTimeout(() => this.loginSuccess(userCredential.user), 500);
+                })
+                .catch((error) => {
+                    this.showError('login-error', 'Erro: ' + error.message);
+                    this.disableButton('login-btn', false);
+                });
         };
 
+        // Register
         document.getElementById('register-form').onsubmit = (e) => {
             e.preventDefault();
-            const username = document.getElementById('register-username').value.trim();
+            this.disableButton('register-btn', true);
+            
+            const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             const confirm = document.getElementById('register-confirm').value;
-            const users = Storage.getUsers();
-            if (users[username]) { this.showError('register-error', 'Este nome já está em uso.'); return; }
-            if (password !== confirm) { this.showError('register-error', 'As senhas não coincidem.'); return; }
-            users[username] = { password: this.hash(password), data: { prayedDays: {}, totalRosaries: 0, totalAves: 0 } };
-            Storage.saveUsers(users);
-            this.login(username);
+            
+            if (password !== confirm) {
+                this.showError('register-error', 'Senhas não coincidem!');
+                this.disableButton('register-btn', false);
+                return;
+            }
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    this.showSuccess('register-success', 'Conta criada com sucesso!');
+                    
+                    // Salvar dados iniciais no Firebase
+                    const uid = userCredential.user.uid;
+                    database.ref('users/' + uid).set({
+                        email: email,
+                        createdAt: new Date().toISOString(),
+                        prayedDays: {},
+                        totalRosaries: 0,
+                        totalAves: 0
+                    });
+                    
+                    setTimeout(() => this.loginSuccess(userCredential.user), 500);
+                })
+                .catch((error) => {
+                    this.showError('register-error', 'Erro: ' + error.message);
+                    this.disableButton('register-btn', false);
+                });
         };
     },
 
-    hash(str) { let h = 0; for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h |= 0; } return h.toString(16); },
-    showError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add('visible'); setTimeout(() => el.classList.remove('visible'), 3000); },
-
-    login(username) {
-        this.user = username;
-        Storage.setCurrentUser(username);
+    loginSuccess(user) {
+        this.user = user;
         document.getElementById('auth-screen').classList.remove('active');
         document.getElementById('main-app').classList.add('active');
-        this.loadUserInterface();
-    },
-
-    logout() {
-        if (confirm('Deseja realmente sair?')) {
-            Storage.setCurrentUser(null);
-            location.reload();
-        }
+        document.getElementById('user-email').textContent = user.email;
     },
 
     checkSession() {
-        const user = Storage.getCurrentUser();
-        if (user && Storage.getUsers()[user]) {
-            this.login(user);
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                this.loginSuccess(user);
+            }
+        });
+    },
+
+    logout() {
+        auth.signOut().then(() => {
+            this.user = null;
+            document.getElementById('auth-screen').classList.add('active');
+            document.getElementById('main-app').classList.remove('active');
+            // Limpar formulários
+            document.querySelectorAll('.input-field').forEach(f => f.value = '');
+            document.querySelectorAll('.auth-error, .auth-success').forEach(el => el.classList.remove('visible'));
+        });
+    },
+
+    showError(id, msg) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.classList.add('visible');
+        setTimeout(() => el.classList.remove('visible'), 4000);
+    },
+
+    showSuccess(id, msg) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.classList.add('visible');
+    },
+
+    disableButton(id, disabled) {
+        const btn = document.getElementById(id);
+        btn.disabled = disabled;
+        btn.textContent = disabled ? 'Aguarde...' : (id === 'login-btn' ? 'Entrar' : 'Criar Conta');
+    },
+
+    // Função auxiliar para salvar dados no Firebase
+    saveUserData(data) {
+        if (this.user) {
+            database.ref('users/' + this.user.uid + '/data').set(data);
         }
     },
 
-    // NOVA FUNÇÃO - TROCAR ABAS
-    switchTab(tabName) {
-        // Remove active de todos os itens de navegação e tabs
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        
-        // Adiciona active ao botão clicado e à aba correspondente
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        document.getElementById('tab-' + tabName).classList.add('active');
-        
-        // Recarrega dados se necessário
-        if (tabName === 'calendar') this.renderCalendar();
-        if (tabName === 'profile') this.loadUserInterface();
-    },
-
-    showRosaryPicker() {
-        const choice = prompt('Escolha: gozosos, dolorosos, gloriosos ou completo?', 'gozosos');
-        if (choice && ['gozosos', 'dolorosos', 'gloriosos', 'completo'].includes(choice.toLowerCase())) {
-            alert('Iniciando ' + choice + '... (Em desenvolvimento)');
+    // Função auxiliar para carregar dados do Firebase
+    loadUserData(callback) {
+        if (this.user) {
+            database.ref('users/' + this.user.uid + '/data').on('value', (snapshot) => {
+                callback(snapshot.val());
+            });
         }
-    },
-
-    loadUserInterface() {
-        const data = Storage.getUserData(this.user);
-        document.getElementById('home-user-name').textContent = this.user;
-        document.getElementById('profile-name').textContent = this.user;
-        document.getElementById('profile-avatar').textContent = this.user.charAt(0).toUpperCase();
-        document.getElementById('stat-total').textContent = data.totalRosaries || 0;
-        document.getElementById('stat-aves').textContent = data.totalAves || 0;
-        document.getElementById('stat-streak').textContent = '0';
-        document.getElementById('today-intention').textContent = INTENTIONS[Math.floor(Math.random() * INTENTIONS.length)];
-        this.renderCalendar();
-    },
-
-    renderCalendar() {
-        const year = this.calendarDate.getFullYear();
-        const month = this.calendarDate.getMonth();
-        const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        document.getElementById('calendar-month').textContent = `${months[month]} ${year}`;
-        
-        const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const daysInPrevMonth = new Date(year, month, 0).getDate();
-        
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const todayStr = today.toISOString().split('T')[0];
-        
-        const data = Storage.getUserData(this.user);
-        const container = document.getElementById('calendar-days');
-        container.innerHTML = '';
-        
-        for (let i = firstDay - 1; i >= 0; i--) {
-            const day = daysInPrevMonth - i;
-            const div = document.createElement('div');
-            div.className = 'calendar-day other-month';
-            div.textContent = day;
-            container.appendChild(div);
-        }
-        
-        for (let day = 1; day <= daysInMonth; day++) {
-            const date = new Date(year, month, day);
-            const dateStr = date.toISOString().split('T')[0];
-            const div = document.createElement('div');
-            div.className = 'calendar-day';
-            div.textContent = day;
-            
-            if (dateStr === todayStr) div.classList.add('today');
-            if (data.prayedDays[dateStr]) div.classList.add('prayed');
-            
-            container.appendChild(div);
-        }
-        
-        const totalCells = container.children.length;
-        const remaining = 42 - totalCells;
-        for (let day = 1; day <= remaining; day++) {
-            const div = document.createElement('div');
-            div.className = 'calendar-day other-month';
-            div.textContent = day;
-            container.appendChild(div);
-        }
-    },
-
-    prevMonth() { this.calendarDate.setMonth(this.calendarDate.getMonth() - 1); this.renderCalendar(); },
-    nextMonth() { this.calendarDate.setMonth(this.calendarDate.getMonth() + 1); this.renderCalendar(); },
-
-    startPrayer(type) { alert('Iniciando Rosário ' + type + '... (Em desenvolvimento)'); },
-    toggleAudio() { alert('Áudio: Em desenvolvimento'); },
+    }
 };
 
 app.init();
