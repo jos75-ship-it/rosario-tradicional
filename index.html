@@ -3,1065 +3,1638 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rosário · Tradicional</title>
+    <title>Santo Rosário · Método Montfort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0a0c;
-            --bg-secondary: #12121a;
-            --text-primary: #e8e6e3;
-            --text-secondary: #9a9390;
-            --text-muted: #6a645f;
-            --accent-gold: #c9a961;
-            --accent-gold-dim: #8a7548;
-            --accent-gold-bright: #e0c080;
-            --bead-ave: #3a3a3a;
-            --bead-pater: #c9a961;
-            --border-subtle: rgba(255,255,255,0.06);
+            --bg-deep: #0a0809;
+            --bg-primary: #110f10;
+            --bg-secondary: #1a1617;
+            --bg-elevated: #221e1f;
+            --text-primary: #f2ede6;
+            --text-secondary: #bfb5a8;
+            --text-muted: #7a7068;
+            --text-dim: #4a4440;
+            --gold: #c9a227;
+            --gold-bright: #e8c547;
+            --gold-dim: #8a7020;
+            --gold-dark: #5a4a18;
+            --burgundy: #5c1a2a;
+            --burgundy-light: #7a2a3a;
+            --cream: #f5f0e5;
             
-            --bead-size-ave: 15px;
-            --bead-size-pater: 26px;
-            --bead-gap: 42px;
+            --font-display: 'Cinzel', serif;
+            --font-body: 'Cormorant Garamond', serif;
             
-            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+            
+            --bead-size: 42px;
+            --bead-size-small: 32px;
+            --bead-size-pater: 52px;
+            --bead-gap: 16px;
+            --rail-width: 90px;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
         }
 
         body {
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            background: var(--bg-deep);
             color: var(--text-primary);
-            font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
-            height: 100vh;
-            overflow: hidden;
+            font-family: var(--font-body);
+            font-size: 18px;
+            line-height: 1.6;
             display: flex;
             flex-direction: column;
         }
 
-        header {
-            text-align: center;
-            padding: 24px 20px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.25em;
-            border-bottom: 1px solid var(--border-subtle);
-            background: var(--bg-primary);
-            position: relative;
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 1px;
-            background: var(--accent-gold-dim);
-        }
-
-        #app {
-            flex: 1;
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s var(--transition-smooth);
-        }
-
-        .screen.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
+        /* ===== TELA INICIAL ===== */
         #home-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 2rem;
+            justify-content: center;
+            padding: 24px;
+            background: var(--bg-deep);
+            z-index: 100;
+            transition: opacity 0.5s var(--ease-out), visibility 0.5s;
+        }
+
+        #home-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .home-icon {
+            width: 72px;
+            height: 72px;
+            margin-bottom: 20px;
+            color: var(--gold);
+            opacity: 0.9;
+        }
+
+        .home-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            color: var(--text-primary);
+            margin-bottom: 6px;
         }
 
         .home-subtitle {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            letter-spacing: 0.15em;
-            margin-bottom: 3.5rem;
-            text-align: center;
+            font-family: var(--font-body);
+            font-size: 1rem;
             font-style: italic;
+            color: var(--text-muted);
+            margin-bottom: 8px;
         }
 
-        .home-menu {
+        .home-method {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            padding: 6px 14px;
+            border: 1px solid var(--gold-dark);
+            background: rgba(201, 162, 39, 0.05);
+        }
+
+        .today-info {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            text-align: center;
+        }
+
+        .today-info strong {
+            color: var(--gold);
+        }
+
+        .menu-section {
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 20px;
+        }
+
+        .menu-label {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-label::before,
+        .menu-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--bg-elevated), transparent);
+        }
+
+        .menu-grid {
             display: flex;
             flex-direction: column;
-            gap: 18px;
-            width: 100%;
-            max-width: 340px;
+            gap: 10px;
         }
 
         .btn-mystery {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border-subtle);
+            background: var(--bg-secondary);
+            border: 1px solid var(--bg-elevated);
             color: var(--text-secondary);
-            padding: 18px 0;
-            font-family: inherit;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.4s var(--transition-smooth);
-            text-transform: uppercase;
+            padding: 16px 20px;
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 400;
             letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out);
             position: relative;
             overflow: hidden;
         }
 
-        .btn-mystery::before {
+        .btn-mystery::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.4s var(--ease-out);
+        }
+
+        .btn-mystery:hover, .btn-mystery:active {
+            background: var(--bg-elevated);
+            border-color: var(--gold-dark);
+            color: var(--gold);
+        }
+
+        .btn-mystery:hover::after, .btn-mystery:active::after {
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(201,169,97,0.1), transparent);
-            transition: left 0.6s;
         }
 
-        .btn-mystery:hover::before {
-            left: 100%;
-        }
-
-        .btn-mystery:hover {
-            border-color: var(--accent-gold-dim);
-            color: var(--accent-gold);
-            background: rgba(201,169,97,0.05);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        #prayer-screen {
-            flex-direction: row;
-            align-items: stretch;
-        }
-
-        .back-btn {
-            position: absolute;
-            top: 28px;
-            left: 28px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-family: inherit;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 0.15em;
-            z-index: 30;
-            padding: 8px 12px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .back-btn::before {
-            content: '←';
-            font-size: 1.2rem;
-        }
-
-        .back-btn:hover {
-            color: var(--accent-gold);
-            transform: translateX(-3px);
-        }
-
-        .prayer-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 60px 80px 60px 60px;
-            max-width: 700px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .prayer-info {
-            font-size: 0.75rem;
-            color: var(--accent-gold-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            margin-bottom: 16px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            font-weight: 500;
-        }
-
-        .prayer-title {
-            font-size: 2.2rem;
-            font-weight: 300;
-            margin-bottom: 10px;
-            line-height: 1.3;
-            color: var(--text-primary);
-            text-align: center;
-            letter-spacing: 0.02em;
-        }
-
-        .mystery-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            font-style: italic;
-            text-align: center;
-        }
-
-        /* Imagem da obra de arte */
-        .artwork-container {
-            width: 100%;
-            max-width: 400px;
-            margin: 20px auto;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .artwork-container.visible {
-            opacity: 1;
-        }
-
-        .artwork-image {
-            width: 100%;
-            height: auto;
-            max-height: 300px;
-            object-fit: contain;
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        }
-
-        .artwork-caption {
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
+        .btn-complete {
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--burgundy-light);
+            color: var(--cream);
+            padding: 18px 20px;
             margin-top: 8px;
-            font-style: italic;
-            line-height: 1.4;
         }
 
-        .meditation-box {
-            font-size: 1.15rem;
-            line-height: 1.75;
-            color: var(--text-secondary);
-            font-style: italic;
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-subtle);
-            text-align: center;
-            max-width: 560px;
-            transition: opacity 0.3s ease;
+        .btn-complete:hover, .btn-complete:active {
+            background: linear-gradient(135deg, var(--burgundy-light) 0%, var(--burgundy) 100%);
+            border-color: var(--gold-dim);
         }
 
-        .progress-indicator {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.7rem;
+        .btn-complete small {
+            display: block;
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            font-style: italic;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            text-transform: none;
             color: var(--text-muted);
-            letter-spacing: 0.1em;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin-top: 4px;
         }
 
-        .rosary-container {
-            width: 140px;
-            height: 100%;
+        /* ===== TELA DE ORAÇÃO ===== */
+        #prayer-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: row;
+            background: var(--bg-deep);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s var(--ease-out), visibility 0.5s;
+        }
+
+        #prayer-screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Trilho do Rosário - Desktop na esquerda */
+        .rosary-rail {
             position: relative;
-            background: linear-gradient(to left, rgba(0,0,0,0.25), transparent);
+            width: var(--rail-width);
+            height: 100%;
+            background: linear-gradient(90deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
+            border-right: 1px solid rgba(201, 162, 39, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
             flex-shrink: 0;
-            border-left: 1px solid var(--border-subtle);
         }
 
-        .rosary-container::before,
-        .rosary-container::after {
+        .rosary-rail::before,
+        .rosary-rail::after {
             content: '';
             position: absolute;
             left: 0;
-            width: 100%;
-            height: 180px;
+            right: 0;
+            height: 100px;
             z-index: 10;
             pointer-events: none;
         }
 
-        .rosary-container::before {
+        .rosary-rail::before {
             top: 0;
-            background: linear-gradient(to bottom, 
-                var(--bg-primary) 0%, 
-                rgba(10,10,12,0.9) 30%,
-                transparent 100%);
+            background: linear-gradient(180deg, var(--bg-deep) 0%, transparent 100%);
         }
 
-        .rosary-container::after {
+        .rosary-rail::after {
             bottom: 0;
-            background: linear-gradient(to top, 
-                var(--bg-primary) 0%, 
-                rgba(10,10,12,0.9) 30%,
-                transparent 100%);
+            background: linear-gradient(0deg, var(--bg-deep) 0%, transparent 100%);
         }
 
-        .center-guide {
-            position: absolute;
-            top: 50%;
-            left: 20%;
-            right: 20%;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(201,169,97,0.15) 50%, 
-                transparent);
-            transform: translateY(-50%);
-            z-index: 5;
-        }
-
-        .touch-control {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            z-index: 20;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-
-        .touch-up {
-            top: 0;
-            height: 25%;
-        }
-
-        .touch-down {
-            bottom: 0;
-            height: 35%;
-        }
-
-        .touch-control:hover {
-            background: rgba(255,255,255,0.02);
-        }
-
-        .bead-track {
+        /* Corrente do rosário */
+        .rosary-chain {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 100%;
-            transform: translate3d(-50%, 0, 0);
-            transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            will-change: transform;
+            width: 2px;
+            height: calc(100% + 200px);
+            transform: translate(-50%, -50%);
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                var(--gold-dark) 10%, 
+                var(--gold-dim) 50%,
+                var(--gold-dark) 90%, 
+                transparent 100%);
+            opacity: 0.4;
+        }
+
+        /* Container das contas */
+        #bead-track {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 0);
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: var(--bead-gap);
+            transition: transform 0.5s var(--ease-out);
+            will-change: transform;
+            padding: 60px 0;
         }
 
+        /* Conta individual */
         .bead {
+            width: var(--bead-size-small);
+            height: var(--bead-size-small);
             border-radius: 50%;
-            margin: calc(var(--bead-gap) / 2) 0;
-            transition: all 0.4s var(--transition-smooth);
+            cursor: pointer;
+            transition: all 0.4s var(--ease-out);
             position: relative;
             flex-shrink: 0;
         }
 
-        .bead.ave {
-            width: var(--bead-size-ave);
-            height: var(--bead-size-ave);
-            background: var(--bead-ave);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        /* Efeito de brilho ao redor da conta ativa */
+        .bead::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201, 162, 39, 0.4) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s, transform 0.4s;
+            transform: scale(0.8);
         }
 
+        .bead.active::before {
+            opacity: 1;
+            transform: scale(1);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.15); }
+        }
+
+        /* Conta Ave Maria */
+        .bead.ave {
+            background: radial-gradient(circle at 35% 35%, #4a4540, #2a2825);
+            box-shadow: 
+                inset -3px -3px 6px rgba(0,0,0,0.6),
+                inset 2px 2px 4px rgba(255,255,255,0.05),
+                0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        .bead.ave.active {
+            width: var(--bead-size);
+            height: var(--bead-size);
+            background: radial-gradient(circle at 35% 35%, #5a554f, #3a3835);
+            box-shadow: 
+                inset -3px -3px 6px rgba(0,0,0,0.5),
+                inset 2px 2px 4px rgba(255,255,255,0.1),
+                0 0 25px rgba(201, 162, 39, 0.3),
+                0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        /* Conta Pai Nosso */
         .bead.pater {
+            width: calc(var(--bead-size-small) + 8px);
+            height: calc(var(--bead-size-small) + 8px);
+            background: radial-gradient(circle at 35% 35%, var(--gold-bright), var(--gold), var(--gold-dim));
+            box-shadow: 
+                inset -3px -3px 8px rgba(0,0,0,0.3),
+                inset 3px 3px 6px rgba(255,255,255,0.3),
+                0 3px 8px rgba(0,0,0,0.5);
+        }
+
+        .bead.pater.active {
             width: var(--bead-size-pater);
             height: var(--bead-size-pater);
-            background: transparent;
-            border: 2.5px solid var(--accent-gold-dim);
-            box-shadow: 0 0 12px rgba(201,169,97,0.2);
+            background: radial-gradient(circle at 35% 35%, #f5d860, var(--gold-bright), var(--gold));
+            box-shadow: 
+                inset -3px -3px 8px rgba(0,0,0,0.2),
+                inset 3px 3px 6px rgba(255,255,255,0.4),
+                0 0 35px rgba(201, 162, 39, 0.5),
+                0 5px 15px rgba(0,0,0,0.4);
         }
 
-        .bead.cross,
-        .bead.credo,
-        .bead.gloria {
-            width: 18px;
-            height: 26px;
-            background: transparent;
-            border: 1.5px solid var(--accent-gold-dim);
-            border-radius: 3px;
-            box-shadow: 0 0 10px rgba(201,169,97,0.15);
+        /* Contas especiais (cruz, credo, gloria, salve, fatima) */
+        .bead.special {
+            width: calc(var(--bead-size-small) + 4px);
+            height: calc(var(--bead-size-small) + 4px);
+            background: radial-gradient(circle at 35% 35%, var(--burgundy-light), var(--burgundy));
+            box-shadow: 
+                inset -2px -2px 6px rgba(0,0,0,0.5),
+                inset 2px 2px 4px rgba(255,255,255,0.1),
+                0 2px 6px rgba(0,0,0,0.5);
         }
 
-        .bead.active {
-            transform: scale(1.35);
-            z-index: 2;
+        .bead.special.active {
+            width: calc(var(--bead-size) + 4px);
+            height: calc(var(--bead-size) + 4px);
+            background: radial-gradient(circle at 35% 35%, #9a3a4a, var(--burgundy-light));
+            box-shadow: 
+                inset -2px -2px 6px rgba(0,0,0,0.4),
+                inset 2px 2px 4px rgba(255,255,255,0.15),
+                0 0 30px rgba(122, 42, 58, 0.5),
+                0 5px 12px rgba(0,0,0,0.4);
         }
 
-        .bead.active.ave {
-            background: linear-gradient(135deg, #6a6a6a, #505050);
-            box-shadow: 0 0 20px rgba(201,169,97,0.4),
-                        0 4px 12px rgba(0,0,0,0.5);
+        /* Marcador de dezena */
+        .bead[data-decade-start="true"]::after {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 2px;
+            background: var(--gold-dark);
+            opacity: 0.5;
         }
 
-        .bead.active.pater {
-            background: var(--bead-pater);
-            border-color: var(--accent-gold-bright);
-            box-shadow: 0 0 25px rgba(201,169,97,0.6),
-                        0 0 40px rgba(201,169,97,0.3),
-                        0 4px 12px rgba(0,0,0,0.5);
+        /* Conteúdo principal */
+        .prayer-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            position: relative;
         }
 
-        .bead.active.cross,
-        .bead.active.credo,
-        .bead.active.gloria {
-            background: rgba(201,169,97,0.3);
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 20px rgba(201,169,97,0.5);
+        /* Header da oração */
+        .prayer-header {
+            padding: 16px 20px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid rgba(201, 162, 39, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
         }
 
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
+        }
+
+        .back-btn:hover {
+            color: var(--gold);
+        }
+
+        .back-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .progress-compact {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-bar-mini {
+            width: 80px;
+            height: 3px;
+            background: var(--bg-elevated);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill-mini {
+            height: 100%;
+            background: var(--gold);
+            transition: width 0.4s var(--ease-out);
+        }
+
+        .progress-text {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+        }
+
+        /* Corpo da oração */
+        .prayer-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 30px 28px;
+            overflow-y: auto;
+        }
+
+        .prayer-group {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gold-dim);
+            margin-bottom: 6px;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all 0.4s var(--ease-out);
+        }
+
+        .prayer-group.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .prayer-mystery {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            min-height: 1.4em;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all 0.4s var(--ease-out) 0.05s;
+        }
+
+        .prayer-mystery.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .prayer-name {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.4s var(--ease-out) 0.1s;
+        }
+
+        .prayer-name.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .prayer-count {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all 0.4s var(--ease-out) 0.15s;
+        }
+
+        .prayer-count.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Meditação - destaque principal */
+        .meditation-box {
+            background: linear-gradient(135deg, rgba(201, 162, 39, 0.06) 0%, rgba(201, 162, 39, 0.02) 100%);
+            border-left: 3px solid var(--gold-dim);
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.5s var(--ease-out) 0.2s;
+        }
+
+        .meditation-box.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .meditation-label {
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .meditation-text {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* Texto da oração colapsável */
+        .prayer-text-toggle {
+            background: none;
+            border: 1px solid var(--bg-elevated);
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .prayer-text-toggle:hover {
+            border-color: var(--gold-dark);
+            color: var(--gold);
+        }
+
+        .prayer-text-toggle svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.3s;
+        }
+
+        .prayer-text-toggle.expanded svg {
+            transform: rotate(180deg);
+        }
+
+        .prayer-full-text {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s var(--ease-out), opacity 0.3s, padding 0.3s;
+            opacity: 0;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+
+        .prayer-full-text.visible {
+            max-height: 400px;
+            opacity: 1;
+            padding: 16px 18px;
+            margin-bottom: 16px;
+        }
+
+        .prayer-full-text p {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Footer com navegação */
+        .prayer-footer {
+            padding: 16px 20px;
+            background: var(--bg-primary);
+            border-top: 1px solid rgba(201, 162, 39, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .nav-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--bg-elevated);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s var(--ease-out);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--bg-elevated);
+            border-color: var(--gold-dark);
+            color: var(--gold);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .nav-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .nav-btn.primary {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+            border: none;
+            color: var(--bg-deep);
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 100%);
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(201, 162, 39, 0.4);
+        }
+
+        /* Dica de navegação */
+        .nav-hint {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-style: italic;
+            white-space: nowrap;
+        }
+
+        /* ===== TELA DE CONCLUSÃO ===== */
+        #completion-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: var(--bg-deep);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s var(--ease-out), visibility 0.5s;
+        }
+
+        #completion-screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .completion-icon {
+            width: 80px;
+            height: 80px;
+            color: var(--gold);
+            margin-bottom: 24px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(201, 162, 39, 0.3)); }
+            50% { filter: drop-shadow(0 0 25px rgba(201, 162, 39, 0.6)); }
+        }
+
+        .completion-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+        }
+
+        .completion-subtitle {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 300px;
+            margin-bottom: 28px;
+        }
+
+        .completion-stats {
+            display: flex;
+            gap: 28px;
+            margin-bottom: 32px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            color: var(--gold);
+        }
+
+        .stat-label {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .btn-home {
+            background: var(--bg-secondary);
+            border: 1px solid var(--gold-dark);
+            color: var(--gold);
+            padding: 14px 28px;
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-home:hover {
+            background: var(--bg-elevated);
+            border-color: var(--gold);
+        }
+
+        /* ===== RESPONSIVO MOBILE ===== */
         @media (max-width: 768px) {
-            header {
-                padding: 18px 20px;
-                font-size: 0.7rem;
-                letter-spacing: 0.3em;
-            }
-
-            header::after {
-                width: 40px;
+            :root {
+                --bead-size: 48px;
+                --bead-size-small: 38px;
+                --bead-size-pater: 56px;
+                --bead-gap: 14px;
+                --rail-width: 70px;
             }
 
             #prayer-screen {
                 flex-direction: row;
             }
 
-            .back-btn {
-                top: 18px;
-                left: 18px;
-                font-size: 0.65rem;
-                padding: 6px 10px;
-            }
-
-            .back-btn::before {
-                font-size: 1.1rem;
-            }
-
-            /* Conteúdo à esquerda, ocupa maior parte da tela */
-            .prayer-content {
-                flex: 1;
-                padding: 70px 20px 30px 20px;
-                justify-content: flex-start;
-                align-items: flex-start;
-                text-align: left;
-                overflow-y: auto;
-                max-width: none;
-            }
-
-            .prayer-info {
-                font-size: 0.65rem;
-                letter-spacing: 0.15em;
-                margin-bottom: 12px;
-            }
-
-            .prayer-title {
-                font-size: 1.4rem;
-                margin-bottom: 6px;
-                text-align: left;
-            }
-
-            .mystery-subtitle {
-                font-size: 0.9rem;
-                margin-bottom: 16px;
-                text-align: left;
-            }
-
-            /* Imagem mais compacta no mobile */
-            .artwork-container {
-                max-width: 100%;
-                margin: 16px 0;
-            }
-
-            .artwork-image {
-                max-height: 140px;
-                border-radius: 4px;
-            }
-
-            .artwork-caption {
-                font-size: 0.65rem;
-                margin-top: 6px;
-            }
-
-            .meditation-box {
-                font-size: 0.95rem;
-                line-height: 1.65;
-                margin-top: 16px;
-                padding-top: 16px;
-                text-align: left;
-                max-width: 100%;
-            }
-
-            .progress-indicator {
-                position: relative;
-                bottom: auto;
-                left: auto;
-                transform: none;
-                margin-top: 20px;
-                font-size: 0.6rem;
-                text-align: left;
-            }
-
-            /* Rosário VERTICAL à direita - como passar nas mãos */
-            .rosary-container {
-                position: fixed;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                width: 70px;
+            /* No mobile, trilho fica na direita vertical */
+            .rosary-rail {
+                order: 2;
+                width: var(--rail-width);
                 height: 100%;
-                border-left: 1px solid var(--border-subtle);
-                border-top: none;
-                background: linear-gradient(to left, 
-                    rgba(10,10,12,0.98) 0%, 
-                    rgba(10,10,12,0.92) 60%,
-                    rgba(10,10,12,0.85) 100%);
-                backdrop-filter: blur(8px);
-                z-index: 100;
+                background: linear-gradient(-90deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
+                border-right: none;
+                border-left: 1px solid rgba(201, 162, 39, 0.08);
             }
 
-            /* Máscaras superior/inferior para fade vertical */
-            .rosary-container::before {
-                top: 0;
-                left: 0;
-                right: 0;
-                width: 100%;
-                height: 120px;
-                background: linear-gradient(to bottom, 
-                    var(--bg-primary) 0%, 
-                    rgba(10,10,12,0.9) 30%,
-                    transparent 100%);
+            .rosary-rail::before,
+            .rosary-rail::after {
+                height: 80px;
             }
 
-            .rosary-container::after {
-                top: auto;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                width: 100%;
-                height: 120px;
-                background: linear-gradient(to top, 
-                    var(--bg-primary) 0%, 
-                    rgba(10,10,12,0.9) 30%,
-                    transparent 100%);
+            .prayer-main {
+                order: 1;
             }
 
-            /* Linha guia horizontal no centro */
-            .center-guide {
-                top: 50%;
-                left: 15%;
-                right: 15%;
-                width: auto;
-                height: 1px;
-                transform: translateY(-50%);
-                background: linear-gradient(90deg, 
-                    transparent, 
-                    rgba(201,169,97,0.2) 50%, 
-                    transparent);
+            .prayer-body {
+                padding: 20px 18px;
             }
 
-            /* Track VERTICAL */
-            .bead-track {
-                flex-direction: column;
-                top: 50%;
-                left: 50%;
-                transform: translate3d(-50%, 0, 0);
+            .prayer-name {
+                font-size: 1.5rem;
             }
 
-            /* Contas com espaçamento vertical - MENORES no mobile */
-            .bead {
-                margin: calc(var(--bead-gap) * 0.45) 0;
+            .meditation-text {
+                font-size: 1rem;
             }
 
-            .bead.ave {
-                width: 13px;
-                height: 13px;
+            .nav-btn {
+                width: 48px;
+                height: 48px;
             }
 
-            .bead.pater {
-                width: 23px;
-                height: 23px;
-                border-width: 2px;
+            .nav-btn.primary {
+                width: 58px;
+                height: 58px;
             }
 
-            .bead.cross,
-            .bead.credo,
-            .bead.gloria {
-                width: 15px;
-                height: 22px;
-            }
-
-            /* Conta ativa um pouco maior */
-            .bead.active {
-                transform: scale(1.5);
-            }
-
-            /* Remover controles de toque visuais */
-            .touch-control {
+            .nav-hint {
                 display: none;
             }
 
-            /* Ajuste do conteúdo para não ficar atrás do rosário */
-            .prayer-content {
-                padding-right: 85px;
+            .progress-bar-mini {
+                width: 60px;
             }
 
-            .home-subtitle {
-                font-size: 0.85rem;
-                margin-bottom: 3rem;
-                padding: 0 20px;
+            /* Gesture area para swipe */
+            .prayer-body {
+                touch-action: pan-y;
+            }
+        }
+
+        @media (max-width: 380px) {
+            :root {
+                --rail-width: 60px;
+                --bead-size: 44px;
+                --bead-size-small: 34px;
+                --bead-size-pater: 50px;
             }
 
-            .home-menu {
-                max-width: 320px;
-                padding: 0 20px;
-                gap: 16px;
+            .prayer-body {
+                padding: 16px 14px;
             }
 
-            .btn-mystery {
-                padding: 16px 0;
+            .prayer-name {
+                font-size: 1.3rem;
+            }
+
+            .meditation-text {
                 font-size: 0.95rem;
+            }
+        }
+
+        /* Orientação paisagem em mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .rosary-rail {
+                width: 60px;
+            }
+
+            .prayer-header,
+            .prayer-footer {
+                padding: 10px 16px;
+            }
+
+            .prayer-body {
+                padding: 12px 16px;
+            }
+
+            .prayer-name {
+                font-size: 1.3rem;
+                margin-bottom: 4px;
+            }
+
+            .meditation-box {
+                padding: 12px 14px;
+                margin-bottom: 12px;
             }
         }
     </style>
 </head>
 <body>
 
-    <header>Rosário · Tradicional</header>
+<!-- TELA INICIAL -->
+<div id="home-screen">
+    <svg class="home-icon" viewBox="0 0 100 100" fill="currentColor">
+        <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" stroke-width="2.5" opacity="0.6"/>
+        <circle cx="50" cy="18" r="5"/>
+        <circle cx="77" cy="35" r="4" opacity="0.8"/>
+        <circle cx="77" cy="65" r="4" opacity="0.8"/>
+        <circle cx="50" cy="82" r="5"/>
+        <circle cx="23" cy="65" r="4" opacity="0.8"/>
+        <circle cx="23" cy="35" r="4" opacity="0.8"/>
+        <path d="M48 82v16M42 90h16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    
+    <h1 class="home-title">Rosário</h1>
+    <p class="home-subtitle">Em honra da Santíssima Virgem</p>
+    <div class="home-method">Método de São Luís de Montfort</div>
+    
+    <p class="today-info" id="today-info"></p>
 
-    <div id="app">
-        <div id="home-screen" class="screen active">
-            <p class="home-subtitle">Escolha os mistérios para contemplar</p>
-            <nav class="home-menu">
-                <button class="btn-mystery" onclick="app.startRosary('gozosos')">Mistérios Gozosos</button>
-                <button class="btn-mystery" onclick="app.startRosary('dolorosos')">Mistérios Dolorosos</button>
-                <button class="btn-mystery" onclick="app.startRosary('gloriosos')">Mistérios Gloriosos</button>
-            </nav>
-        </div>
-
-        <div id="prayer-screen" class="screen">
-            <button class="back-btn" onclick="app.goHome()">Voltar</button>
-
-            <div class="prayer-content">
-                <div class="prayer-info" id="prayer-meta">Década 1 · Conta 1</div>
-                <h1 class="prayer-title" id="prayer-name">Ave Maria</h1>
-                <p class="mystery-subtitle" id="mystery-subtitle"></p>
-                
-                <div class="artwork-container" id="artwork-container">
-                    <img class="artwork-image" id="artwork-image" alt="Obra de arte sacra">
-                    <div class="artwork-caption" id="artwork-caption"></div>
-                </div>
-                
-                <div class="meditation-box" id="prayer-meditation">
-                    "Ave, cheia de graça..."
-                </div>
-                <div class="progress-indicator" id="progress-indicator">1 / 59</div>
-            </div>
-
-            <div class="rosary-container">
-                <div class="center-guide"></div>
-                <div class="touch-control touch-up" onclick="app.prevBead()"></div>
-                <div class="touch-control touch-down" onclick="app.nextBead()"></div>
-                <div class="bead-track" id="bead-track"></div>
-            </div>
+    <div class="menu-section">
+        <div class="menu-label">Mistérios</div>
+        <div class="menu-grid">
+            <button class="btn-mystery" onclick="app.start('gozosos')">Gozosos</button>
+            <button class="btn-mystery" onclick="app.start('dolorosos')">Dolorosos</button>
+            <button class="btn-mystery" onclick="app.start('gloriosos')">Gloriosos</button>
         </div>
     </div>
 
-    <script>
-        // Imagens de ícones bizantinos e arte sacra
-        const ARTWORKS = {
-            gozosos: [
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23c9a961' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E✠%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3EA Anunciação%3C/text%3E%3C/svg%3E",
-                    caption: "A Anunciação · Ícone Bizantino"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%238a7548' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%23e8e6e3' font-family='Georgia,serif'%3E☩%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%23e8e6e3' font-family='Georgia,serif'%3EA Visitação%3C/text%3E%3C/svg%3E",
-                    caption: "A Visitação · Tradição Oriental"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23c9a961' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E✙%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3EO Nascimento%3C/text%3E%3C/svg%3E",
-                    caption: "O Nascimento de Cristo · Arte Sacra"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%238a7548' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%23e8e6e3' font-family='Georgia,serif'%3E✝%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%23e8e6e3' font-family='Georgia,serif'%3EA Natividade%3C/text%3E%3C/svg%3E",
-                    caption: "A Natividade · Tradição Litúrgica"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23c9a961' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E✠%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3EApresentação%3C/text%3E%3C/svg%3E",
-                    caption: "A Apresentação · Ícone Sacro"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%238a7548' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%23e8e6e3' font-family='Georgia,serif'%3E☩%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%23e8e6e3' font-family='Georgia,serif'%3EMaria e Isabel%3C/text%3E%3C/svg%3E",
-                    caption: "Santa Visitação · Arte Medieval"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23c9a961' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E✙%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3EJesus no Templo%3C/text%3E%3C/svg%3E",
-                    caption: "Jesus no Templo · Tradição Bizantina"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%238a7548' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%23e8e6e3' font-family='Georgia,serif'%3E✝%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%23e8e6e3' font-family='Georgia,serif'%3EO Menino Perdido%3C/text%3E%3C/svg%3E",
-                    caption: "O Encontro · Ícone Litúrgico"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23c9a961' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E✠%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3ESagrada Família%3C/text%3E%3C/svg%3E",
-                    caption: "Sagrada Família · Arte Sacra"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%238a7548' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%23e8e6e3' font-family='Georgia,serif'%3E☩%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%23e8e6e3' font-family='Georgia,serif'%3EMãe de Deus%3C/text%3E%3C/svg%3E",
-                    caption: "Theotokos · Tradição Oriental"
-                }
-            ],
-            dolorosos: [
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%234a1818' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%23c9a961' font-family='Georgia,serif'%3E✞%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%23c9a961' font-family='Georgia,serif'%3EAgonia%3C/text%3E%3C/svg%3E",
-                    caption: "Agonia no Horto · Ícone da Paixão"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%231a0a0a' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%238a7548' font-family='Georgia,serif'%3E✝%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%238a7548' font-family='Georgia,serif'%3EFlagelação%3C/text%3E%3C/svg%3E",
-                    caption: "Flagelação · Arte Sacra"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%234a1818' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%23c9a961' font-family='Georgia,serif'%3E♛%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%23c9a961' font-family='Georgia,serif'%3ECoroação%3C/text%3E%3C/svg%3E",
-                    caption: "Coroação de Espinhos · Ícone"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%231a0a0a' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%238a7548' font-family='Georgia,serif'%3E✞%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%238a7548' font-family='Georgia,serif'%3EEcce Homo%3C/text%3E%3C/svg%3E",
-                    caption: "Ecce Homo · Tradição Bizantina"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%234a1818' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%23c9a961' font-family='Georgia,serif'%3E✠%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%23c9a961' font-family='Georgia,serif'%3EVia Crucis%3C/text%3E%3C/svg%3E",
-                    caption: "Via Crucis · Ícone Litúrgico"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%231a0a0a' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%238a7548' font-family='Georgia,serif'%3E☦%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%238a7548' font-family='Georgia,serif'%3ECrucifixão%3C/text%3E%3C/svg%3E",
-                    caption: "Crucifixão · Arte Sacra"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%234a1818' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%23c9a961' font-family='Georgia,serif'%3E✝%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%23c9a961' font-family='Georgia,serif'%3ECristo Crucificado%3C/text%3E%3C/svg%3E",
-                    caption: "Cristo Crucificado · Ícone da Paixão"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%231a0a0a' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%238a7548' font-family='Georgia,serif'%3E✞%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%238a7548' font-family='Georgia,serif'%3EO Calvário%3C/text%3E%3C/svg%3E",
-                    caption: "O Calvário · Tradição Oriental"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%234a1818' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%23c9a961' font-family='Georgia,serif'%3E♰%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%23c9a961' font-family='Georgia,serif'%3EPaixão%3C/text%3E%3C/svg%3E",
-                    caption: "Paixão de Cristo · Ícone Bizantino"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%231a0a0a' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%238a7548' font-family='Georgia,serif'%3E☩%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%238a7548' font-family='Georgia,serif'%3EA Cruz%3C/text%3E%3C/svg%3E",
-                    caption: "A Cruz · Arte Sacra"
-                }
-            ],
-            gloriosos: [
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23e0c080' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E✠%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3ERessurreição%3C/text%3E%3C/svg%3E",
-                    caption: "Ressurreição · Ícone Pascal"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23c9a961' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E☩%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3ECristo Vive%3C/text%3E%3C/svg%3E",
-                    caption: "Cristo Vive · Arte Sacra"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23e0c080' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E✙%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3EAscensão%3C/text%3E%3C/svg%3E",
-                    caption: "Ascensão · Ícone Bizantino"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23c9a961' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E✝%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3ECéu Aberto%3C/text%3E%3C/svg%3E",
-                    caption: "Céu Aberto · Tradição Oriental"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23e0c080' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E🕊%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3EPentecostes%3C/text%3E%3C/svg%3E",
-                    caption: "Pentecostes · Ícone do Espírito"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23c9a961' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E🔥%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3ELínguas de Fogo%3C/text%3E%3C/svg%3E",
-                    caption: "Línguas de Fogo · Arte Litúrgica"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23e0c080' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E✠%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3EAssunção%3C/text%3E%3C/svg%3E",
-                    caption: "Assunção · Ícone Mariano"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23c9a961' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E☩%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3EMãe no Céu%3C/text%3E%3C/svg%3E",
-                    caption: "Mãe no Céu · Tradição Bizantina"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23e0c080' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E👑%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3ECoroação%3C/text%3E%3C/svg%3E",
-                    caption: "Coroação · Ícone Real"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23c9a961' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E✙%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3ERainha dos Céus%3C/text%3E%3C/svg%3E",
-                    caption: "Rainha dos Céus · Arte Sacra"
-                },
-                {
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23e0c080' width='400' height='500'/%3E%3Ctext x='200' y='250' font-size='60' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3E⭐%3C/text%3E%3Ctext x='200' y='320' font-size='18' text-anchor='middle' fill='%230a0a0c' font-family='Georgia,serif'%3EGlória Eterna%3C/text%3E%3C/svg%3E",
-                    caption: "Glória Eterna · Ícone da Glória"
-                }
-            ]
-        };
+    <div class="menu-section">
+        <div class="menu-label">Rosário Completo</div>
+        <div class="menu-grid">
+            <button class="btn-mystery btn-complete" onclick="app.start('completo')">
+                Todos os Mistérios
+                <small>Gozosos, Dolorosos e Gloriosos</small>
+            </button>
+        </div>
+    </div>
+</div>
 
-        const MYSTERIES = {
-            gozosos: [
-                { title: "A Anunciação", med: "Oferecemos-Vos, Senhor Jesus, esta primeira dezena em honra da vossa Encarnação no seio puríssimo de Maria Virgem. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, uma humildade profunda de coração." },
-                { title: "A Visitação", med: "Oferecemos-Vos, Senhor Jesus, esta segunda dezena em honra da Visitação de vossa Mãe Santíssima à sua prima Santa Isabel e da santificação de São João Batista. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, a caridade perfeita para com o próximo." },
-                { title: "O Nascimento de Jesus", med: "Oferecemos-Vos, Senhor Jesus, esta terceira dezena em honra do vosso Nascimento na gruta de Belém. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, o desapego dos bens deste mundo, o amor à pobreza e aos pobres." },
-                { title: "A Apresentação no Templo", med: "Oferecemos-Vos, Senhor Jesus, esta quarta dezena em honra da vossa Apresentação no Templo e da Purificação de Maria. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, a pureza de corpo e de alma." },
-                { title: "Jesus perdido e achado no Templo", med: "Oferecemos-Vos, Senhor Jesus, esta quinta dezena em honra de quando vos perdestes e fostes achado no Templo pelos doutores da Lei. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, a verdadeira sabedoria." }
-            ],
-            dolorosos: [
-                { title: "A Agonia de Jesus no Horto", med: "Oferecemos-Vos, Senhor Jesus, esta primeira dezena em honra da vossa agonia mortal no Jardim das Oliveiras. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, a contrição perfeita dos nossos pecados." },
-                { title: "A Flagelação de Jesus", med: "Oferecemos-Vos, Senhor Jesus, esta segunda dezena em honra da vossa sangrenta Flagelação. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, a mortificação dos nossos sentidos." },
-                { title: "A Coroação de Espinhos", med: "Oferecemos-Vos, Senhor Jesus, esta terceira dezena em honra da vossa Coroação de Espinhos. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, o desprezo do mundo." },
-                { title: "Jesus carrega a Cruz", med: "Oferecemos-Vos, Senhor Jesus, esta quarta dezena em honra do carregamento da vossa pesada Cruz. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, paciência nas adversidades." },
-                { title: "A Crucifixão e Morte de Jesus", med: "Oferecemos-Vos, Senhor Jesus, esta quinta dezena em honra da vossa Crucifixão e Morte ignominiosa no Calvário. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, a conversão dos pecadores, a perseverança dos justos e o alívio das almas do Purgatório." }
-            ],
-            gloriosos: [
-                { title: "A Ressurreição de Jesus", med: "Oferecemos-Vos, Senhor Jesus, esta primeira dezena em honra da vossa gloriosa Ressurreição. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, o amor a Deus e uma fé viva." },
-                { title: "A Ascensão de Jesus ao Céu", med: "Oferecemos-Vos, Senhor Jesus, esta segunda dezena em honra da vossa triunfante Ascensão. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, uma firme esperança e um ardente desejo do Céu." },
-                { title: "A Vinda do Espírito Santo", med: "Oferecemos-Vos, Senhor Jesus, esta terceira dezena em honra do mistério de Pentecostes. Pedimos, por este mistério e pela intercessão de vossa Mãe Santíssima, a descida do Espírito Santo sobre nossas almas." },
-                { title: "A Assunção de Nossa Senhora", med: "Oferecemos-Vos, Senhor Jesus, esta quarta dezena em honra da Ressurreição e Assunção de vossa Mãe Santíssima aos céus. Pedimos, por este mistério e pela sua intercessão, uma terna devoção a tão boa Mãe." },
-                { title: "A Coroação de Nossa Senhora", med: "Oferecemos-Vos, Senhor Jesus, esta quinta dezena em honra da Coroação de vossa Santíssima Mãe no Céu. Pedimos, por este mistério e pela sua intercessão, a perseverança na graça e a coroa da glória eterna." }
-            ]
-        };
+<!-- TELA DE ORAÇÃO -->
+<div id="prayer-screen">
+    <div class="rosary-rail">
+        <div class="rosary-chain"></div>
+        <div id="bead-track"></div>
+    </div>
+    
+    <div class="prayer-main">
+        <header class="prayer-header">
+            <button class="back-btn" onclick="app.confirmExit()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Sair
+            </button>
+            <div class="progress-compact">
+                <div class="progress-bar-mini">
+                    <div class="progress-fill-mini" id="progress-fill"></div>
+                </div>
+                <span class="progress-text" id="progress-text">1/59</span>
+            </div>
+        </header>
 
-        const PRAYERS = {
-            cross: { name: "Sinal da Cruz", med: "Fazemos o Sinal da Cruz em nome do Pai, e do Filho, e do Espírito Santo. Preparemos nosso coração para a oração contemplativa." },
-            credo: { name: "Creio", med: "Professamos nossa fé no Deus Uno e Trino e em todos os artigos da Santa Fé Católica. Que nossa fé seja firme como rocha." },
-            pater: { name: "Pai Nosso" },
-            ave: { name: "Ave Maria" },
-            gloria: { name: "Glória ao Pai" },
-            fatima: { name: "Ó meu Jesus", med: "Perdoai-nos, livrai-nos do fogo do inferno, levai as almas todas para o Céu, principalmente as que mais precisarem." },
-            salve: { name: "Salve Rainha", med: "Salve, Rainha, Mãe de misericórdia, vida, doçura e esperança nossa, salve! Voltamos para Vós nossos olhos..." }
-        };
+        <div class="prayer-body" id="prayer-body">
+            <div class="prayer-group" id="prayer-group"></div>
+            <div class="prayer-mystery" id="prayer-mystery"></div>
+            <h2 class="prayer-name" id="prayer-name"></h2>
+            <div class="prayer-count" id="prayer-count"></div>
+            
+            <div class="meditation-box" id="meditation-box">
+                <div class="meditation-label">Meditação</div>
+                <p class="meditation-text" id="meditation-text"></p>
+            </div>
 
-        const app = {
-            state: {
-                currentMystery: null,
-                beads: [],
-                currentIndex: 0
+            <button class="prayer-text-toggle" id="prayer-text-toggle" onclick="app.toggleText()">
+                <span>Ver texto da oração</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </button>
+
+            <div class="prayer-full-text" id="prayer-full-text"></div>
+
+            <p class="nav-hint">Toque nas contas ou deslize para navegar</p>
+        </div>
+
+        <footer class="prayer-footer">
+            <button class="nav-btn" id="prev-btn" onclick="app.prev()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </button>
+            <button class="nav-btn primary" id="next-btn" onclick="app.next()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </button>
+        </footer>
+    </div>
+</div>
+
+<!-- TELA DE CONCLUSÃO -->
+<div id="completion-screen">
+    <svg class="completion-icon" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="50" cy="50" r="40"/>
+        <path d="M30 50l15 15 25-30" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h2 class="completion-title">Deo Gratias</h2>
+    <p class="completion-subtitle" id="completion-msg"></p>
+    <div class="completion-stats">
+        <div class="stat">
+            <div class="stat-value" id="stat-aves">0</div>
+            <div class="stat-label">Ave Marias</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="stat-paters">0</div>
+            <div class="stat-label">Pai Nossos</div>
+        </div>
+    </div>
+    <button class="btn-home" onclick="app.home()">Voltar ao Início</button>
+</div>
+
+<script>
+// ===== TEXTOS DAS ORAÇÕES =====
+const TEXTS = {
+    cross: `Em nome do Pai, e do Filho, e do Espírito Santo. Amém.`,
+    credo: `Creio em Deus Pai todo-poderoso, Criador do Céu e da terra; e em Jesus Cristo, seu único Filho, Nosso Senhor, que foi concebido pelo poder do Espírito Santo; nasceu da Virgem Maria; padeceu sob Pôncio Pilatos, foi crucificado, morto e sepultado; desceu à mansão dos mortos; ressuscitou ao terceiro dia; subiu aos Céus; está sentado à direita de Deus Pai todo-poderoso, de onde há de vir a julgar os vivos e os mortos. Creio no Espírito Santo; na Santa Igreja Católica; na comunhão dos Santos; na remissão dos pecados; na ressurreição da carne; na vida eterna. Amém.`,
+    pater: `Pai nosso que estais nos Céus, santificado seja o vosso Nome, venha a nós o vosso Reino, seja feita a vossa vontade assim na terra como no Céu. O pão nosso de cada dia nos dai hoje, perdoai-nos as nossas ofensas assim como nós perdoamos a quem nos tem ofendido, e não nos deixeis cair em tentação, mas livrai-nos do Mal. Amém.`,
+    ave: `Ave Maria, cheia de graça, o Senhor é convosco, bendita sois vós entre as mulheres e bendito é o fruto do vosso ventre, Jesus. Santa Maria, Mãe de Deus, rogai por nós pecadores, agora e na hora da nossa morte. Amém.`,
+    gloria: `Glória ao Pai, e ao Filho, e ao Espírito Santo. Assim como era no princípio, agora e sempre, e por todos os séculos dos séculos. Amém.`,
+    fatima: `Ó meu Jesus, perdoai-nos, livrai-nos do fogo do inferno, levai as almas todas para o Céu, principalmente as que mais precisarem da vossa Misericórdia.`,
+    salve: `Salve Rainha, Mãe de Misericórdia, vida, doçura e esperança nossa, salve! A vós bradamos, os degredados filhos de Eva. A vós suspiramos, gemendo e chorando neste vale de lágrimas. Eia pois, advogada nossa, esses vossos olhos misericordiosos a nós volvei. E depois deste desterro, mostrai-nos Jesus, bendito fruto do vosso ventre. Ó clemente, ó piedosa, ó doce sempre Virgem Maria. Rogai por nós, Santa Mãe de Deus, para que sejamos dignos das promessas de Cristo. Amém.`
+};
+
+// ===== MEDITAÇÕES MONTFORT PARA CADA AVE MARIA =====
+const MONTFORT = {
+    // Três Ave Marias iniciais
+    intro: [
+        "Em honra do Pai Eterno, que gera seu Filho contemplando-Se.",
+        "Em honra do Verbo Eterno, igual ao Pai, que com Ele produz o Espírito Santo.",
+        "Em honra do Espírito Santo, que procede do Pai e do Filho por via de amor."
+    ],
+    
+    gozosos: {
+        name: "Mistérios Gozosos",
+        mysteries: [
+            {
+                title: "A Anunciação do Anjo a Nossa Senhora",
+                pater: "A caridade de Deus, imensa.",
+                aves: [
+                    "Para lamentar o desgraçado estado de Adão desobediente, sua justa condenação e a de todos os seus filhos.",
+                    "Os desejos dos patriarcas e profetas, que pediam a vinda do Messias.",
+                    "Os desejos e as preces da Santíssima Virgem, que apressaram a vinda do Messias.",
+                    "A caridade do Pai Eterno, que nos deu Seu divino Filho.",
+                    "O amor do Filho, que se entregou por nós.",
+                    "A embaixada e a saudação do arcanjo Gabriel.",
+                    "O temor virginal de Maria.",
+                    "A fé e o consentimento da Santíssima Virgem.",
+                    "A criação da alma e a formação do Corpo de Jesus Cristo no seio de Maria, pelo Espírito Santo.",
+                    "A adoração do Verbo Encarnado, pelos anjos, no seio de Maria."
+                ]
             },
-
-            elements: {
-                homeScreen: document.getElementById('home-screen'),
-                prayerScreen: document.getElementById('prayer-screen'),
-                beadTrack: document.getElementById('bead-track'),
-                prayerMeta: document.getElementById('prayer-meta'),
-                prayerName: document.getElementById('prayer-name'),
-                mysterySubtitle: document.getElementById('mystery-subtitle'),
-                prayerMed: document.getElementById('prayer-meditation'),
-                progressIndicator: document.getElementById('progress-indicator'),
-                artworkContainer: document.getElementById('artwork-container'),
-                artworkImage: document.getElementById('artwork-image'),
-                artworkCaption: document.getElementById('artwork-caption')
+            {
+                title: "A Visitação de Nossa Senhora a Santa Isabel",
+                pater: "A majestade de Deus, adorável.",
+                aves: [
+                    "O gozo do Coração de Maria e a morada durante nove meses, do Verbo em seu seio.",
+                    "O sacrifício que Jesus Cristo fez de Si mesmo ao Pai, ao entrar neste Mundo.",
+                    "As complacências de Jesus no seio humilde e virginal de Maria, e de Nossa Senhora, no gozo do seu Deus.",
+                    "A dúvida de São José acerca da maternidade de Maria.",
+                    "A eleição dos escolhidos, combinada entre Jesus e Maria, em seu seio.",
+                    "O fervor de Maria na sua visita a Santa Isabel.",
+                    "A santificação de João Batista no ventre de sua mãe.",
+                    "A gratidão da Santíssima Virgem para com Deus, no Magnificat.",
+                    "A sua caridade e humildade em servir sua prima.",
+                    "A mútua dependência de Jesus e de Maria, e a devoção que devemos ter para com um e outra."
+                ]
             },
-
-            init() {
-                document.addEventListener('keydown', (e) => {
-                    if (!this.state.currentMystery) return;
-                    
-                    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
-                        e.preventDefault();
-                        this.nextBead();
-                    }
-                    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-                        e.preventDefault();
-                        this.prevBead();
-                    }
-                    if (e.key === 'Escape') {
-                        this.goHome();
-                    }
-                });
-
-                let wheelTimeout;
-                window.addEventListener('wheel', (e) => {
-                    if (!this.state.currentMystery) return;
-                    
-                    if (!wheelTimeout) {
-                        if (e.deltaY > 0) this.nextBead();
-                        else if (e.deltaY < 0) this.prevBead();
-                        
-                        wheelTimeout = setTimeout(() => {
-                            wheelTimeout = null;
-                        }, 150);
-                    }
-                }, { passive: true });
-
-                let touchStartY = 0;
-                let touchStartX = 0;
-                document.addEventListener('touchstart', (e) => {
-                    touchStartY = e.touches[0].clientY;
-                    touchStartX = e.touches[0].clientX;
-                }, { passive: true });
-
-                document.addEventListener('touchend', (e) => {
-                    if (!this.state.currentMystery) return;
-                    
-                    const touchEndY = e.changedTouches[0].clientY;
-                    const touchEndX = e.changedTouches[0].clientX;
-                    const diffY = touchStartY - touchEndY;
-                    const diffX = touchStartX - touchEndX;
-                    
-                    if (Math.abs(diffY) > Math.abs(diffX)) {
-                        if (Math.abs(diffY) > 50) {
-                            if (diffY > 0) this.nextBead();
-                            else this.prevBead();
-                        }
-                    }
-                }, { passive: true });
+            {
+                title: "O Nascimento de Jesus em Belém",
+                pater: "As riquezas de Deus, infinitas.",
+                aves: [
+                    "Os desprezos e injúrias feitas a Maria e a São José em Belém.",
+                    "A pobreza do estábulo onde Deus veio ao mundo.",
+                    "A alta contemplação e o excessivo amor de Maria no momento de dar à luz.",
+                    "A saída do Verbo Eterno do seio de Maria sem romper o selo de sua virgindade.",
+                    "As adorações e cânticos dos anjos no nascimento de Jesus.",
+                    "A formosura arrebatadora de Sua divina infância.",
+                    "A vinda dos pastores ao estábulo, com seus presentes.",
+                    "A circuncisão de Jesus Cristo e Suas dores amorosas.",
+                    "A imposição do nome de Jesus Cristo e suas grandezas.",
+                    "A adoração dos reis magos e seus presentes."
+                ]
             },
-
-            generateSequence(mysteryKey) {
-                const mysteries = MYSTERIES[mysteryKey];
-                const artworks = ARTWORKS[mysteryKey];
-                const seq = [];
-                let id = 0;
-
-                const add = (type, prayer, meta = '', med = '', mysteryTitle = '', artwork = null) => {
-                    seq.push({ 
-                        id: id++, 
-                        type, 
-                        name: prayer.name || prayer, 
-                        meta, 
-                        med: med || prayer.med || '',
-                        mysteryTitle,
-                        artwork
-                    });
-                };
-
-                add('cross', PRAYERS.cross, 'Início');
-                add('credo', PRAYERS.credo, 'Profissão de Fé');
-                add('pater', PRAYERS.pater, 'Intenções', 'Pelas intenções do Santo Padre, o Papa.');
-                add('ave', PRAYERS.ave, 'Virtudes', 'Pela virtude da Fé.');
-                add('ave', PRAYERS.ave, 'Virtudes', 'Pela virtude da Esperança.');
-                add('ave', PRAYERS.ave, 'Virtudes', 'Pela virtude da Caridade.');
-                add('gloria', PRAYERS.gloria, 'Glória');
-
-                mysteries.forEach((myst, idx) => {
-                    const num = idx + 1;
-                    
-                    add('pater', PRAYERS.pater, `${num}º Mistério`, myst.med, myst.title);
-
-                    for (let i = 1; i <= 10; i++) {
-                        const artworkIndex = (idx * 10 + i - 1) % artworks.length;
-                        add('ave', PRAYERS.ave, `${num}ª Dezena · Conta ${i}`, myst.med, myst.title, artworks[artworkIndex]);
-                    }
-
-                    add('gloria', PRAYERS.gloria, `${num}ª Dezena`);
-                    add('ave', PRAYERS.fatima, `${num}ª Dezena`);
-                });
-
-                add('salve', PRAYERS.salve, 'Encerramento');
-
-                return seq;
+            {
+                title: "A Apresentação de Jesus no Templo",
+                pater: "A sabedoria de Deus, eterna.",
+                aves: [
+                    "A obediência de Jesus e de Maria à Lei.",
+                    "O sacrifício que ali fez Jesus de sua humanidade.",
+                    "O sacrifício que ali fez Maria de sua honra.",
+                    "O gozo e os cânticos de Simeão e Ana, a profetisa.",
+                    "O resgate de Jesus pela oferenda de duas rolas.",
+                    "A matança dos santos inocentes.",
+                    "A fuga de Jesus para o Egito, pela obediência de São José à voz do anjo.",
+                    "A estada misteriosa no Egito.",
+                    "A Sua volta para Nazaré.",
+                    "O seu crescimento em idade, sabedoria e graça."
+                ]
             },
-
-            startRosary(mysteryKey) {
-                this.state.currentMystery = mysteryKey;
-                this.state.beads = this.generateSequence(mysteryKey);
-                this.state.currentIndex = 0;
-
-                this.elements.beadTrack.innerHTML = '';
-                this.state.beads.forEach((bead, idx) => {
-                    const el = document.createElement('div');
-                    el.className = `bead ${bead.type}`;
-                    if (idx === 0) el.classList.add('active');
-                    this.elements.beadTrack.appendChild(el);
-                });
-
-                this.elements.homeScreen.classList.remove('active');
-                this.elements.prayerScreen.classList.add('active');
-
-                this.updateView();
-            },
-
-            goHome() {
-                this.state.currentMystery = null;
-                this.elements.prayerScreen.classList.remove('active');
-                this.elements.homeScreen.classList.add('active');
-            },
-
-            nextBead() {
-                if (this.state.currentIndex < this.state.beads.length - 1) {
-                    this.state.currentIndex++;
-                    this.updateView();
-                }
-            },
-
-            prevBead() {
-                if (this.state.currentIndex > 0) {
-                    this.state.currentIndex--;
-                    this.updateView();
-                }
-            },
-
-            updateView() {
-                const idx = this.state.currentIndex;
-                const bead = this.state.beads[idx];
-                const track = this.elements.beadTrack;
-                const beadEls = track.children;
-
-                this.elements.prayerMeta.textContent = bead.meta;
-                this.elements.prayerName.textContent = bead.name;
-                this.elements.mysterySubtitle.textContent = bead.mysteryTitle || '';
-                this.elements.progressIndicator.textContent = `${idx + 1} / ${this.state.beads.length}`;
-
-                const medBox = this.elements.prayerMed;
-                medBox.style.opacity = '0';
-                setTimeout(() => {
-                    medBox.textContent = bead.med;
-                    medBox.style.opacity = '1';
-                }, 200);
-
-                // Mostrar/ocultar obra de arte
-                if (bead.artwork && bead.type === 'ave') {
-                    this.elements.artworkContainer.classList.remove('visible');
-                    setTimeout(() => {
-                        this.elements.artworkImage.src = bead.artwork.url;
-                        this.elements.artworkCaption.textContent = bead.artwork.caption;
-                        this.elements.artworkContainer.classList.add('visible');
-                    }, 300);
-                } else {
-                    this.elements.artworkContainer.classList.remove('visible');
-                }
-
-                Array.from(beadEls).forEach(el => el.classList.remove('active'));
-                beadEls[idx].classList.add('active');
-
-                const activeEl = beadEls[idx];
-                const beadCenter = activeEl.offsetTop + (activeEl.offsetHeight / 2);
-                
-                const isMobile = window.innerWidth <= 768;
-                
-                if (isMobile) {
-                    const beadCenterX = activeEl.offsetLeft + (activeEl.offsetWidth / 2);
-                    track.style.transform = `translate3d(-${beadCenterX}px, -50%, 0)`;
-                } else {
-                    track.style.transform = `translate3d(-50%, -${beadCenter}px, 0)`;
-                }
+            {
+                title: "O Encontro de Jesus no Templo",
+                pater: "A santidade de Deus, incompreensível.",
+                aves: [
+                    "A Sua vida oculta, laboriosa e obediente na casa de Nazaré.",
+                    "A sua perda e encontro no Templo entre os doutores.",
+                    "O seu jejum e tentações no deserto.",
+                    "O seu Batismo por São João Batista.",
+                    "A sua pregação admirável.",
+                    "Os seus milagres portentosos.",
+                    "A eleição de seus doze Apóstolos e os poderes que lhes deu.",
+                    "A sua transfiguração maravilhosa.",
+                    "O lava-pés dos Apóstolos.",
+                    "A instituição da Sagrada Eucaristia."
+                ]
             }
+        ]
+    },
+    
+    dolorosos: {
+        name: "Mistérios Dolorosos",
+        mysteries: [
+            {
+                title: "A Agonia de Jesus no Horto",
+                pater: "A felicidade de Deus, essencial.",
+                aves: [
+                    "Os divinos retiros que fez Jesus em Sua vida, principalmente no horto.",
+                    "As suas orações humildes e fervorosas durante Sua vida e nas vésperas da Paixão.",
+                    "A paciência e doçura com que suportou Seus Apóstolos, particularmente no horto.",
+                    "O tédio de sua Alma durante toda a Sua vida, principalmente no horto.",
+                    "Os rios de sangue que a dor fez brotar de seu Ser adorável.",
+                    "O consolo que teve por bem aceitar de um anjo na agonia.",
+                    "A sua conformidade com a vontade do Pai, apesar da repugnância de Sua natureza.",
+                    "A Sua traição por Judas e prisão pelos judeus.",
+                    "O valor com que saiu ao encontro dos algozes e a força da palavra com que os lançou por terra.",
+                    "O abandono que sofreu de Seus Apóstolos."
+                ]
+            },
+            {
+                title: "A Flagelação de Jesus",
+                pater: "A paciência de Deus, admirável.",
+                aves: [
+                    "As cordas com que Jesus foi atado.",
+                    "A bofetada que recebeu em casa de Caifás.",
+                    "As negações de São Pedro.",
+                    "As ignomínias que sofreu em casa de Herodes, quando lhe puseram a veste branca.",
+                    "O despojamento de Suas vestes.",
+                    "Os desprezos e insultos que sofreu de seus verdugos pela Sua nudez.",
+                    "As varas espinhosas e os açoites cruéis com que foi golpeado.",
+                    "A coluna em que foi atado.",
+                    "O sangue que derramou e as chagas que recebeu.",
+                    "A Sua queda no próprio sangue por causa da fraqueza."
+                ]
+            },
+            {
+                title: "A Coroação de Espinhos",
+                pater: "A formosura de Deus, inefável.",
+                aves: [
+                    "O despojamento de Suas vestes pela terceira vez.",
+                    "A Sua coroa de espinhos.",
+                    "O véu com que Lhe vendaram os olhos.",
+                    "As bofetadas e os escarros com que Lhe cobriram o rosto.",
+                    "O andrajo que Lhe puseram sobre os ombros.",
+                    "A cana que Lhe puseram nas mãos.",
+                    "A pedra pontiaguda sobre a qual O sentaram.",
+                    "Os ultrajes e os insultos que Lhe fizeram.",
+                    "O sangue e os suores que escorriam de Sua cabeça adorável.",
+                    "Os cabelos e a barba que Lhe arrancaram."
+                ]
+            },
+            {
+                title: "Jesus Carrega a Cruz",
+                pater: "A onipotência de Deus, sem limites.",
+                aves: [
+                    "A apresentação de Nosso Senhor diante do povo com o 'Eis o Homem'.",
+                    "O haver sido preferido a Barrabás.",
+                    "Os falsos testemunhos que contra Ele deram.",
+                    "A Sua condenação à morte.",
+                    "O amor com que abraçou e beijou a Cruz.",
+                    "O trabalho espantoso que teve em carregá-la.",
+                    "As quedas de pura debilidade sob seu peso.",
+                    "O encontro doloroso com Sua Santa Mãe.",
+                    "O véu de Verônica, no qual Seu rosto se estampou.",
+                    "As suas lágrimas, as de Sua Santa Mãe e das piedosas mulheres que O seguiram até o Calvário."
+                ]
+            },
+            {
+                title: "A Crucificação e Morte de Jesus",
+                pater: "A justiça de Deus, espantosa.",
+                aves: [
+                    "As cinco chagas de Jesus e o sangue que derramou na Cruz.",
+                    "O seu coração traspassado e a Cruz em que foi crucificado.",
+                    "Os cravos e a lança que O atravessaram.",
+                    "A vergonha e a infâmia que sofreu, sendo crucificado entre dois ladrões.",
+                    "A compaixão de Sua Mãe Santíssima.",
+                    "As sete últimas palavras.",
+                    "O seu desamparo e Seu silêncio.",
+                    "A aflição de todo o Universo.",
+                    "A Sua morte cruel e ignominiosa.",
+                    "A descida da Cruz e sepultamento."
+                ]
+            }
+        ]
+    },
+    
+    gloriosos: {
+        name: "Mistérios Gloriosos",
+        mysteries: [
+            {
+                title: "A Ressurreição de Jesus",
+                pater: "A eternidade de Deus, sem princípio.",
+                aves: [
+                    "A descida da Alma de Nosso Senhor aos Infernos.",
+                    "O gozo e a saída das almas dos Santos Padres que estavam no limbo.",
+                    "A reunião de Sua Alma e de Seu Corpo no sepulcro.",
+                    "A sua milagrosa saída do Sepulcro.",
+                    "As suas vitórias sobre a morte, o pecado, o mundo e o demônio.",
+                    "Os quatro dons gloriosos de Seu Corpo.",
+                    "O poder que Lhe deu Seu pai no céu e na terra.",
+                    "As aparições com que honrou Sua Santa Mãe.",
+                    "As conversações sobre o Céu e a ceia que fez com Seus Apóstolos.",
+                    "A autoridade e missão que lhes deu, para que fossem pregar por toda a Terra."
+                ]
+            },
+            {
+                title: "A Ascensão de Jesus ao Céu",
+                pater: "A imensidade de Deus, sem limites.",
+                aves: [
+                    "A promessa que fez Jesus aos Apóstolos de lhes enviar o Espírito Santo.",
+                    "A reunião no Monte das Oliveiras.",
+                    "A benção que lhes deu ao se elevar da Terra aos Céus.",
+                    "A Sua gloriosa e admirável Ascensão por Sua própria virtude até o Céu Empíreo.",
+                    "O recebimento e o triunfo que lhe fez Deus, Seu Pai, e toda a corte celestial.",
+                    "O poder triunfante com que abriu as portas do Céu, onde nenhum mortal havia entrado.",
+                    "O seu assento à direita do Pai, como Seu Filho querido, igual a Ele mesmo.",
+                    "O poder que Lhe deu de julgar os vivos e os mortos.",
+                    "A Sua última vinda sobre a Terra, na qual Seu poder e majestade aparecerão em todo o seu esplendor.",
+                    "A justiça que fará no último Juízo, recompensando os bons e castigando os maus por toda a eternidade."
+                ]
+            },
+            {
+                title: "A Vinda do Espírito Santo",
+                pater: "A providência de Deus, universal.",
+                aves: [
+                    "A Verdade do Espírito Santo, Deus que procede do Pai e do Filho.",
+                    "O dom do Espírito Santo pelo Pai e pelo Filho sobre os Apóstolos.",
+                    "O grande estrondo com que desceu, sinal de Sua força e Seu poder.",
+                    "As línguas de fogo que enviou sobre os Apóstolos.",
+                    "A plenitude de graças com que distinguiu Maria, Sua fiel esposa.",
+                    "A Sua conduta maravilhosa, com os santos e com o próprio Jesus Cristo.",
+                    "Os doze frutos do Espírito Santo.",
+                    "Os sete dons do Espírito Santo.",
+                    "Para pedir em particular o dom da Sabedoria e a vinda de Seu reino aos corações.",
+                    "Para obter a vitória sobre os três espíritos que Lhe são opostos: o espírito da carne, do mundo e do demônio."
+                ]
+            },
+            {
+                title: "A Assunção de Nossa Senhora",
+                pater: "A liberalidade de Deus, inenarrável.",
+                aves: [
+                    "A predestinação eterna de Maria, como obra-prima das mãos de Deus.",
+                    "A Sua Conceição Imaculada, a plenitude de graças e o uso da razão no seio de sua mãe.",
+                    "A Sua Natividade que regozijou todo o Universo.",
+                    "A Sua apresentação e sua vida no Templo.",
+                    "A Sua vida admirável e isenta de todo pecado.",
+                    "A plenitude de suas virtudes singulares.",
+                    "A Sua virgindade fecunda e seu parto sem dor.",
+                    "A Sua maternidade divina e sua aliança com a Santíssima Trindade.",
+                    "A Sua morte preciosa e cheia de amor.",
+                    "A Sua ressurreição e assunção triunfante."
+                ]
+            },
+            {
+                title: "A Coroação de Nossa Senhora",
+                pater: "A glória de Deus, inacessível.",
+                aves: [
+                    "A tríplice coroa com que a Santíssima Trindade coroou Maria.",
+                    "O gozo e a glória nova que recebeu o Céu por seu triunfo.",
+                    "Para reconhecê-la como Rainha do Céu e da Terra, dos anjos e dos homens.",
+                    "A tesoureira e dispensadora de todas as graças de Deus.",
+                    "A Medianeira e advogada dos homens.",
+                    "A destruidora e a ruína do demônio e das heresias.",
+                    "O refúgio seguro dos pecadores.",
+                    "A mãe e nutriz dos cristãos.",
+                    "A que é gozo e doçura dos justos.",
+                    "A que é asilo universal dos vivos, consolo todo-poderoso dos aflitos, dos moribundos e das almas do purgatório."
+                ]
+            }
+        ]
+    }
+};
+
+// ===== APP =====
+const app = {
+    state: {
+        type: null,
+        beads: [],
+        index: 0,
+        showText: false
+    },
+
+    els: {
+        home: document.getElementById('home-screen'),
+        prayer: document.getElementById('prayer-screen'),
+        completion: document.getElementById('completion-screen'),
+        track: document.getElementById('bead-track'),
+        progressFill: document.getElementById('progress-fill'),
+        progressText: document.getElementById('progress-text'),
+        group: document.getElementById('prayer-group'),
+        mystery: document.getElementById('prayer-mystery'),
+        name: document.getElementById('prayer-name'),
+        count: document.getElementById('prayer-count'),
+        meditationBox: document.getElementById('meditation-box'),
+        meditationText: document.getElementById('meditation-text'),
+        textToggle: document.getElementById('prayer-text-toggle'),
+        fullText: document.getElementById('prayer-full-text'),
+        prevBtn: document.getElementById('prev-btn'),
+        nextBtn: document.getElementById('next-btn')
+    },
+
+    init() {
+        this.setTodayInfo();
+        this.setupGestures();
+        this.setupKeyboard();
+    },
+
+    setTodayInfo() {
+        const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+        const mysteries = {
+            0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos',
+            3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos'
+        };
+        const d = new Date().getDay();
+        document.getElementById('today-info').innerHTML = 
+            `Hoje é <strong>${days[d]}</strong> — Mistérios <strong>${mysteries[d]}</strong>`;
+    },
+
+    setupGestures() {
+        let startY = 0, startX = 0;
+        const body = document.getElementById('prayer-body');
+        
+        body.addEventListener('touchstart', e => {
+            startY = e.touches[0].clientY;
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+
+        body.addEventListener('touchend', e => {
+            if (!this.state.type) return;
+            const dy = startY - e.changedTouches[0].clientY;
+            const dx = startX - e.changedTouches[0].clientX;
+            
+            // Swipe vertical (mais natural para passar contas)
+            if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 40) {
+                if (dy > 0) this.next();
+                else this.prev();
+            }
+        }, { passive: true });
+    },
+
+    setupKeyboard() {
+        document.addEventListener('keydown', e => {
+            if (!this.state.type) return;
+            if (['ArrowDown', 'ArrowRight', ' '].includes(e.key)) {
+                e.preventDefault();
+                this.next();
+            }
+            if (['ArrowUp', 'ArrowLeft'].includes(e.key)) {
+                e.preventDefault();
+                this.prev();
+            }
+            if (e.key === 'Escape') this.confirmExit();
+            if (e.key.toLowerCase() === 't') this.toggleText();
+        });
+    },
+
+    generateBeads(type) {
+        const beads = [];
+        let id = 0;
+
+        const add = (beadType, name, textKey, meditation = '', meta = {}) => {
+            beads.push({ id: id++, beadType, name, textKey, meditation, ...meta });
         };
 
-        app.init();
-    </script>
+        // Início
+        add('special', 'Sinal da Cruz', 'cross', 'Fé na presença de Deus; Fé no Evangelho; Fé e obediência ao Papa como Vigário de Jesus Cristo.');
+        add('special', 'Creio em Deus Pai', 'credo', 'Professamos nossa fé no Deus Uno e Trino e em todos os artigos da Santa Fé Católica.');
+        add('pater', 'Pai Nosso', 'pater', 'Unidade de um só Deus, vivo e verdadeiro.');
+        
+        // 3 Ave Marias iniciais
+        MONTFORT.intro.forEach((med, i) => {
+            add('ave', 'Ave Maria', 'ave', med, { count: `${i + 1}ª Ave Maria · Virtudes Teologais` });
+        });
+        
+        add('special', 'Glória ao Pai', 'gloria', 'Damos glória à Santíssima Trindade.');
+
+        // Determinar quais grupos de mistérios usar
+        let groups = [];
+        if (type === 'completo') {
+            groups = [MONTFORT.gozosos, MONTFORT.dolorosos, MONTFORT.gloriosos];
+        } else {
+            groups = [MONTFORT[type]];
+        }
+
+        // Para cada grupo de mistérios
+        groups.forEach(group => {
+            group.mysteries.forEach((mystery, mIdx) => {
+                const mysteryNum = mIdx + 1;
+                
+                // Pai Nosso
+                add('pater', 'Pai Nosso', 'pater', mystery.pater, {
+                    group: group.name,
+                    mystery: mystery.title,
+                    count: `${mysteryNum}º Mistério`
+                });
+
+                // 10 Ave Marias
+                mystery.aves.forEach((med, aIdx) => {
+                    add('ave', 'Ave Maria', 'ave', med, {
+                        group: group.name,
+                        mystery: mystery.title,
+                        count: `${mysteryNum}ª Dezena · ${aIdx + 1}ª Ave Maria`
+                    });
+                });
+
+                // Glória
+                add('special', 'Glória ao Pai', 'gloria', '', {
+                    group: group.name,
+                    mystery: mystery.title,
+                    count: `${mysteryNum}ª Dezena`
+                });
+
+                // Oração de Fátima
+                add('special', 'Oração de Fátima', 'fatima', 'Oração ensinada por Nossa Senhora aos pastorinhos de Fátima.', {
+                    group: group.name,
+                    mystery: mystery.title,
+                    count: `${mysteryNum}ª Dezena`
+                });
+            });
+        });
+
+        // Salve Rainha
+        add('special', 'Salve Rainha', 'salve', 'Saudemos a Rainha do Céu e da Terra, nossa Mãe e Advogada.');
+
+        return beads;
+    },
+
+    start(type) {
+        this.state.type = type;
+        this.state.beads = this.generateBeads(type);
+        this.state.index = 0;
+        this.state.showText = false;
+
+        // Criar contas visuais
+        this.els.track.innerHTML = '';
+        this.state.beads.forEach((bead, idx) => {
+            const el = document.createElement('div');
+            el.className = `bead ${bead.beadType}`;
+            if (bead.beadType !== 'ave' && bead.beadType !== 'pater') {
+                el.classList.add('special');
+            }
+            if (idx === 0) el.classList.add('active');
+            el.onclick = () => this.goTo(idx);
+            this.els.track.appendChild(el);
+        });
+
+        // Mostrar tela
+        this.els.home.classList.add('hidden');
+        this.els.prayer.classList.add('active');
+        
+        this.update();
+    },
+
+    goTo(idx) {
+        if (idx >= 0 && idx < this.state.beads.length) {
+            this.state.index = idx;
+            this.update();
+        }
+    },
+
+    next() {
+        if (this.state.index < this.state.beads.length - 1) {
+            this.state.index++;
+            this.update();
+        } else {
+            this.complete();
+        }
+    },
+
+    prev() {
+        if (this.state.index > 0) {
+            this.state.index--;
+            this.update();
+        }
+    },
+
+    update() {
+        const idx = this.state.index;
+        const bead = this.state.beads[idx];
+        const total = this.state.beads.length;
+
+        // Progresso
+        const pct = ((idx + 1) / total) * 100;
+        this.els.progressFill.style.width = `${pct}%`;
+        this.els.progressText.textContent = `${idx + 1}/${total}`;
+
+        // Conteúdo - com animações
+        const animatedEls = [this.els.group, this.els.mystery, this.els.name, this.els.count, this.els.meditationBox];
+        animatedEls.forEach(el => el.classList.remove('visible'));
+
+        setTimeout(() => {
+            this.els.group.textContent = bead.group || '';
+            this.els.mystery.textContent = bead.mystery || '';
+            this.els.name.textContent = bead.name;
+            this.els.count.textContent = bead.count || '';
+            this.els.meditationText.textContent = bead.meditation;
+            
+            // Texto da oração
+            this.els.fullText.innerHTML = `<p>${TEXTS[bead.textKey]}</p>`;
+            if (!this.state.showText) {
+                this.els.fullText.classList.remove('visible');
+                this.els.textToggle.classList.remove('expanded');
+                this.els.textToggle.querySelector('span').textContent = 'Ver texto da oração';
+            }
+
+            animatedEls.forEach(el => el.classList.add('visible'));
+        }, 100);
+
+        // Botões de navegação
+        this.els.prevBtn.disabled = idx === 0;
+
+        // Contas visuais
+        const beadEls = this.els.track.children;
+        Array.from(beadEls).forEach(el => el.classList.remove('active'));
+        beadEls[idx].classList.add('active');
+
+        // Posição do trilho
+        const activeEl = beadEls[idx];
+        const beadCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
+        this.els.track.style.transform = `translate(-50%, -${beadCenter}px)`;
+    },
+
+    toggleText() {
+        this.state.showText = !this.state.showText;
+        if (this.state.showText) {
+            this.els.fullText.classList.add('visible');
+            this.els.textToggle.classList.add('expanded');
+            this.els.textToggle.querySelector('span').textContent = 'Ocultar texto';
+        } else {
+            this.els.fullText.classList.remove('visible');
+            this.els.textToggle.classList.remove('expanded');
+            this.els.textToggle.querySelector('span').textContent = 'Ver texto da oração';
+        }
+    },
+
+    confirmExit() {
+        if (confirm('Deseja realmente sair do Rosário?')) {
+            this.home();
+        }
+    },
+
+    home() {
+        this.state.type = null;
+        this.els.prayer.classList.remove('active');
+        this.els.completion.classList.remove('active');
+        this.els.home.classList.remove('hidden');
+    },
+
+    complete() {
+        const aves = this.state.beads.filter(b => b.beadType === 'ave').length;
+        const paters = this.state.beads.filter(b => b.beadType === 'pater').length;
+
+        document.getElementById('stat-aves').textContent = aves;
+        document.getElementById('stat-paters').textContent = paters;
+
+        const msgs = {
+            gozosos: 'Você completou os Mistérios Gozosos. Que a alegria de Maria esteja convosco.',
+            dolorosos: 'Você completou os Mistérios Dolorosos. Que os sofrimentos de Cristo vos fortaleçam.',
+            gloriosos: 'Você completou os Mistérios Gloriosos. Que a glória do Céu vos aguarde.',
+            completo: 'Você completou o Santo Rosário inteiro! Que Nossa Senhora interceda por vós.'
+        };
+        document.getElementById('completion-msg').textContent = msgs[this.state.type];
+
+        this.els.prayer.classList.remove('active');
+        this.els.completion.classList.add('active');
+    }
+};
+
+app.init();
+</script>
 </body>
 </html>
