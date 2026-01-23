@@ -909,6 +909,27 @@
             }
         }
 
+        /* ===== CONTAS RETANGULARES (Glória e Fátima) ===== */
+        .bead.rectangle-bead {
+            border-radius: 18px !important;
+            width: calc(var(--bead-size-small) + 20px) !important;
+            height: calc(var(--bead-size-small) - 4px) !important;
+        }
+
+        .bead.rectangle-bead.active {
+            width: calc(var(--bead-size) + 24px) !important;
+            height: var(--bead-size) !important;
+            border-radius: 20px !important;
+        }
+
+        .bead.rectangle-bead:hover {
+            transform: scale(1.08);
+        }
+
+        .bead.rectangle-bead.active {
+            transform: scale(1.15);
+        }
+
         /* Conteúdo principal */
         .prayer-main {
             flex: 1;
@@ -1598,7 +1619,7 @@
             </svg>
             <span class="nav-label">Início</span>
         </button>
-        <button type="button" class="nav-item" id="nav-rosary-btn">
+        <button type="button" class="nav-item" id="nav-rosary-btn" data-tab="home">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
                 <circle cx="12" cy="3" r="2.5"/>
@@ -2055,17 +2076,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Botão Rosário na navbar - vai para home
-    document.getElementById('nav-rosary-btn').addEventListener('click', () => {
-        // Atualizar nav items
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        document.querySelector('.nav-item[data-tab="home"]').classList.add('active');
-        
-        // Atualizar tab contents
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        document.getElementById('tab-home').classList.add('active');
-    });
-
     // Navegação do Calendário
     document.getElementById('prev-month-btn').addEventListener('click', () => {
         currentCalendarMonth--;
@@ -2400,6 +2410,10 @@ const app = {
             const el = document.createElement('div');
             el.className = `bead ${bead.beadType}`;
             if (bead.beadType !== 'ave' && bead.beadType !== 'pater') el.classList.add('special');
+            // Adicionar classe específica para Glória e Fátima (retângulos arredondados)
+            if (bead.textKey === 'gloria' || bead.textKey === 'fatima') {
+                el.classList.add('rectangle-bead');
+            }
             if (idx === 0) el.classList.add('active');
             el.onclick = () => this.goTo(idx);
             this.els.track.appendChild(el);
