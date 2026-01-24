@@ -135,10 +135,6 @@ Cada Ave Maria tem uma meditação específica de São Luís de Montfort:
 - ✅ Edge 90+
 - ✅ Firefox 88+ (instalação limitada)
 
-## 🐛 Reportar Problemas
-
-Encontrou um bug? [Abra uma issue](https://github.com/seu-usuario/rosario-app/issues)
-
 ## 📄 Licença
 
 MIT License - Use livremente para propagar a fé! 🙏
@@ -146,8 +142,8 @@ MIT License - Use livremente para propagar a fé! 🙏
 ## 💖 Créditos
 
 - **Método de Oração:** São Luís de Montfort
-- **Desenvolvimento:** [Seu Nome]
-- **Ícone:** Design próprio com mãos em oração
+- **Desenvolvimento:** 
+- **Ícone:** Editado do Made by Edgar
 
 ## 🌟 Apoie o Projeto
 
@@ -156,7 +152,6 @@ Se este app te ajudou na sua jornada de fé:
 - ⭐ Dê uma estrela no GitHub
 - 🙏 Reze um Pai Nosso pela intenção do desenvolvedor
 - 📢 Compartilhe com outros católicos
-- 💝 Doe para manutenção: [link de doação]
 
 ---
 
