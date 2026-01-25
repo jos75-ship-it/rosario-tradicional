@@ -7,62 +7,12 @@
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#080709",
-  "theme_color": "#080709",
+  "theme_color": "#d4a855",
   "categories": ["lifestyle", "productivity"],
-  "screenshots": [
-    {
-      "src": "./screenshot-1.png",
-      "sizes": "540x720",
-      "form_factor": "narrow",
-      "type": "image/png"
-    },
-    {
-      "src": "./screenshot-2.png",
-      "sizes": "1280x720",
-      "form_factor": "wide",
-      "type": "image/png"
-    }
-  ],
   "icons": [
-    {
-      "src": "./icon-72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any"
-    },
     {
       "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-384.png",
-      "sizes": "384x384",
       "type": "image/png",
       "purpose": "any"
     },
@@ -79,21 +29,21 @@
       "short_name": "Gozosos",
       "description": "Iniciar os Mistérios Gozosos",
       "url": "./?mystery=gozosos",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Rosário Dolorosos",
       "short_name": "Dolorosos",
       "description": "Iniciar os Mistérios Dolorosos",
       "url": "./?mystery=dolorosos",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Rosário Gloriosos",
       "short_name": "Gloriosos",
       "description": "Iniciar os Mistérios Gloriosos",
       "url": "./?mystery=gloriosos",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }
