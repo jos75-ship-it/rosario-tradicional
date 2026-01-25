@@ -2,103 +2,1368 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    
-    <!-- Título e Descrição -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Santo Rosário · Método Montfort</title>
-    <meta name="description" content="Reze o Santo Rosário pelo Método de São Luís de Montfort. App completo com meditações, calendário e acompanhamento.">
-    <meta name="author" content="Seu Nome">
     
-    <!-- PWA - ESSENCIAL PARA INSTALAÇÃO -->
-    <meta name="theme-color" content="#d4a855">
-    <meta name="mobile-web-app-capable" content="yes">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/rosario-tradicional/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/rosario-tradicional/icon-192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/rosario-tradicional/icon-192.png">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Reze o Santo Rosário pelo Método de São Luís de Montfort. App completo com meditações, calendário e acompanhamento.">
+    <meta name="theme-color" content="#080709">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Rosário">
+    <link rel="manifest" href="/rosario-tradicional/manifest.json">
+    <link rel="apple-touch-icon" href="/rosario-tradicional/icon-192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/rosario-tradicional/icon-152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/rosario-tradicional/icon-192.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/rosario-tradicional/icon-192.png">
     
-    <!-- Manifest - OBRIGATÓRIO -->
-    <link rel="manifest" href="./manifest.json">
-    
-    <!-- Ícones - OBRIGATÓRIO -->
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="./icon-192.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
-    
-    <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" href="./icon-192.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="./icon-152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./icon-192.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="./icon-192.png">
-    
-    <!-- Startup Image para iOS -->
-    <link rel="apple-touch-startup-image" href="./icon-192.png">
-    
-    <!-- Chrome para Android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="app-mobile-web-app-status-bar-style" content="black">
-    
-    <!-- Microsoft -->
-    <meta name="msapplication-config" content="./browserconfig.xml">
-    <meta name="msapplication-TileColor" content="#080709">
-    <meta name="msapplication-TileImage" content="./icon-144.png">
-    
-    <!-- Android -->
-    <meta name="theme-color" content="#d4a855">
-    <meta name="application-name" content="Rosário">
-    
-    <!-- Segurança -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com/firebasejs https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:">
-    
-    <!-- Google Fonts (Pré-conexão para melhor performance) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-    
-    <!-- Seus estilos -->
     <style>
-        /* Coloque aqui o CSS do seu projeto */
-        :root {
+        :root{
             --bg-deep: #080709;
             --bg-primary: #0d0b0e;
+            --bg-secondary: #151316;
+            --bg-elevated: #1d1a1f;
+            --bg-card: #1a171c;
             --text-primary: #f4f1eb;
+            --text-secondary: #c2b8aa;
+            --text-muted: #7d7470;
+            --text-dim: #4d4845;
             --gold: #d4a855;
+            --gold-bright: #f5d680;
+            --gold-light: #e8c45a;
+            --gold-dim: #a58540;
+            --gold-dark: #6a5225;
+            --gold-glow: rgba(212, 168, 85, 0.5);
+            --burgundy: #6b2d3d;
+            --burgundy-light: #8a3d50;
+            --burgundy-bright: #a04d62;
+            --burgundy-glow: rgba(138, 61, 80, 0.5);
+            --cream: #faf5e8;
+            --border-subtle: rgba(212, 168, 85, 0.1);
+            --border-gold: rgba(212, 168, 85, 0.25);
+            --font-display: 'Cinzel', serif;
+            --font-body: 'Cormorant Garamond', serif;
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --bead-size: 48px;
+            --bead-size-small: 36px;
+            --bead-size-pater: 56px;
+            --bead-gap: 20px;
+            --rail-width: 110px;
         }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        html, body {
-            height: 100%;
-            overflow: hidden;
-        }
-        
-        body {
+        *{ box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent;}
+        html, body{ height: 100%; overflow: hidden;}
+        body{
             background: var(--bg-deep);
             color: var(--text-primary);
-            font-family: 'Cormorant Garamond', serif;
+            font-family: var(--font-body);
             font-size: 18px;
             line-height: 1.6;
         }
-    </style>
-    
-    <!-- Suporte para Safe Area (notches, etc) -->
-    <style>
-        @supports(padding: max(0px)) {
-            body {
-                padding-left: max(0px, env(safe-area-inset-left));
-                padding-right: max(0px, env(safe-area-inset-right));
-                padding-top: max(0px, env(safe-area-inset-top));
-                padding-bottom: max(0px, env(safe-area-inset-bottom));
+        /* Textura de fundo refinada */
+        body::before{
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 15% 15%, rgba(107, 45, 61, 0.12) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 85%, rgba(212, 168, 85, 0.08) 0%, transparent 45%),
+                radial-gradient(ellipse at 50% 50%, rgba(20, 18, 22, 0.5) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* ===== TELA DE AUTENTICAÇÃO ===== */
+        #auth-screen{
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 28px;
+            z-index: 200;
+            transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+        }
+        #auth-screen.hidden{ opacity: 0; visibility: hidden; pointer-events: none;}
+        .auth-container{ width: 100%; max-width: 380px; text-align: center;}
+        .auth-logo{ width: 50px; height: 70px; position: relative; margin: 0 auto 24px;}
+        .auth-logo::before,
+        .auth-logo::after{
+            content: ''; position: absolute;
+            background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-dim) 100%);
+            border-radius: 2px;
+        }
+        .auth-logo::before{ width: 4px; height: 100%; left: 50%; transform: translateX(-50%);}
+        .auth-logo::after{ width: 40px; height: 4px; top: 20px; left: 50%; transform: translateX(-50%);}
+        .auth-title{
+            font-family: var(--font-display); font-size: 1.8rem; font-weight: 500;
+            letter-spacing: 0.2em; color: var(--text-primary); margin-bottom: 6px;
+        }
+        .auth-subtitle{
+            font-family: var(--font-body); font-size: 1rem; font-style: italic;
+            color: var(--text-muted); margin-bottom: 20px;
+        }
+        .auth-info{
+            background: rgba(212, 168, 85, 0.1); border: 1px solid var(--border-subtle);
+            border-radius: 8px; padding: 16px; margin-bottom: 24px;
+            font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;
+        }
+        .auth-tabs{ display: flex; margin-bottom: 28px; border-bottom: 1px solid var(--border-subtle);}
+        .auth-tab{
+            flex: 1; padding: 14px; background: none; border: none;
+            font-family: var(--font-display); font-size: 0.75rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--text-muted); cursor: pointer;
+            transition: all 0.3s; position: relative;
+        }
+        .auth-tab::after{
+            content: ''; position: absolute; bottom: -1px;
+            left: 50%; transform: translateX(-50%); width: 0; height: 2px;
+            background: var(--gold); transition: width 0.3s var(--ease-out);
+        }
+        .auth-tab.active{ color: var(--gold);}
+        .auth-tab.active::after{ width: 60%;}
+        .auth-form{ display: none;}
+        .auth-form.active{ display: block;}
+        .input-group{ margin-bottom: 18px; text-align: left;}
+        .input-label{
+            display: block; font-family: var(--font-display);
+            font-size: 0.6rem; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+        }
+        .input-field{
+            width: 100%; padding: 14px 16px; background: #0f0d10;
+            border: 1px solid var(--border-subtle); border-radius: 4px;
+            font-family: var(--font-body); font-size: 1.05rem;
+            color: var(--text-primary); transition: all 0.3s;
+        }
+        .input-field:focus{
+            outline: none; border-color: var(--gold-dim);
+            box-shadow: 0 0 0 3px rgba(212, 168, 85, 0.1);
+        }
+        .input-field::placeholder{ color: var(--text-dim);}
+        .auth-btn{
+            width: 100%; padding: 16px; margin-top: 8px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+            border: none; border-radius: 4px;
+            font-family: var(--font-display); font-size: 0.85rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--bg-deep); cursor: pointer; transition: all 0.3s;
+        }
+        .auth-btn:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 168, 85, 0.3);
+        }
+        .auth-btn:disabled{ opacity: 0.6; cursor: not-allowed;}
+        .auth-error, .auth-success{
+            margin-top: 16px; padding: 12px; border-radius: 4px;
+            font-size: 0.9rem; display: none;
+        }
+        .auth-error{
+            background: rgba(180, 60, 60, 0.15);
+            border: 1px solid rgba(180, 60, 60, 0.3);
+            color: #e07070;
+        }
+        .auth-success{
+            background: rgba(74, 158, 107, 0.15);
+            border: 1px solid rgba(74, 158, 107, 0.3);
+            color: #70e070;
+        }
+        .auth-error.visible, .auth-success.visible{ display: block;}
+        .loading{
+            display: inline-block; width: 20px; height: 20px;
+            border: 3px solid rgba(212, 168, 85, 0.3);
+            border-radius: 50%; border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin{ to{ transform: rotate(360deg);} }
+        /* ===== MODAL DE AVATAR ===== */
+        #avatar-modal{
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 300;
+            padding: 24px;
+        }
+        #avatar-modal.active{
+            opacity: 1;
+            visibility: visible;
+        }
+        .avatar-modal-content{
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+        .avatar-modal-close{
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        .avatar-modal-close:hover{
+            color: var(--gold);
+        }
+        .avatar-modal-title{
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .avatar-grid{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .avatar-option{
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid var(--border-subtle);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-smooth);
+        }
+        .avatar-option:hover{
+            border-color: var(--gold-dim);
+            background: rgba(212, 168, 85, 0.05);
+            transform: scale(1.08);
+        }
+        .avatar-option.selected{
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(212, 168, 85, 0.15) 0%, rgba(212, 168, 85, 0.05) 100%);
+            box-shadow: 0 0 20px rgba(212, 168, 85, 0.3);
+            transform: scale(1.1);
+        }
+        .avatar-save-btn{
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold) 100%);
+            border: 1px solid var(--gold-light);
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--bg-deep);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        .avatar-save-btn:hover{
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 168, 85, 0.4);
+        }
+        .avatar-save-btn:disabled{
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        /* ===== HOME COM SCROLL E SHADOW ===== */
+        .home-screen-content{
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 100%;
+            padding: 24px 24px 100px 24px; /* Padding extra no final */
+            position: relative;
+        }
+        /* Ajustes de tamanho para as caixas */
+        .tab-content{
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .tab-content.active{
+            display: block;
+        }
+        /* Shadow gradient para todas as tabs */
+        .tab-content::after{
+            content: '';
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, rgba(8, 7, 9, 1) 0%, rgba(8, 7, 9, 0.8) 50%, transparent 100%);
+            pointer-events: none;
+            z-index: 50;
+        }
+        /* Shadow específico para home */
+        .home-screen-content::after{
+            content: '';
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, rgba(8, 7, 9, 1) 0%, rgba(8, 7, 9, 0.8) 50%, transparent 100%);
+            pointer-events: none;
+            z-index: 50;
+        }
+        /* ===== ESTRUTURA PRINCIPAL COM NAVBAR ===== */
+        #main-app{
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column;
+            transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+            z-index: 100;
+        }
+        #main-app.hidden{ opacity: 0; visibility: hidden; pointer-events: none;}
+        .app-content{
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 70px;
+        }
+        .tab-content{
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+        .tab-content.active{
+            display: flex;
+            flex-direction: column;
+        }
+        /* Bottom Navigation */
+        .bottom-nav{
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px;
+            z-index: 150;
+        }
+        .nav-item{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .nav-icon{
+            width: 26px;
+            height: 26px;
+            color: var(--text-dim);
+            transition: all 0.3s;
+            margin-bottom: 4px;
+        }
+        .nav-label{
+            font-family: var(--font-display);
+            font-size: 0.5rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            transition: all 0.3s;
+        }
+        .nav-item.active .nav-icon{
+            color: var(--gold);
+            filter: drop-shadow(0 0 8px var(--gold-glow));
+        }
+        .nav-item.active .nav-label{
+            color: var(--gold);
+        }
+        .nav-item::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s var(--ease-out);
+        }
+        .nav-item.active::before{
+            width: 40px;
+        }
+        /* ===== TELA INICIAL (HOME TAB) ===== */
+        .home-screen-content{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            padding: 28px;
+        }
+        /* Cruz decorativa */
+        .home-cross{
+            width: 50px;
+            height: 70px;
+            position: relative;
+            margin-bottom: 24px;
+        }
+        .home-cross::before,
+        .home-cross::after{
+            content: '';
+            position: absolute;
+            background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-dim) 100%);
+            border-radius: 2px;
+        }
+        .home-cross::before{
+            width: 4px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .home-cross::after{
+            width: 36px;
+            height: 4px;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .home-cross-glow{
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+            opacity: 0.5;
+            animation: cross-glow 4s ease-in-out infinite;
+        }
+        @keyframes cross-glow{
+            0%, 100%{ opacity: 0.4; transform: scale(0.95);}
+            50%{ opacity: 0.7; transform: scale(1.05);}
+        }
+        .home-title{
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+        }
+        .home-subtitle{
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+        .home-method{
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 36px;
+            padding: 10px 20px;
+            border: 1px solid var(--border-gold);
+            background: linear-gradient(135deg, rgba(212, 168, 85, 0.08) 0%, rgba(212, 168, 85, 0.02) 100%);
+            position: relative;
+        }
+        .home-method::before,
+        .home-method::after{
+            content: '✦';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold-dim);
+            font-size: 0.5rem;
+        }
+        .home-method::before{ left: 8px;}
+        .home-method::after{ right: 8px;}
+        .today-info{
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        .today-info strong{
+            color: var(--gold);
+            font-weight: 500;
+        }
+        .menu-section{
+            width: 100%;
+            max-width: 360px;
+            margin-bottom: 24px;
+        }
+        .menu-label{
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            letter-spacing: 0.35em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .menu-label::before,
+        .menu-label::after{
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+        }
+        .menu-grid{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        /* ===== BOTÕES ELEGANTES - ESTILO ORIGINAL MELHORADO ===== */
+        .btn-mystery{
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 22px 28px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.5s var(--ease-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        /* Efeito de luz que passa */
+        .btn-mystery::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(212, 168, 85, 0.15) 50%, 
+                transparent 100%);
+            transition: left 0.7s var(--ease-smooth);
+        }
+        /* Linha dourada inferior */
+        .btn-mystery::after{
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            transition: width 0.5s var(--ease-smooth);
+        }
+        .btn-mystery:hover::before{
+            left: 100%;
+        }
+        .btn-mystery:hover::after{
+            width: 70%;
+        }
+        .btn-mystery:hover{
+            border-color: var(--gold-dim);
+            color: var(--gold);
+            background: rgba(212, 168, 85, 0.06);
+            transform: translateY(-4px);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.4),
+                0 0 50px rgba(212, 168, 85, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        .btn-mystery:active{
+            transform: translateY(-2px);
+            transition: transform 0.1s;
+        }
+        /* Botão do Rosário Completo */
+        .btn-complete{
+            background: linear-gradient(135deg, rgba(107, 45, 61, 0.2) 0%, rgba(107, 45, 61, 0.08) 100%);
+            border: 1px solid rgba(138, 61, 80, 0.35);
+            color: var(--cream);
+            padding: 24px 28px;
+            margin-top: 4px;
+        }
+        .btn-complete::before{
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(212, 168, 85, 0.2) 50%, 
+                transparent 100%);
+        }
+        .btn-complete:hover{
+            background: linear-gradient(135deg, rgba(107, 45, 61, 0.3) 0%, rgba(107, 45, 61, 0.12) 100%);
+            border-color: var(--gold-dim);
+            box-shadow: 
+                0 18px 45px rgba(0, 0, 0, 0.45),
+                0 0 60px rgba(212, 168, 85, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+        .btn-complete small{
+            display: block;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-style: italic;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            text-transform: none;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+        /* Botão de áudio */
+        .audio-toggle{
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s var(--ease-smooth);
+            z-index: 200;
+        }
+        .audio-toggle:hover{
+            border-color: var(--gold-dim);
+            color: var(--gold);
+            transform: scale(1.05);
+        }
+        .audio-toggle.active{
+            color: var(--gold);
+            border-color: var(--gold-dim);
+            background: rgba(212, 168, 85, 0.12);
+            box-shadow: 0 0 20px rgba(212, 168, 85, 0.2);
+        }
+        .audio-toggle svg{ width: 22px; height: 22px;}
+        /* ===== TELA DE ORAÇÃO ===== */
+        #prayer-screen{
+            position: fixed; inset: 0;
+            display: flex; flex-direction: row;
+            background: var(--bg-deep);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+            z-index: 200;
+        }
+        #prayer-screen.active{ opacity: 1; visibility: visible;}
+        /* Trilho do Rosário */
+        .rosary-rail{
+            position: relative;
+            width: var(--rail-width);
+            height: 100%;
+            background: linear-gradient(90deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
+            border-right: 1px solid rgba(212, 168, 85, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .rosary-rail::before,
+        .rosary-rail::after{
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            height: 140px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .rosary-rail::before{
+            top: 0;
+            background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(8, 7, 9, 0.8) 50%, transparent 100%);
+        }
+        .rosary-rail::after{
+            bottom: 0;
+            background: linear-gradient(0deg, var(--bg-deep) 0%, rgba(8, 7, 9, 0.8) 50%, transparent 100%);
+        }
+        /* Corrente dourada */
+        .rosary-chain{
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 3px;
+            height: calc(100% + 300px);
+            transform: translate(-50%, -50%);
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                var(--gold-dark) 3%,
+                var(--gold-dim) 15%,
+                var(--gold) 50%,
+                var(--gold-dim) 85%,
+                var(--gold-dark) 97%,
+                transparent 100%);
+            opacity: 0.4;
+            border-radius: 2px;
+        }
+        /* Guia central */
+        .center-guide{
+            position: absolute;
+            top: 50%;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212, 168, 85, 0.2), transparent);
+            transform: translateY(-50%);
+            z-index: 5;
+        }
+        /* Container das contas */
+        #bead-track{
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, 0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--bead-gap);
+            transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+            padding: 100px 0;
+        }
+        /* ===== CONTAS BRILHANTES E REALISTAS ===== */
+        .bead{
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.45s var(--ease-smooth);
+            position: relative;
+            flex-shrink: 0;
+            background: transparent;
+        }
+        /* Aura de luz ao redor da conta ativa */
+        .bead::before{
+            content: '';
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            transform: scale(0.5);
+            z-index: -1;
+        }
+        .bead.active::before{
+            opacity: 1;
+            transform: scale(1);
+            animation: bead-aura 2.5s ease-in-out infinite;
+        }
+        @keyframes bead-aura{
+            0%, 100%{ opacity: 1; transform: scale(1);}
+            50%{ opacity: 0.6; transform: scale(1.25);}
+        }
+        /* Brilho interno sutil */
+        .bead::after{
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .bead:hover::after,
+        .bead.active::after{
+            opacity: 1;
+        }
+        /* ===== CONTA AVE MARIA - Círculo dourado hollow pequeno ===== */
+        .bead.ave{
+            width: var(--bead-size-small);
+            height: var(--bead-size-small);
+            border: 2.5px solid var(--gold);
+            box-shadow: 
+                0 0 12px rgba(212, 168, 85, 0.4),
+                0 0 20px rgba(212, 168, 85, 0.15),
+                inset 0 0 8px rgba(212, 168, 85, 0.2);
+        }
+        .bead.ave::before{
+            background: radial-gradient(circle, rgba(212, 168, 85, 0.5) 0%, transparent 70%);
+        }
+        .bead.ave::after{
+            background: radial-gradient(circle at 30% 30%, rgba(255, 230, 150, 0.4) 0%, transparent 60%);
+        }
+        .bead.ave:hover{
+            transform: scale(1.12);
+            border-color: var(--gold-bright);
+            box-shadow: 
+                0 0 20px rgba(212, 168, 85, 0.6),
+                0 0 35px rgba(212, 168, 85, 0.3),
+                inset 0 0 15px rgba(212, 168, 85, 0.3);
+        }
+        .bead.ave.active{
+            width: var(--bead-size);
+            height: var(--bead-size);
+            transform: scale(1.2);
+            border-width: 3px;
+            border-color: var(--gold-bright);
+            box-shadow: 
+                0 0 30px rgba(212, 168, 85, 0.8),
+                0 0 50px rgba(212, 168, 85, 0.5),
+                0 0 80px rgba(212, 168, 85, 0.25),
+                inset 0 0 25px rgba(212, 168, 85, 0.4);
+            animation: bead-pulse 2s ease-in-out infinite;
+        }
+        @keyframes bead-pulse{
+            0%, 100%{ 
+                border-color: var(--gold-bright);
+                box-shadow: 
+                    0 0 30px rgba(212, 168, 85, 0.8),
+                    0 0 50px rgba(212, 168, 85, 0.5),
+                    0 0 80px rgba(212, 168, 85, 0.25),
+                    inset 0 0 25px rgba(212, 168, 85, 0.4);
+            }
+            50%{ 
+                border-color: #ffe890;
+                box-shadow: 
+                    0 0 40px rgba(212, 168, 85, 1),
+                    0 0 70px rgba(212, 168, 85, 0.6),
+                    0 0 100px rgba(212, 168, 85, 0.3),
+                    inset 0 0 35px rgba(212, 168, 85, 0.5);
             }
         }
+        /* ===== CONTA PAI NOSSO - Círculo dourado hollow maior ===== */
+        .bead.pater{
+            width: calc(var(--bead-size-small) + 14px);
+            height: calc(var(--bead-size-small) + 14px);
+            border: 3px solid var(--gold-bright);
+            box-shadow: 
+                0 0 18px rgba(212, 168, 85, 0.6),
+                0 0 30px rgba(212, 168, 85, 0.3),
+                inset 0 0 12px rgba(212, 168, 85, 0.3);
+        }
+        .bead.pater::before{
+            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 65%);
+        }
+        .bead.pater::after{
+            background: radial-gradient(circle at 25% 25%, rgba(255, 240, 180, 0.6) 0%, transparent 55%);
+        }
+        .bead.pater:hover{
+            transform: scale(1.12);
+            border-color: #ffe890;
+            box-shadow: 
+                0 0 25px rgba(212, 168, 85, 0.8),
+                0 0 45px rgba(212, 168, 85, 0.5),
+                inset 0 0 20px rgba(212, 168, 85, 0.4);
+        }
+        .bead.pater.active{
+            width: var(--bead-size-pater);
+            height: var(--bead-size-pater);
+            transform: scale(1.2);
+            border-width: 4px;
+            border-color: #ffe890;
+            box-shadow: 
+                0 0 40px rgba(212, 168, 85, 1),
+                0 0 65px rgba(212, 168, 85, 0.7),
+                0 0 100px rgba(212, 168, 85, 0.4),
+                inset 0 0 30px rgba(212, 168, 85, 0.5);
+            animation: bead-pulse-pater 2s ease-in-out infinite;
+        }
+        @keyframes bead-pulse-pater{
+            0%, 100%{ 
+                border-color: #ffe890;
+                box-shadow: 
+                    0 0 40px rgba(212, 168, 85, 1),
+                    0 0 65px rgba(212, 168, 85, 0.7),
+                    0 0 100px rgba(212, 168, 85, 0.4),
+                    inset 0 0 30px rgba(212, 168, 85, 0.5);
+            }
+            50%{ 
+                border-color: #fff5c0;
+                box-shadow: 
+                    0 0 50px rgba(255, 230, 150, 1),
+                    0 0 85px rgba(212, 168, 85, 0.8),
+                    0 0 120px rgba(212, 168, 85, 0.5),
+                    inset 0 0 40px rgba(212, 168, 85, 0.6);
+            }
+        }
+        /* ===== CONTA ESPECIAL - Círculo dourado hollow médio com toque burgundy ===== */
+        .bead.special{
+            width: calc(var(--bead-size-small) + 10px);
+            height: calc(var(--bead-size-small) + 10px);
+            border: 2.5px solid var(--gold);
+            box-shadow: 
+                0 0 15px rgba(212, 168, 85, 0.5),
+                0 0 25px rgba(138, 61, 80, 0.3),
+                inset 0 0 10px rgba(212, 168, 85, 0.25);
+        }
+        .bead.special::before{
+            background: radial-gradient(circle, rgba(212, 168, 85, 0.4) 0%, rgba(138, 61, 80, 0.2) 40%, transparent 70%);
+        }
+        .bead.special::after{
+            background: radial-gradient(circle at 28% 28%, rgba(255, 230, 150, 0.5) 0%, transparent 55%);
+        }
+        .bead.special:hover{
+            transform: scale(1.12);
+            border-color: var(--gold-bright);
+            box-shadow: 
+                0 0 22px rgba(212, 168, 85, 0.7),
+                0 0 38px rgba(138, 61, 80, 0.4),
+                inset 0 0 18px rgba(212, 168, 85, 0.35);
+        }
+        .bead.special.active{
+            width: calc(var(--bead-size) + 10px);
+            height: calc(var(--bead-size) + 10px);
+            transform: scale(1.2);
+            border-width: 3.5px;
+            border-color: var(--gold-bright);
+            box-shadow: 
+                0 0 35px rgba(212, 168, 85, 0.85),
+                0 0 55px rgba(138, 61, 80, 0.5),
+                0 0 85px rgba(212, 168, 85, 0.35),
+                inset 0 0 28px rgba(212, 168, 85, 0.45);
+            animation: bead-pulse-special 2.2s ease-in-out infinite;
+        }
+        @keyframes bead-pulse-special{
+            0%, 100%{ 
+                border-color: var(--gold-bright);
+                box-shadow: 
+                    0 0 35px rgba(212, 168, 85, 0.85),
+                    0 0 55px rgba(138, 61, 80, 0.5),
+                    0 0 85px rgba(212, 168, 85, 0.35),
+                    inset 0 0 28px rgba(212, 168, 85, 0.45);
+            }
+            50%{ 
+                border-color: #ffe890;
+                box-shadow: 
+                    0 0 45px rgba(212, 168, 85, 1),
+                    0 0 70px rgba(138, 61, 80, 0.6),
+                    0 0 105px rgba(212, 168, 85, 0.45),
+                    inset 0 0 38px rgba(212, 168, 85, 0.55);
+            }
+        }
+        /* ===== CONTAS RETANGULARES (Glória e Fátima) ===== */
+        .bead.rectangle-bead{
+            border-radius: 18px !important;
+            width: calc(var(--bead-size-small) + 20px) !important;
+            height: calc(var(--bead-size-small) - 4px) !important;
+        }
+        .bead.rectangle-bead.active{
+            width: calc(var(--bead-size) + 24px) !important;
+            height: var(--bead-size) !important;
+            border-radius: 20px !important;
+        }
+        .bead.rectangle-bead:hover{
+            transform: scale(1.08);
+        }
+        .bead.rectangle-bead.active{
+            transform: scale(1.15);
+        }
+        /* Conteúdo principal */
+        .prayer-main{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            position: relative;
+        }
+        .prayer-header{
+            padding: 18px 24px;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .back-btn{
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        .back-btn:hover{
+            color: var(--gold);
+            transform: translateX(-3px);
+        }
+        .back-btn svg{ width: 16px; height: 16px;}
+        .progress-compact{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .progress-bar-mini{
+            width: 90px;
+            height: 3px;
+            background: var(--bg-elevated);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-fill-mini{
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-bright));
+            transition: width 0.5s var(--ease-out);
+            border-radius: 2px;
+        }
+        .progress-text{
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 0.08em;
+        }
+        .prayer-body{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 32px 32px;
+            overflow-y: auto;
+        }
+        .prayer-group{
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--gold-dim);
+            margin-bottom: 8px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.45s var(--ease-out);
+        }
+        .prayer-group.visible{ opacity: 1; transform: translateY(0);}
+        .prayer-mystery{
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-bottom: 18px;
+            min-height: 1.5em;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.45s var(--ease-out) 0.05s;
+        }
+        .prayer-mystery.visible{ opacity: 1; transform: translateY(0);}
+        .prayer-name{
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            opacity: 0;
+            transform: translateY(-12px);
+            transition: all 0.45s var(--ease-out) 0.1s;
+        }
+        .prayer-name.visible{ opacity: 1; transform: translateY(0);}
+        .prayer-count{
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 0.18em;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.45s var(--ease-out) 0.15s;
+        }
+        .prayer-count.visible{ opacity: 1; transform: translateY(0);}
+        /* Caixa de meditação refinada */
+        .meditation-box{
+            background: linear-gradient(135deg, rgba(212, 168, 85, 0.1) 0%, rgba(212, 168, 85, 0.03) 100%);
+            border-left: 3px solid var(--gold);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateX(-15px);
+            transition: all 0.5s var(--ease-out) 0.2s;
+            position: relative;
+        }
+        .meditation-box::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, var(--gold-dim), transparent);
+        }
+        .meditation-box.visible{ opacity: 1; transform: translateX(0);}
+        .meditation-label{
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        .meditation-text{
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--text-primary);
+            line-height: 1.75;
+        }
+        /* Toggle do texto da oração */
+        .prayer-text-toggle{
+            background: none;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: all 0.35s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 14px;
+        }
+        .prayer-text-toggle:hover{
+            border-color: var(--border-gold);
+            color: var(--gold);
+            background: rgba(212, 168, 85, 0.04);
+        }
+        .prayer-text-toggle svg{
+            width: 14px;
+            height: 14px;
+            transition: transform 0.35s var(--ease-out);
+        }
+        .prayer-text-toggle.expanded svg{ transform: rotate(180deg);}
+        .prayer-full-text{
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.45s var(--ease-out), opacity 0.35s, padding 0.35s;
+            opacity: 0;
+            background: var(--bg-card);
+            border-radius: 6px;
+            border: 1px solid var(--border-subtle);
+        }
+        .prayer-full-text.visible{
+            max-height: 420px;
+            opacity: 1;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .prayer-full-text p{
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.85;
+        }
+        /* Footer com navegação */
+        .prayer-footer{
+            padding: 18px 24px;
+            background: linear-gradient(0deg, var(--bg-primary) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-shrink: 0;
+        }
+        .nav-btn{
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.35s var(--ease-smooth);
+        }
+        .nav-btn:hover:not(:disabled){
+            background: var(--bg-elevated);
+            border-color: var(--border-gold);
+            color: var(--gold);
+            transform: scale(1.08);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        .nav-btn:disabled{ opacity: 0.25; cursor: not-allowed;}
+        .nav-btn svg{ width: 24px; height: 24px;}
+        .nav-btn.primary{
+            width: 68px;
+            height: 68px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+            border: none;
+            color: var(--bg-deep);
+            box-shadow: 0 4px 20px rgba(212, 168, 85, 0.3);
+        }
+        .nav-btn.primary:hover:not(:disabled){
+            background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 100%);
+            transform: scale(1.1);
+            box-shadow: 0 0 35px rgba(212, 168, 85, 0.5), 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        .nav-hint{
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-style: italic;
+            white-space: nowrap;
+        }
+        /* ===== TELA DE CONCLUSÃO ===== */
+        #completion-screen{
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 28px;
+            background: var(--bg-deep);
+            z-index: 200;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+        }
+        #completion-screen.active{ opacity: 1; visibility: visible;}
+        .completion-icon{
+            width: 100px;
+            height: 100px;
+            color: var(--gold);
+            margin-bottom: 28px;
+            animation: completion-glow 2.5s ease-in-out infinite;
+        }
+        @keyframes completion-glow{
+            0%, 100%{ filter: drop-shadow(0 0 20px rgba(212, 168, 85, 0.4)); transform: scale(1);}
+            50%{ filter: drop-shadow(0 0 40px rgba(212, 168, 85, 0.7)); transform: scale(1.06);}
+        }
+        .completion-title{
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            letter-spacing: 0.18em;
+            margin-bottom: 10px;
+        }
+        .completion-subtitle{
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 340px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+        .completion-stats{
+            display: flex;
+            gap: 40px;
+            margin-bottom: 36px;
+        }
+        .stat{ text-align: center;}
+        .stat-value{
+            font-family: var(--font-display);
+            font-size: 2.4rem;
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(212, 168, 85, 0.3);
+        }
+        .stat-label{
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .btn-home{
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            color: var(--gold);
+            padding: 16px 32px;
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.35s;
+        }
+        .btn-home:hover{
+            background: rgba(212, 168, 85, 0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 768px){
+            :root{
+                --bead-size: 54px;
+                --bead-size-small: 44px;
+                --bead-size-pater: 62px;
+                --bead-gap: 18px;
+                --rail-width: 85px;
+            }
+            .rosary-rail{
+                order: 2;
+                width: var(--rail-width);
+                background: linear-gradient(-90deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
+                border-right: none;
+                border-left: 1px solid rgba(212, 168, 85, 0.06);
+            }
+            .rosary-rail::before, .rosary-rail::after{ height: 110px;}
+            .prayer-main{ order: 1;}
+            .prayer-body{ padding: 24px 20px;}
+            .prayer-name{ font-size: 1.8rem;}
+            .meditation-text{ font-size: 1.1rem;}
+            .nav-btn{ width: 52px; height: 52px;}
+            .nav-btn.primary{ width: 62px; height: 62px;}
+            .nav-hint{ display: none;}
+            .progress-bar-mini{ width: 70px;}
+            .audio-toggle{ bottom: 110px; right: 14px; width: 44px; height: 44px;}
+            .home-title{ font-size: 1.8rem;}
+        }
+        @media (max-width: 380px){
+            :root{
+                --rail-width: 75px;
+                --bead-size: 50px;
+                --bead-size-small: 40px;
+                --bead-size-pater: 56px;
+            }
+            .prayer-body{ padding: 18px 16px;}
+            .prayer-name{ font-size: 1.5rem;}
+            .meditation-text{ font-size: 1rem;}
+            .home-title{ font-size: 1.6rem;}
+        }
+        @media (max-height: 500px) and (orientation: landscape){
+            .rosary-rail{ width: 75px;}
+            .prayer-header, .prayer-footer{ padding: 12px 18px;}
+            .prayer-body{ padding: 14px 18px;}
+            .prayer-name{ font-size: 1.5rem; margin-bottom: 5px;}
+            .meditation-box{ padding: 14px 16px; margin-bottom: 14px;}
+        }
     </style>
-</head>
-
 </head>
 <body>
 <!-- TELA DE AUTENTICAÇÃO -->
@@ -466,7 +1731,14 @@ import{ initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase
 import{ getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import{ getDatabase, ref, set, get, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 // Firebase Config
-import { firebaseConfig } from './config.js';
+const firebaseConfig ={
+    apiKey: "AIzaSyAD_SvPlYGGZM1JMZmIjfai-a3TPPKDxLg",
+    authDomain: "rosario-app-a9da0.firebaseapp.com",
+    databaseURL: "https://rosario-app-a9da0-default-rtdb.firebaseio.com",
+    projectId: "rosario-app-a9da0",
+    storageBucket: "rosario-app-a9da0.firebasestorage.app",
+    messagingSenderId: "928215518242",
+    appId: "1:928215518242:web:09c61bfbfc0fc947570e7b"
 };
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
