@@ -1,73 +1,99 @@
 {
-  "name": "Santo Rosário - Método Montfort",
+  "name": "Santo Rosário · Método Montfort",
   "short_name": "Rosário",
-  "description": "Reze o Santo Rosário completo com as meditações de São Luís de Montfort. Acompanhe seu progresso diário e mantenha sua jornada de fé.",
-  "start_url": "/",
+  "description": "Reze o Santo Rosário pelo Método de São Luís de Montfort. App completo com meditações, calendário e acompanhamento.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#080709",
-  "theme_color": "#d4a855",
-  "orientation": "portrait",
+  "theme_color": "#080709",
+  "categories": ["lifestyle", "productivity"],
+  "screenshots": [
+    {
+      "src": "./screenshot-1.png",
+      "sizes": "540x720",
+      "form_factor": "narrow",
+      "type": "image/png"
+    },
+    {
+      "src": "./screenshot-2.png",
+      "sizes": "1280x720",
+      "form_factor": "wide",
+      "type": "image/png"
+    }
+  ],
   "icons": [
     {
-      "src": "/icon-72.png",
+      "src": "./icon-72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-96.png",
+      "src": "./icon-96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-128.png",
+      "src": "./icon-128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-144.png",
+      "src": "./icon-144.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-152.png",
+      "src": "./icon-152.png",
       "sizes": "152x152",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/icon-384.png",
+      "src": "./icon-384.png",
       "sizes": "384x384",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
-  "categories": ["lifestyle", "education"],
-  "screenshots": [
+  "shortcuts": [
     {
-      "src": "/screenshot1.png",
-      "sizes": "540x720",
-      "type": "image/png"
+      "name": "Rosário Gozosos",
+      "short_name": "Gozosos",
+      "description": "Iniciar os Mistérios Gozosos",
+      "url": "./?mystery=gozosos",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
     },
     {
-      "src": "/screenshot2.png",
-      "sizes": "540x720",
-      "type": "image/png"
+      "name": "Rosário Dolorosos",
+      "short_name": "Dolorosos",
+      "description": "Iniciar os Mistérios Dolorosos",
+      "url": "./?mystery=dolorosos",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Rosário Gloriosos",
+      "short_name": "Gloriosos",
+      "description": "Iniciar os Mistérios Gloriosos",
+      "url": "./?mystery=gloriosos",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
