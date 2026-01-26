@@ -1995,23 +1995,22 @@ document.addEventListener('DOMContentLoaded', () =>{
         const password = document.getElementById('login-password').value;
         loginUser(username, password);
     });
-    // Register form
-    document.getElementById('register-form').addEventListener('submit', (e) =>{
-        e.preventDefault();
-        const username = document.getElementById('register-username').value.trim();
-        const displayName = document.getElementById('register-displayname').value.trim();
-        const password = document.getElementById('register-password').value;
-        const confirm = document.getElementById('register-confirm').value;
-        if (password !== confirm){
-            showError('register-error', 'As senhas não coincidem!');
-            return;
-        }
-        if (username.length < 3){
-            showError('register-error', 'Nome de usuário muito curto! Use no mínimo 3 caracteres.');
-            return;
-        }
-        registerUser(username, displayName, password);
-    });
+// Register form
+document.getElementById('register-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('register-username').value.trim();
+    const displayName = document.getElementById('register-displayname').value.trim();
+    const password = document.getElementById('register-password').value;
+    const confirm = document.getElementById('register-confirm').value;
+    
+    if (password !== confirm) {
+        showError('register-error', 'As senhas não coincidem!');
+        return;
+    }
+    
+    // Usar a nova função com username
+    registerUserWithUsername(username, displayName, password);
+});
     // Navegação de tabs
     document.querySelectorAll('.nav-item[data-tab]').forEach(btn =>{
         btn.addEventListener('click', () =>{
