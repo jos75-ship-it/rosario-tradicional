@@ -81,18 +81,18 @@
         }
         /* ===== TELA DE AUTENTICAÇÃO ===== */
         #auth-screen{
-    position: fixed; inset: 0;
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: flex-start;
-    padding: 28px;
-    padding-top: 60px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    z-index: 200;
-    transition: opacity 0.6s var(--ease-out), visibility 0.6s;
-}
+            position: fixed; inset: 0;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-start;
+            padding: 28px;
+            padding-top: 60px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 200;
+            transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+        }
         #auth-screen.hidden{ opacity: 0; visibility: hidden; pointer-events: none;}
         .auth-container{ width: 100%; max-width: 380px; text-align: center;}
         .auth-logo{ width: 50px; height: 70px; position: relative; margin: 0 auto 24px;}
@@ -244,35 +244,75 @@
             text-align: center;
             margin-bottom: 28px;
         }
-        .avatar-grid{
+        
+        /* ===== ESTILOS PARA AVATAR COM IMAGEM ===== */
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Garante que a imagem não distorça */
+            border-radius: 50%;
+            display: block;
+        }
+
+        /* Ajuste no container do avatar no perfil */
+        #profile-avatar {
+            width: 90px; 
+            height: 90px;
+            margin: 0 auto 16px;
+            background: var(--bg-card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Corta a imagem em círculo */
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 15px rgba(212, 168, 85, 0.2);
+            font-size: 2.5rem; /* Para emojis antigos */
+        }
+
+        /* Ajuste nas opções do Modal */
+        .avatar-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
             margin-bottom: 24px;
         }
-        .avatar-option{
+
+        .avatar-option {
             aspect-ratio: 1;
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.05);
             border: 2px solid var(--border-subtle);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
             cursor: pointer;
-            transition: all 0.3s var(--ease-smooth);
+            overflow: hidden; /* Importante */
+            padding: 0; /* Remove padding para imagem encher tudo */
+            transition: all 0.3s;
         }
-        .avatar-option:hover{
+
+        .avatar-option:hover {
             border-color: var(--gold-dim);
-            background: rgba(212, 168, 85, 0.05);
-            transform: scale(1.08);
+            transform: scale(1.05);
         }
-        .avatar-option.selected{
+
+        .avatar-option.selected {
             border-color: var(--gold);
-            background: linear-gradient(135deg, rgba(212, 168, 85, 0.15) 0%, rgba(212, 168, 85, 0.05) 100%);
-            box-shadow: 0 0 20px rgba(212, 168, 85, 0.3);
+            box-shadow: 0 0 15px var(--gold-glow);
             transform: scale(1.1);
+            position: relative;
         }
+        
+        /* Marca visual de selecionado */
+        .avatar-option.selected::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 3px solid var(--gold);
+            border-radius: 50%;
+        }
+
         .avatar-save-btn{
             width: 100%;
             padding: 16px;
@@ -1759,6 +1799,21 @@ import{ getDatabase, ref, set, get, update, remove } from 'https://www.gstatic.c
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const database = getDatabase(firebaseApp);
+
+// Função auxiliar para gerar o HTML do Avatar (Imagem ou Emoji)
+window.getAvatarHTML = function(avatarValue, size = '100%') {
+    // Se não tiver valor, retorna o padrão
+    if (!avatarValue) return '👤';
+    
+    // Se o valor tiver ponto (ex: .png, .jpg), é um arquivo de imagem
+    if (avatarValue.indexOf('.') > -1) {
+        return `<img src="img/avatars/${avatarValue}" class="avatar-img" alt="Avatar" style="width:${size}; height:${size}; object-fit: cover;">`;
+    }
+    
+    // Se não, é um emoji (legado)
+    return `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size: calc(${size} * 0.6);">${avatarValue}</div>`;
+}
+
 // Converter username para email interno
 function usernameToEmail(username){
     return username.toLowerCase().replace(/\s+/g, '') + '@rosario.app';
@@ -1806,7 +1861,7 @@ async function registerUser(username, displayName, password){
         await set(ref(database, 'users/' + user.uid),{
             username: username,
             displayName: displayName,
-            avatar: '👤',
+            avatar: 'therese.png', // Padrão agora é Santa Teresinha
             createdAt: new Date().toISOString(),
             prayedDays:{},
             totalRosaries: 0,
@@ -1891,7 +1946,9 @@ function updateUserInterface(){
     document.getElementById('home-user-name').textContent = displayName;
     // Atualizar Perfil
     document.getElementById('profile-name').textContent = displayName;
-    document.getElementById('profile-avatar').textContent = avatar;
+    // ATUALIZADO: Usa innerHTML e a função auxiliar
+    document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(avatar);
+    
     // Atualizar Streak
     const streak = profile.currentStreak || 0;
     const streakMessage = streak === 0 ? 'Comece hoje sua jornada de oração' :
@@ -2064,7 +2121,7 @@ async function searchFriend() {
         if (friendCheck.exists()) {
             resultDiv.innerHTML = `
                 <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${found.avatar || '👤'}</div>
+                    <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${window.getAvatarHTML(found.avatar)}</div>
                     <div style="flex: 1;">
                         <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${found.displayName || found.username}</div>
                         <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${found.username}</div>
@@ -2081,7 +2138,7 @@ async function searchFriend() {
         if (sentCheck.exists()) {
             resultDiv.innerHTML = `
                 <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${found.avatar || '👤'}</div>
+                    <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${window.getAvatarHTML(found.avatar)}</div>
                     <div style="flex: 1;">
                         <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${found.displayName || found.username}</div>
                         <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${found.username}</div>
@@ -2094,7 +2151,7 @@ async function searchFriend() {
         
         resultDiv.innerHTML = `
             <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-                <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${found.avatar || '👤'}</div>
+                <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${window.getAvatarHTML(found.avatar)}</div>
                 <div style="flex: 1;">
                     <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${found.displayName || found.username}</div>
                     <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${found.username}</div>
@@ -2151,7 +2208,7 @@ async function loadFriendRequests() {
                 const card = document.createElement('div');
                 card.style.cssText = 'background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px;';
                 card.innerHTML = `
-                    <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${user.avatar || '👤'}</div>
+                    <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${window.getAvatarHTML(user.avatar)}</div>
                     <div style="flex: 1;">
                         <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${user.displayName || user.username}</div>
                         <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${user.username}</div>
@@ -2220,7 +2277,7 @@ async function loadFriends() {
                 card.onmouseout = () => { card.style.borderColor = 'var(--border-subtle)'; card.style.transform = 'translateY(0)'; };
                 card.onclick = () => viewFriendProfile(uid, user);
                 card.innerHTML = `
-                    <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${user.avatar || '👤'}</div>
+                    <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${window.getAvatarHTML(user.avatar)}</div>
                     <div style="flex: 1;">
                         <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${user.displayName || user.username}</div>
                         <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${user.username}</div>
@@ -2790,82 +2847,90 @@ const app ={
 };
 app.init();
 window.app = app;
-// ===== SISTEMA DE AVATARES =====
+// ===== SISTEMA DE AVATARES (SANTOS) =====
+
+// Nomes exatos dos arquivos que você subiu
 const AVATARS = [
-    '👤', // Padrão
-    '🙏', // Mãos rezando
-    '📿', // Rosário
-    '✝️', // Cruz
-    '⛪', // Igreja
-    '🕊️', // Pomba (Espírito Santo)
-    '🌟', // Estrela
-    '❤️', // Coração
-    '🌹', // Rosa (Nossa Senhora)
-    '📖', // Bíblia
-    '🕯️', // Vela
-    '👑', // Coroa (Cristo Rei)
-    '😇', // Anjo
-    '🌙', // Lua
-    '☀️', // Sol
-    '💫', // Estrela cadente
+    'therese.png',
+    'pius.png',
+    'thomas.png',
+    'kolbe.jpg',
+    'madonna.png',
+    'agoustine.png',
+    'francis.jpg'
 ];
-let selectedAvatar = '👤';
+
+let selectedAvatar = AVATARS[0]; // Padrão: Santa Teresinha
+
 // Renderizar grid de avatares
 function renderAvatarGrid(){
     const grid = document.getElementById('avatar-grid');
     grid.innerHTML = '';
-    AVATARS.forEach(avatar =>{
+    
+    AVATARS.forEach(filename => {
         const option = document.createElement('div');
         option.className = 'avatar-option';
-        option.textContent = avatar;
-        option.onclick = () => selectAvatar(avatar, option);
+        
+        // Renderiza a imagem
+        option.innerHTML = `<img src="img/avatars/${filename}" class="avatar-img">`;
+        
+        option.onclick = () => selectAvatar(filename, option);
+        
         // Marcar avatar atual como selecionado
-        if (window.userProfile && window.userProfile.avatar === avatar){
+        if (window.userProfile && window.userProfile.avatar === filename){
             option.classList.add('selected');
-            selectedAvatar = avatar;
+            selectedAvatar = filename;
         }
         grid.appendChild(option);
     });
 }
-// Selecionar avatar
-function selectAvatar(avatar, element){
-    selectedAvatar = avatar;
-    // Remover seleção anterior
-    document.querySelectorAll('.avatar-option').forEach(opt =>{
+
+function selectAvatar(filename, element){
+    selectedAvatar = filename;
+    document.querySelectorAll('.avatar-option').forEach(opt => {
         opt.classList.remove('selected');
     });
-    // Adicionar seleção ao novo
     element.classList.add('selected');
 }
-// Abrir modal
+
 window.openAvatarModal = function(){
     renderAvatarGrid();
     document.getElementById('avatar-modal').classList.add('active');
 };
-// Fechar modal
+
 window.closeAvatarModal = function(){
     document.getElementById('avatar-modal').classList.remove('active');
 };
-// Salvar avatar
+
 window.saveAvatar = async function(){
     if (!window.currentUser || !selectedAvatar) return;
+    
     const saveBtn = document.getElementById('avatar-save-btn');
     saveBtn.disabled = true;
     saveBtn.textContent = 'Salvando...';
+    
     try{
-        const{ getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        // Pega as referências do Firebase da janela (definidas no outro script) ou importa dinamicamente se necessário
+        // Nota: Como o módulo Firebase é isolado, precisamos usar o import dinâmico aqui para garantir
+        const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
         const database = getDatabase();
+        
         await update(ref(database, `users/${window.currentUser.uid}`),{
             avatar: selectedAvatar
         });
-        // Atualizar perfil local
+        
+        // Atualiza perfil local
         window.userProfile.avatar = selectedAvatar;
-        // Atualizar UI
-        document.getElementById('profile-avatar').textContent = selectedAvatar;
-        // Fechar modal
+        
+        // Atualiza UI principal usando a função global que criamos
+        if(window.getAvatarHTML) {
+            document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(selectedAvatar);
+        }
+        
         closeAvatarModal();
         saveBtn.disabled = false;
         saveBtn.textContent = 'Salvar Avatar';
+        
     } catch (error){
         console.error('Erro ao salvar avatar:', error);
         alert('Erro ao salvar avatar. Tente novamente.');
@@ -2873,6 +2938,7 @@ window.saveAvatar = async function(){
         saveBtn.textContent = 'Salvar Avatar';
     }
 };
+
 // Fechar modal ao clicar fora
 document.addEventListener('click', (e) =>{
     const modal = document.getElementById('avatar-modal');
