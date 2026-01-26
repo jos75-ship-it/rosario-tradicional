@@ -2847,116 +2847,106 @@ const app ={
 };
 app.init();
 window.app = app;
-// ===== SISTEMA DE AVATARES (SANTOS) =====
-
-// Nomes exatos dos arquivos que você subiu
-const AVATARS = [
-    'therese.png',
-    'pius.png',
-    'thomas.png',
-    'kolbe.jpg',
-    'madonna.png',
-    'agoustine.png',
-    'francis.jpg'
-];
-
-let selectedAvatar = AVATARS[0]; // Padrão: Santa Teresinha
-
-// Renderizar grid de avatares
-function renderAvatarGrid(){
-    const grid = document.getElementById('avatar-grid');
-    grid.innerHTML = '';
-    
-    AVATARS.forEach(filename => {
-        const option = document.createElement('div');
-        option.className = 'avatar-option';
-        
-        // Renderiza a imagem
-        option.innerHTML = `<img src="img/avatars/${filename}" class="avatar-img">`;
-        
-        option.onclick = () => selectAvatar(filename, option);
-        
-        // Marcar avatar atual como selecionado
-        if (window.userProfile && window.userProfile.avatar === filename){
-            option.classList.add('selected');
-            selectedAvatar = filename;
-        }
-        grid.appendChild(option);
-    });
-}
-
-function selectAvatar(filename, element){
-    selectedAvatar = filename;
-    document.querySelectorAll('.avatar-option').forEach(opt => {
-        opt.classList.remove('selected');
-    });
-    element.classList.add('selected');
-}
-
-window.openAvatarModal = function(){
-    renderAvatarGrid();
-    document.getElementById('avatar-modal').classList.add('active');
-};
-
-window.closeAvatarModal = function(){
-    document.getElementById('avatar-modal').classList.remove('active');
-};
-
-window.saveAvatar = async function(){
-    if (!window.currentUser || !selectedAvatar) return;
-    
-    const saveBtn = document.getElementById('avatar-save-btn');
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Salvando...';
-    
-    try{
-        // Pega as referências do Firebase da janela (definidas no outro script) ou importa dinamicamente se necessário
-        // Nota: Como o módulo Firebase é isolado, precisamos usar o import dinâmico aqui para garantir
-        const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-        const database = getDatabase();
-        
-        await update(ref(database, `users/${window.currentUser.uid}`),{
-            avatar: selectedAvatar
-        });
-        
-        // Atualiza perfil local
-        window.userProfile.avatar = selectedAvatar;
-        
-        // Atualiza UI principal usando a função global que criamos
-        if(window.getAvatarHTML) {
-            document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(selectedAvatar);
-        }
-        
-        closeAvatarModal();
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Salvar Avatar';
-        
-    } catch (error){
-        console.error('Erro ao salvar avatar:', error);
-        alert('Erro ao salvar avatar. Tente novamente.');
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Salvar Avatar';
-    }
-};
-
-// Fechar modal ao clicar fora
-document.addEventListener('click', (e) =>{
-    const modal = document.getElementById('avatar-modal');
-    if (e.target === modal){
-        closeAvatarModal();
-    }
-});
-</script>
-
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => console.log('Service Worker registrado!', reg.scope))
-        .catch((err) => console.log('Falha ao registrar:', err));
+    // 1. Função Auxiliar Global (precisa estar disponível logo)
+    window.getAvatarHTML = function(avatarValue, size = '100%') {
+        if (!avatarValue) return '👤';
+        // Se tem ponto no nome (ex: .png), é imagem
+        if (avatarValue.indexOf('.') > -1) {
+            return `<img src="img/avatars/${avatarValue}" class="avatar-img" alt="Avatar" style="width:${size}; height:${size}; object-fit: cover;">`;
+        }
+        return `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size: calc(${size} * 0.6);">${avatarValue}</div>`;
+    };
+
+    // 2. Lista de Avatares (Seus arquivos)
+    const AVATARS = [
+        'therese.png', 'pius.png', 'thomas.png', 
+        'kolbe.jpg', 'madonna.png', 'agoustine.png', 'francis.jpg'
+    ];
+    let selectedAvatar = AVATARS[0];
+
+    // 3. Funções de Interface
+    function renderAvatarGrid(){
+        const grid = document.getElementById('avatar-grid');
+        if(!grid) return;
+        grid.innerHTML = '';
+        
+        AVATARS.forEach(filename => {
+            const option = document.createElement('div');
+            option.className = 'avatar-option';
+            
+            // Verifica se é o selecionado atual (usando variavel global do perfil se existir)
+            const currentProfileAvatar = (window.userProfile && window.userProfile.avatar) ? window.userProfile.avatar : '';
+            
+            if (currentProfileAvatar === filename || (filename === selectedAvatar && !currentProfileAvatar)){
+                option.classList.add('selected');
+                selectedAvatar = filename;
+            }
+            
+            option.innerHTML = `<img src="img/avatars/${filename}" class="avatar-img">`;
+            option.onclick = () => selectAvatar(filename, option);
+            grid.appendChild(option);
+        });
+    }
+
+    function selectAvatar(filename, element){
+        selectedAvatar = filename;
+        document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+        element.classList.add('selected');
+    }
+
+    // Estas funções agora são globais e o HTML vai encontrá-las!
+    window.openAvatarModal = function(){
+        renderAvatarGrid();
+        document.getElementById('avatar-modal').classList.add('active');
+    };
+
+    window.closeAvatarModal = function(){
+        document.getElementById('avatar-modal').classList.remove('active');
+    };
+
+    // Fechar ao clicar fora
+    document.addEventListener('click', (e) =>{
+        const modal = document.getElementById('avatar-modal');
+        if (e.target === modal) window.closeAvatarModal();
     });
-  }
-    
+
+    // 4. Salvar Avatar (Esta precisa conversar com o Firebase)
+    window.saveAvatar = async function(){
+        // Verifica se o usuário está logado (variável window.currentUser definida no outro script)
+        if (!window.currentUser) {
+            alert('Você precisa estar logado para salvar.');
+            return;
+        }
+        
+        const saveBtn = document.getElementById('avatar-save-btn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Salvando...';
+        
+        try {
+            // Importa o Firebase dinamicamente aqui para não travar o resto do script se der erro
+            const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+            const database = getDatabase(); // Pega a instância já inicializada
+            
+            await update(ref(database, `users/${window.currentUser.uid}`), {
+                avatar: selectedAvatar
+            });
+            
+            // Atualiza visualmente
+            if (window.userProfile) window.userProfile.avatar = selectedAvatar;
+            document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(selectedAvatar);
+            
+            window.closeAvatarModal();
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Salvar Avatar';
+            
+        } catch (error) {
+            console.error('Erro ao salvar:', error);
+            alert('Erro ao salvar avatar. Verifique sua conexão.');
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Salvar Avatar';
+        }
+    };
 </script>
 </body>
 </html>
