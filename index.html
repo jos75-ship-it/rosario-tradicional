@@ -2838,26 +2838,58 @@ const app = {
         const idx = this.state.index;
         const bead = this.state.beads[idx];
         const total = this.state.beads.length;
+        
+        // Atualiza barra de progresso
         const pct = ((idx + 1) / total) * 100;
         this.els.progressFill.style.width = `${pct}%`;
         this.els.progressText.textContent = `${idx + 1} / ${total}`;
         
+        // --- CORREÇÃO DO ERRO ---
+        // 1. Removemos a classe 'visible' para reiniciar a animação (fade-out)
+        const animElements = ['group', 'mystery', 'name', 'count', 'meditationBox'];
+        animElements.forEach(key => {
+            if(this.els[key]) this.els[key].classList.remove('visible');
+        });
+
+        // Força o navegador a recalcular (Reflow) para que a animação reinicie
+        void this.els.prayer.offsetWidth;
+
+        // 2. Atualizamos os Textos
         this.els.group.textContent = bead.group || '';
         this.els.mystery.textContent = bead.mystery || '';
         this.els.name.textContent = bead.name;
         this.els.count.textContent = bead.count || '';
-        this.els.meditationText.textContent = bead.meditation;
-        this.els.fullText.innerHTML = `<p>${TEXTS[bead.textKey]}</p>`;
         
-        // Ativa a conta visualmente
+        // Lógica da Meditação (só mostra a caixa se tiver texto)
+        if (bead.meditation) {
+             this.els.meditationText.textContent = bead.meditation;
+             // Adiciona classe para aparecer a caixa de meditação
+             this.els.meditationBox.classList.add('visible'); 
+        } else {
+             this.els.meditationText.textContent = '';
+             // Se não tiver meditação, a caixa continua invisível
+        }
+
+        this.els.fullText.innerHTML = `<p>${TEXTS[bead.textKey]}</p>`;
+
+        // 3. Adicionamos a classe 'visible' para ativar a animação (fade-in)
+        if (bead.group) this.els.group.classList.add('visible');
+        if (bead.mystery) this.els.mystery.classList.add('visible');
+        this.els.name.classList.add('visible');
+        if (bead.count) this.els.count.classList.add('visible');
+        // ------------------------
+        
+        // Atualiza as contas (bolinhas)
         const beadEls = this.els.track.children;
         Array.from(beadEls).forEach(el => el.classList.remove('active'));
-        beadEls[idx].classList.add('active');
-        
-        // Centraliza
-        const activeEl = beadEls[idx];
-        const beadCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
-        this.els.track.style.transform = `translate(-50%, -${beadCenter}px)`;
+        if (beadEls[idx]) {
+            beadEls[idx].classList.add('active');
+            
+            // Centraliza
+            const activeEl = beadEls[idx];
+            const beadCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
+            this.els.track.style.transform = `translate(-50%, -${beadCenter}px)`;
+        }
     },
     toggleText() {
         this.state.showText = !this.state.showText;
