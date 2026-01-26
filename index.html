@@ -1856,6 +1856,7 @@ function updateUserInterface(){
     const displayName = profile.displayName || profile.username;
     const initial = displayName.charAt(0).toUpperCase();
     const avatar = profile.avatar || initial;
+    updateUIWithUsername();
     // Atualizar Home
     document.getElementById('home-user-name').textContent = displayName;
     // Atualizar Perfil
@@ -1988,13 +1989,15 @@ document.addEventListener('DOMContentLoaded', () =>{
             document.getElementById(tab.dataset.tab + '-form').classList.add('active');
         });
     });
-    // Login form
-    document.getElementById('login-form').addEventListener('submit', (e) =>{
-        e.preventDefault();
-        const username = document.getElementById('login-username').value.trim();
-        const password = document.getElementById('login-password').value;
-        loginUser(username, password);
-    });
+// Login form
+document.getElementById('login-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+    
+    // Usar a nova função com username
+    loginUserWithUsername(username, password);
+});
 // Register form
 document.getElementById('register-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -2603,6 +2606,10 @@ document.addEventListener('click', (e) =>{
         .catch((err) => console.log('Falha ao registrar:', err));
     });
   }
+      
+<!-- Sistema de @Username -->
+<script src="./username-system.js"></script>
+    
 </script>
 </script>
 </body>
