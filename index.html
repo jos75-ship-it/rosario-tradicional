@@ -2952,5 +2952,34 @@ const app = {
 app.init();
 window.app = app;
 </script>
+<!-- Service Worker Registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/rosario-tradicional/sw.js')
+      .then(registration => {
+        console.log('✅ Service Worker registrado:', registration.scope);
+        
+        // Atualizar Service Worker automaticamente
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('🔄 Nova versão disponível!');
+              if (confirm('Nova versão disponível! Atualizar agora?')) {
+                window.location.reload();
+              }
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.error('❌ Erro ao registrar Service Worker:', error);
+      });
+  });
+}
+</script>
+</body>
+</html>
 </body>
 </html>
