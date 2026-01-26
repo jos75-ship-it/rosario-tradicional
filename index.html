@@ -1554,6 +1554,54 @@
                 </div>
             </div>
         </div>
+        <!-- TAB AMIGOS -->
+        <div id="tab-friends" class="tab-content">
+            <div style="padding: 24px 24px 100px 24px; min-height: 100%;">
+                <h2 style="font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-primary); text-align: center; margin-bottom: 24px;">
+                    Amigos
+                </h2>
+                
+                <!-- Buscar Amigos -->
+                <div style="width: 100%; max-width: 400px; margin: 0 auto 24px;">
+                    <div style="display: flex; gap: 8px;">
+                        <input 
+                            type="text" 
+                            id="friend-search-input" 
+                            placeholder="@nomedeusuario" 
+                            style="flex: 1; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; font-family: var(--font-body); font-size: 1rem; color: var(--text-primary);"
+                        />
+                        <button 
+                            type="button" 
+                            onclick="searchFriend()" 
+                            style="padding: 12px 20px; background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold) 100%); border: none; border-radius: 8px; color: var(--bg-deep); font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;"
+                        >
+                            Buscar
+                        </button>
+                    </div>
+                    <div id="search-result" style="margin-top: 12px;"></div>
+                </div>
+
+                <!-- Pedidos Pendentes -->
+                <div id="friend-requests-section" style="width: 100%; max-width: 400px; margin: 0 auto 24px; display: none;">
+                    <h3 style="font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;">
+                        Pedidos Recebidos
+                    </h3>
+                    <div id="friend-requests-list"></div>
+                </div>
+
+                <!-- Lista de Amigos -->
+                <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+                    <h3 style="font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;">
+                        Meus Amigos
+                    </h3>
+                    <div id="friends-list">
+                        <p style="font-family: var(--font-body); font-size: 0.95rem; color: var(--text-dim); font-style: italic; text-align: center; padding: 40px 20px;">
+                            Você ainda não tem amigos. Use a busca acima para encontrar outros usuários!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- TAB PERFIL -->
         <div id="tab-profile" class="tab-content">
             <div style="padding: 24px 24px 100px 24px; min-height: 100%; display: flex; flex-direction: column; align-items: center;">
@@ -1615,44 +1663,52 @@
         </div>
     </div>
     <!-- BOTTOM NAVIGATION -->
-    <nav class="bottom-nav">
-        <button type="button" class="nav-item active" data-tab="home">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
-            <span class="nav-label">Início</span>
-        </button>
-        <button type="button" class="nav-item" id="nav-rosary-btn" data-tab="rosary">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                <circle cx="12" cy="3" r="2.5"/>
-                <circle cx="19.5" cy="7.5" r="2"/>
-                <circle cx="19.5" cy="16.5" r="2"/>
-                <circle cx="12" cy="21" r="2.5"/>
-                <circle cx="4.5" cy="16.5" r="2"/>
-                <circle cx="4.5" cy="7.5" r="2"/>
-            </svg>
-            <span class="nav-label">Rosário</span>
-        </button>
-        <button type="button" class="nav-item" data-tab="calendar">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            <span class="nav-label">Calendário</span>
-        </button>
-        <button type="button" class="nav-item" data-tab="profile">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-            </svg>
-            <span class="nav-label">Perfil</span>
-        </button>
-    </nav>
-</div>
+   <nav class="bottom-nav">
+    <button type="button" class="nav-item active" data-tab="home">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span class="nav-label">Início</span>
+    </button>
+    <button type="button" class="nav-item" id="nav-rosary-btn" data-tab="rosary">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="12" cy="3" r="2.5"/>
+            <circle cx="19.5" cy="7.5" r="2"/>
+            <circle cx="19.5" cy="16.5" r="2"/>
+            <circle cx="12" cy="21" r="2.5"/>
+            <circle cx="4.5" cy="16.5" r="2"/>
+            <circle cx="4.5" cy="7.5" r="2"/>
+        </svg>
+        <span class="nav-label">Rosário</span>
+    </button>
+    <button type="button" class="nav-item" data-tab="calendar">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span class="nav-label">Calendário</span>
+    </button>
+    <button type="button" class="nav-item" data-tab="friends">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span class="nav-label">Amigos</span>
+    </button>
+    <button type="button" class="nav-item" data-tab="profile">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span class="nav-label">Perfil</span>
+    </button>
+</nav>
 <!-- MODAL DE SELEÇÃO DE AVATAR -->
 <div id="avatar-modal">
     <div class="avatar-modal-content">
@@ -2601,6 +2657,261 @@ document.addEventListener('click', (e) =>{
     const modal = document.getElementById('avatar-modal');
     if (e.target === modal){
         closeAvatarModal();
+    }
+});
+// ===== SISTEMA DE AMIGOS =====
+
+// Buscar amigo por username
+async function searchFriend() {
+    const input = document.getElementById('friend-search-input');
+    const resultDiv = document.getElementById('search-result');
+    let username = input.value.trim();
+    
+    username = username.replace(/^@/, '');
+    
+    if (!username || username.length < 2) {
+        resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Digite pelo menos 2 caracteres</p>';
+        return;
+    }
+    
+    resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Buscando...</p>';
+    
+    try {
+        const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        
+        const usersRef = ref(database, 'users');
+        const snapshot = await get(usersRef);
+        
+        if (!snapshot.exists()) {
+            resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Nenhum usuário encontrado</p>';
+            return;
+        }
+        
+        const users = snapshot.val();
+        let found = null;
+        let foundUid = null;
+        
+        for (const uid in users) {
+            if (users[uid].username && users[uid].username.toLowerCase() === username.toLowerCase()) {
+                if (uid === window.currentUser.uid) {
+                    resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Você não pode adicionar a si mesmo!</p>';
+                    return;
+                }
+                found = users[uid];
+                foundUid = uid;
+                break;
+            }
+        }
+        
+        if (!found) {
+            resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Usuário não encontrado</p>';
+            return;
+        }
+        
+        const myFriendsRef = ref(database, `users/${window.currentUser.uid}/friends/${foundUid}`);
+        const friendCheck = await get(myFriendsRef);
+        
+        if (friendCheck.exists()) {
+            resultDiv.innerHTML = `
+                <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${found.avatar || '👤'}</div>
+                    <div style="flex: 1;">
+                        <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${found.displayName || found.username}</div>
+                        <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${found.username}</div>
+                        <div style="font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">✅ Já são amigos</div>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+        
+        const sentRef = ref(database, `users/${window.currentUser.uid}/friendRequests/sent/${foundUid}`);
+        const sentCheck = await get(sentRef);
+        
+        if (sentCheck.exists()) {
+            resultDiv.innerHTML = `
+                <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${found.avatar || '👤'}</div>
+                    <div style="flex: 1;">
+                        <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${found.displayName || found.username}</div>
+                        <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${found.username}</div>
+                        <div style="font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">⏳ Pedido enviado</div>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+        
+        resultDiv.innerHTML = `
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${found.avatar || '👤'}</div>
+                <div style="flex: 1;">
+                    <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${found.displayName || found.username}</div>
+                    <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${found.username}</div>
+                    <div style="font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">🔥 ${found.currentStreak || 0} dias</div>
+                </div>
+                <button onclick="sendFriendRequest('${foundUid}')" style="padding: 10px 18px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border: none; border-radius: 6px; color: var(--bg-deep); font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;">Adicionar</button>
+            </div>
+        `;
+        
+    } catch (error) {
+        console.error('Erro:', error);
+        resultDiv.innerHTML = '<p style="color: #c07070; font-size: 0.85rem; padding: 8px;">Erro ao buscar</p>';
+    }
+}
+
+async function sendFriendRequest(targetUid) {
+    try {
+        const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        const updates = {};
+        updates[`users/${window.currentUser.uid}/friendRequests/sent/${targetUid}`] = Date.now();
+        updates[`users/${targetUid}/friendRequests/received/${window.currentUser.uid}`] = Date.now();
+        await update(ref(database), updates);
+        alert('Pedido enviado! ✨');
+        document.getElementById('friend-search-input').value = '';
+        document.getElementById('search-result').innerHTML = '';
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao enviar pedido');
+    }
+}
+
+async function loadFriendRequests() {
+    try {
+        const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        const requestsRef = ref(database, `users/${window.currentUser.uid}/friendRequests/received`);
+        const snapshot = await get(requestsRef);
+        const section = document.getElementById('friend-requests-section');
+        const list = document.getElementById('friend-requests-list');
+        
+        if (!snapshot.exists()) {
+            section.style.display = 'none';
+            return;
+        }
+        
+        section.style.display = 'block';
+        list.innerHTML = '';
+        const requests = snapshot.val();
+        
+        for (const uid in requests) {
+            const userRef = ref(database, `users/${uid}`);
+            const userSnap = await get(userRef);
+            if (userSnap.exists()) {
+                const user = userSnap.val();
+                const card = document.createElement('div');
+                card.style.cssText = 'background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px;';
+                card.innerHTML = `
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${user.avatar || '👤'}</div>
+                    <div style="flex: 1;">
+                        <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${user.displayName || user.username}</div>
+                        <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${user.username}</div>
+                    </div>
+                    <button onclick="acceptFriendRequest('${uid}')" style="padding: 8px 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border: none; border-radius: 6px; color: var(--bg-deep); font-family: var(--font-display); font-size: 0.7rem; text-transform: uppercase; cursor: pointer; margin-right: 8px;">Aceitar</button>
+                    <button onclick="rejectFriendRequest('${uid}')" style="padding: 8px 16px; background: rgba(180, 60, 60, 0.15); border: 1px solid rgba(180, 60, 60, 0.3); border-radius: 6px; color: #c07070; font-family: var(--font-display); font-size: 0.7rem; text-transform: uppercase; cursor: pointer;">Recusar</button>
+                `;
+                list.appendChild(card);
+            }
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+    }
+}
+
+async function acceptFriendRequest(friendUid) {
+    try {
+        const { getDatabase, ref, update, remove } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        const updates = {};
+        updates[`users/${window.currentUser.uid}/friends/${friendUid}`] = Date.now();
+        updates[`users/${friendUid}/friends/${window.currentUser.uid}`] = Date.now();
+        await update(ref(database), updates);
+        await remove(ref(database, `users/${window.currentUser.uid}/friendRequests/received/${friendUid}`));
+        await remove(ref(database, `users/${friendUid}/friendRequests/sent/${window.currentUser.uid}`));
+        alert('Agora são amigos! 🎉');
+        loadFriendRequests();
+        loadFriends();
+    } catch (error) {
+        console.error('Erro:', error);
+    }
+}
+
+async function rejectFriendRequest(friendUid) {
+    try {
+        const { getDatabase, ref, remove } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        await remove(ref(database, `users/${window.currentUser.uid}/friendRequests/received/${friendUid}`));
+        await remove(ref(database, `users/${friendUid}/friendRequests/sent/${window.currentUser.uid}`));
+        loadFriendRequests();
+    } catch (error) {
+        console.error('Erro:', error);
+    }
+}
+
+async function loadFriends() {
+    try {
+        const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        const friendsRef = ref(database, `users/${window.currentUser.uid}/friends`);
+        const snapshot = await get(friendsRef);
+        const list = document.getElementById('friends-list');
+        
+        if (!snapshot.exists()) {
+            list.innerHTML = '<p style="font-family: var(--font-body); font-size: 0.95rem; color: var(--text-dim); font-style: italic; text-align: center; padding: 40px 20px;">Você ainda não tem amigos. Use a busca acima!</p>';
+            return;
+        }
+        
+        list.innerHTML = '';
+        const friends = snapshot.val();
+        
+        for (const uid in friends) {
+            const userRef = ref(database, `users/${uid}`);
+            const userSnap = await get(userRef);
+            if (userSnap.exists()) {
+                const user = userSnap.val();
+                const card = document.createElement('div');
+                card.style.cssText = 'background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s;';
+                card.onmouseover = () => { card.style.borderColor = 'var(--gold-dim)'; card.style.transform = 'translateY(-2px)'; };
+                card.onmouseout = () => { card.style.borderColor = 'var(--border-subtle)'; card.style.transform = 'translateY(0)'; };
+                card.onclick = () => viewFriendProfile(uid, user);
+                card.innerHTML = `
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${user.avatar || '👤'}</div>
+                    <div style="flex: 1;">
+                        <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${user.displayName || user.username}</div>
+                        <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${user.username}</div>
+                        <div style="font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">🔥 ${user.currentStreak || 0} dias</div>
+                    </div>
+                    <svg style="width: 20px; height: 20px; color: var(--text-dim);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                `;
+                list.appendChild(card);
+            }
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+    }
+}
+
+function viewFriendProfile(uid, user) {
+    alert(`Perfil: ${user.displayName}\n@${user.username}\n🔥 ${user.currentStreak || 0} dias\n📿 ${user.totalRosaries || 0} rosários\n\n(Modal completo em breve!)`);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const friendsNavBtn = document.querySelector('.nav-item[data-tab="friends"]');
+    if (friendsNavBtn) {
+        friendsNavBtn.addEventListener('click', () => {
+            if (window.currentUser) {
+                loadFriends();
+                loadFriendRequests();
+            }
+        });
+    }
+    const searchInput = document.getElementById('friend-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchFriend();
+        });
     }
 });
 </script>
