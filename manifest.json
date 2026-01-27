@@ -6,11 +6,15 @@
   "start_url": "/rosario-tradicional/",
   "scope": "/rosario-tradicional/",
   "display": "standalone",
-  "orientation": "portrait-primary",
+  "orientation": "portrait",
   "background_color": "#080709",
   "theme_color": "#d4a855",
-  "categories": ["lifestyle", "productivity", "health"],
-  "lang": "pt-BR",
+  "categories": [
+    "lifestyle",
+    "productivity",
+    "spiritual"
+  ],
+  "lang": "pt-PT",
   "dir": "ltr",
   "prefer_related_applications": false,
   "icons": [
@@ -63,53 +67,74 @@
       "purpose": "any maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "/rosario-tradicional/screenshots/screenshot-mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/rosario-tradicional/screenshots/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Mistérios Gozosos",
       "short_name": "Gozosos",
       "description": "Iniciar os Mistérios Gozosos",
       "url": "/rosario-tradicional/?mystery=gozosos",
-      "icons": [{ 
-        "src": "/rosario-tradicional/icon-192.png", 
-        "sizes": "192x192", 
-        "type": "image/png" 
-      }]
+      "icons": [
+        {
+          "src": "/rosario-tradicional/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Mistérios Dolorosos",
       "short_name": "Dolorosos",
       "description": "Iniciar os Mistérios Dolorosos",
       "url": "/rosario-tradicional/?mystery=dolorosos",
-      "icons": [{ 
-        "src": "/rosario-tradicional/icon-192.png", 
-        "sizes": "192x192", 
-        "type": "image/png" 
-      }]
+      "icons": [
+        {
+          "src": "/rosario-tradicional/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Mistérios Gloriosos",
       "short_name": "Gloriosos",
       "description": "Iniciar os Mistérios Gloriosos",
       "url": "/rosario-tradicional/?mystery=gloriosos",
-      "icons": [{ 
-        "src": "/rosario-tradicional/icon-192.png", 
-        "sizes": "192x192", 
-        "type": "image/png" 
-      }]
+      "icons": [
+        {
+          "src": "/rosario-tradicional/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Rosário Completo",
       "short_name": "Completo",
       "description": "Iniciar o Rosário Completo",
       "url": "/rosario-tradicional/?mystery=completo",
-      "icons": [{ 
-        "src": "/rosario-tradicional/icon-192.png", 
-        "sizes": "192x192", 
-        "type": "image/png" 
-      }]
+      "icons": [
+        {
+          "src": "/rosario-tradicional/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ],
-  "screenshots": [],
   "iarc_rating_id": "",
   "related_applications": []
 }
