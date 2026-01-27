@@ -72,6 +72,93 @@
             font-size: 18px;
             line-height: 1.6;
         }
+        /* Modal de Confirmação Personalizado */
+.custom-alert {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 400;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.custom-alert.active {
+    display: flex;
+}
+
+.custom-alert-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: 16px;
+    padding: 32px 28px;
+    max-width: 340px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.custom-alert-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    color: var(--gold);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.custom-alert-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    letter-spacing: 0.15em;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.custom-alert-message {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.custom-alert-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--bg-deep);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.custom-alert-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(212, 168, 85, 0.4);
+}
         /* Textura de fundo refinada */
         body::before{
             content: '';
@@ -1414,6 +1501,18 @@
         }
     </style>
 </head>
+<!-- Modal de Alerta Personalizado -->
+<div id="custom-alert" class="custom-alert">
+    <div class="custom-alert-content">
+        <svg class="custom-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <h3 class="custom-alert-title" id="alert-title">Sucesso!</h3>
+        <p class="custom-alert-message" id="alert-message">Operação concluída</p>
+        <button type="button" class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+    </div>
+</div>
 <body>
 <div id="auth-screen">
     <div class="auth-container">
@@ -2208,14 +2307,13 @@ async function sendFriendRequest(targetUid) {
         updates[`users/${window.currentUser.uid}/friendRequests/sent/${targetUid}`] = Date.now();
         updates[`users/${targetUid}/friendRequests/received/${window.currentUser.uid}`] = Date.now();
         await update(ref(database), updates);
-        alert('Pedido enviado! ✨');
+        showCustomAlert('Pedido Enviado! ✨', 'Aguarde a confirmação do seu amigo.'); // ← NOVO
         document.getElementById('friend-search-input').value = '';
         document.getElementById('search-result').innerHTML = '';
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao enviar pedido');
+        showCustomAlert('Erro', 'Não foi possível enviar o pedido. Tente novamente.'); // ← NOVO
     }
-}
 
 // 3. Carregar solicitações recebidas
 async function loadFriendRequests() {
@@ -2262,19 +2360,19 @@ async function loadFriendRequests() {
 async function acceptFriendRequest(friendUid) {
     try {
         const updates = {};
-        updates[`users/${window.currentUser.uid}/friendRequests/sent/${friendUid}`] = Date.now();
+        updates[`users/${window.currentUser.uid}/friends/${friendUid}`] = Date.now();
         updates[`users/${friendUid}/friends/${window.currentUser.uid}`] = Date.now();
         await update(ref(database), updates);
         await remove(ref(database, `users/${window.currentUser.uid}/friendRequests/received/${friendUid}`));
         await remove(ref(database, `users/${friendUid}/friendRequests/sent/${window.currentUser.uid}`));
-        alert('Agora são amigos! 🎉');
+        showCustomAlert('Amizade Confirmada! 🎉', 'Agora vocês são amigos no Rosário.'); // ← NOVO
         loadFriendRequests();
         loadFriends();
     } catch (error) {
         console.error('Erro:', error);
+        showCustomAlert('Erro', 'Não foi possível aceitar o pedido.'); // ← NOVO
     }
 }
-
 async function rejectFriendRequest(friendUid) {
     try {
         await remove(ref(database, `users/${window.currentUser.uid}/friendRequests/received/${friendUid}`));
@@ -2978,6 +3076,26 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
+    // Funções do Modal Customizado
+function showCustomAlert(title, message) {
+    document.getElementById('alert-title').textContent = title;
+    document.getElementById('alert-message').textContent = message;
+    document.getElementById('custom-alert').classList.add('active');
+}
+
+function closeCustomAlert() {
+    document.getElementById('custom-alert').classList.remove('active');
+}
+
+// Fechar ao clicar fora do modal
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('custom-alert');
+    if (e.target === modal) closeCustomAlert();
+});
+
+// Exportar globalmente
+window.showCustomAlert = showCustomAlert;
+window.closeCustomAlert = closeCustomAlert;
 </script>
 </body>
 </html>
