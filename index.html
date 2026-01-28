@@ -3058,29 +3058,68 @@ const app = {
         this.els.completion.classList.add('active');
     },
     async saveCompletion(aves, paters) {
-        // Lógica de salvar conclusão simplificada, chama o firebase globalmente se necessário
-        // Mas a lógica detalhada está no módulo principal para garantir imports
-        // Aqui apenas chamamos se estiver disponível, ou reimplementamos de forma segura
         try {
-             const { getDatabase, ref, update, get } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+             const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
              const database = getDatabase();
              const userId = window.currentUser.uid;
+             
+             // Data de Hoje (Formato YYYY-MM-DD)
              const today = new Date();
              const dateKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
              
+             // === 1. LÓGICA DE CÁLCULO DO STREAK ===
+             const prayedDays = window.userProfile.prayedDays || {};
+             // Cria uma lista com todos os dias já rezados + o dia de hoje
+             const allDates = Object.keys(prayedDays).filter(k => prayedDays[k]);
+             if (!allDates.includes(dateKey)) allDates.push(dateKey);
+             
+             // Ordena do mais recente para o mais antigo
+             allDates.sort((a, b) => new Date(b) - new Date(a));
+             
+             let newStreak = 0;
+             // Começamos a checar a partir de hoje
+             let checkDate = new Date(dateKey + 'T12:00:00'); 
+             
+             // Percorre as datas salvas para ver se são consecutivas
+             for (const dateStr of allDates) {
+                 const currentDataDate = new Date(dateStr + 'T12:00:00'); // T12 evita problemas de fuso
+                 
+                 // Se a data da lista bate com a data que estamos procurando (sequência)
+                 if (currentDataDate.getTime() === checkDate.getTime()) {
+                     newStreak++;
+                     // Recua um dia para checar se o usuário rezou ontem
+                     checkDate.setDate(checkDate.getDate() - 1);
+                 }
+             }
+
+             // === 2. SALVAR NO BANCO ===
              const updates = {};
              updates[`users/${userId}/prayedDays/${dateKey}`] = true;
              updates[`users/${userId}/totalRosaries`] = (window.userProfile.totalRosaries || 0) + 1;
              updates[`users/${userId}/totalAves`] = (window.userProfile.totalAves || 0) + aves;
              updates[`users/${userId}/totalPaters`] = (window.userProfile.totalPaters || 0) + paters;
+             updates[`users/${userId}/currentStreak`] = newStreak; // <--- Atualiza o Streak!
+             
+             // Atualiza Recorde se bateu o recorde anterior
+             if (newStreak > (window.userProfile.longestStreak || 0)) {
+                 updates[`users/${userId}/longestStreak`] = newStreak;
+             }
              
              await update(ref(database), updates);
-             // Atualiza local
+             
+             // === 3. ATUALIZAR TELA SEM RECARREGAR ===
+             window.userProfile.prayedDays = window.userProfile.prayedDays || {};
+             window.userProfile.prayedDays[dateKey] = true;
              window.userProfile.totalRosaries = (window.userProfile.totalRosaries || 0) + 1;
+             window.userProfile.currentStreak = newStreak;
+             if (newStreak > (window.userProfile.longestStreak || 0)) {
+                 window.userProfile.longestStreak = newStreak;
+             }
+             
              window.updateUserInterface();
+             
         } catch(e) { console.error(e); }
     }
-};
 app.init();
 window.app = app;
 </script>
