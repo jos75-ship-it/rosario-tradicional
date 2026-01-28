@@ -2846,21 +2846,34 @@ const app = {
         let startX = 0;
         const body = document.getElementById('prayer-body');
         if(!body) return;
+
         body.addEventListener('touchstart', e => {
             startY = e.touches[0].clientY;
             startX = e.touches[0].clientX;
         }, { passive: true });
+
         body.addEventListener('touchmove', e => {
+            // CORREÇÃO: Se o usuário estiver tocando no texto expandido, 
+            // NÃO impede o comportamento padrão (permite scrollar o texto)
+            if (e.target.closest('.prayer-full-text')) return;
+
             const dy = Math.abs(startY - e.touches[0].clientY);
             const dx = Math.abs(startX - e.touches[0].clientX);
+            // Só bloqueia o scroll da página se for um gesto na área geral
             if (dy > dx && dy > 10) e.preventDefault();
         }, { passive: false });
+
         body.addEventListener('touchend', e => {
+            // CORREÇÃO: Se o toque terminou no texto, não troca a conta
+            if (e.target.closest('.prayer-full-text')) return;
+
             if (!this.state.type) return;
             const endY = e.changedTouches[0].clientY;
             const endX = e.changedTouches[0].clientX;
             const dy = startY - endY;
             const dx = Math.abs(startX - endX);
+
+            // Mantém a funcionalidade original de passar conta arrastando
             if (Math.abs(dy) > 30 && Math.abs(dy) > dx) {
                 if (dy > 0) this.next();
                 else this.prev();
@@ -2993,6 +3006,26 @@ const app = {
             const activeEl = beadEls[idx];
             const beadCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
             this.els.track.style.transform = `translate(-50%, -${beadCenter}px)`;
+        }
+    },
+    toggleAudio() {
+        // Ativa/Desativa no sistema de áudio
+        const enabled = AudioSystem.toggle();
+        
+        // Atualiza os ícones
+        if (this.els.audioIconOn && this.els.audioIconOff) {
+            this.els.audioIconOn.style.display = enabled ? 'block' : 'none';
+            this.els.audioIconOff.style.display = enabled ? 'none' : 'block';
+        }
+        
+        // Atualiza a classe do botão
+        if (this.els.audioToggle) {
+            this.els.audioToggle.classList.toggle('active', enabled);
+            // Feedback visual/sonoro rápido para saber que funcionou
+            if (enabled) {
+                this.els.audioToggle.style.transform = "scale(1.2)";
+                setTimeout(() => this.els.audioToggle.style.transform = "", 200);
+            }
         }
     },
     toggleText() {
