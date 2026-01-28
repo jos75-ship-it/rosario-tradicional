@@ -14,9 +14,8 @@
     "productivity",
     "spiritual"
   ],
-  "lang": "pt-PT",
+  "lang": "pt-BR",
   "dir": "ltr",
-  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icon-72.png",
@@ -80,61 +79,5 @@
       "type": "image/png",
       "form_factor": "wide"
     }
-  ],
-  "shortcuts": [
-    {
-      "name": "Mistérios Gozosos",
-      "short_name": "Gozosos",
-      "description": "Iniciar os Mistérios Gozosos",
-      "url": "/?mystery=gozosos",
-      "icons": [
-        {
-          "src": "/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Mistérios Dolorosos",
-      "short_name": "Dolorosos",
-      "description": "Iniciar os Mistérios Dolorosos",
-      "url": "/?mystery=dolorosos",
-      "icons": [
-        {
-          "src": "/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Mistérios Gloriosos",
-      "short_name": "Gloriosos",
-      "description": "Iniciar os Mistérios Gloriosos",
-      "url": "/?mystery=gloriosos",
-      "icons": [
-        {
-          "src": "/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Rosário Completo",
-      "short_name": "Completo",
-      "description": "Iniciar o Rosário Completo",
-      "url": "/?mystery=completo",
-      "icons": [
-        {
-          "src": "/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    }
-  ],
-  "iarc_rating_id": "",
-  "related_applications": []
+  ]
 }
