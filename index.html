@@ -3091,7 +3091,6 @@ const app = {
                      checkDate.setDate(checkDate.getDate() - 1);
                  }
              }
-        };
              // === 2. SALVAR NO BANCO ===
              const updates = {};
              updates[`users/${userId}/prayedDays/${dateKey}`] = true;
@@ -3120,6 +3119,7 @@ const app = {
              
         } catch(e) { console.error(e); }
     }
+};
 app.init();
 window.app = app;
 </script>
