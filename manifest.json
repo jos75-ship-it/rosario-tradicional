@@ -2,9 +2,9 @@
   "name": "Santo Rosário · Método Montfort",
   "short_name": "Rosário",
   "description": "Reze o Santo Rosário pelo Método de São Luís de Montfort. App completo com meditações, calendário e acompanhamento.",
-  "id": "/rosario-tradicional/",
-  "start_url": "/rosario-tradicional/",
-  "scope": "/rosario-tradicional/",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#080709",
@@ -19,49 +19,49 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/rosario-tradicional/icon-72.png",
+      "src": "/icon-72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/rosario-tradicional/icon-96.png",
+      "src": "/icon-96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/rosario-tradicional/icon-128.png",
+      "src": "/icon-128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/rosario-tradicional/icon-144.png",
+      "src": "/icon-144.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/rosario-tradicional/icon-152.png",
+      "src": "/icon-152.png",
       "sizes": "152x152",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/rosario-tradicional/icon-192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/rosario-tradicional/icon-384.png",
+      "src": "/icon-384.png",
       "sizes": "384x384",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/rosario-tradicional/icon-512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -69,13 +69,13 @@
   ],
   "screenshots": [
     {
-      "src": "/rosario-tradicional/screenshots/screenshot-mobile.png",
+      "src": "/screenshots/screenshot-mobile.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
-      "src": "/rosario-tradicional/screenshots/screenshot-desktop.png",
+      "src": "/screenshots/screenshot-desktop.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide"
@@ -86,10 +86,10 @@
       "name": "Mistérios Gozosos",
       "short_name": "Gozosos",
       "description": "Iniciar os Mistérios Gozosos",
-      "url": "/rosario-tradicional/?mystery=gozosos",
+      "url": "/?mystery=gozosos",
       "icons": [
         {
-          "src": "/rosario-tradicional/icon-192.png",
+          "src": "/icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -99,10 +99,10 @@
       "name": "Mistérios Dolorosos",
       "short_name": "Dolorosos",
       "description": "Iniciar os Mistérios Dolorosos",
-      "url": "/rosario-tradicional/?mystery=dolorosos",
+      "url": "/?mystery=dolorosos",
       "icons": [
         {
-          "src": "/rosario-tradicional/icon-192.png",
+          "src": "/icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -112,10 +112,10 @@
       "name": "Mistérios Gloriosos",
       "short_name": "Gloriosos",
       "description": "Iniciar os Mistérios Gloriosos",
-      "url": "/rosario-tradicional/?mystery=gloriosos",
+      "url": "/?mystery=gloriosos",
       "icons": [
         {
-          "src": "/rosario-tradicional/icon-192.png",
+          "src": "/icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -125,10 +125,10 @@
       "name": "Rosário Completo",
       "short_name": "Completo",
       "description": "Iniciar o Rosário Completo",
-      "url": "/rosario-tradicional/?mystery=completo",
+      "url": "/?mystery=completo",
       "icons": [
         {
-          "src": "/rosario-tradicional/icon-192.png",
+          "src": "/icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
