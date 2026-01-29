@@ -183,15 +183,28 @@
         }
         #auth-screen.hidden{ opacity: 0; visibility: hidden; pointer-events: none;}
         .auth-container{ width: 100%; max-width: 380px; text-align: center;}
-        .auth-logo{ width: 50px; height: 70px; position: relative; margin: 0 auto 24px;}
-        .auth-logo::before,
-        .auth-logo::after{
-            content: ''; position: absolute;
-            background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-dim) 100%);
-            border-radius: 2px;
+        
+        /* LOGO DOURADA COM MOLDURA */
+        .auth-logo { 
+            width: 80px; 
+            height: 80px; 
+            margin: 0 auto 24px; 
+            position: relative; 
+            border-radius: 16px; /* Quadrado arredondado */
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 25px rgba(212, 168, 85, 0.3), inset 0 0 15px rgba(212, 168, 85, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, #2a252e 0%, #080709 100%);
+            overflow: hidden;
         }
-        .auth-logo::before{ width: 4px; height: 100%; left: 50%; transform: translateX(-50%);}
-        .auth-logo::after{ width: 40px; height: 4px; top: 20px; left: 50%; transform: translateX(-50%);}
+        .auth-logo img {
+            width: 70%;
+            height: auto;
+            filter: drop-shadow(0 0 8px rgba(212, 168, 85, 0.6));
+        }
+        
         .auth-title{
             font-family: var(--font-display); font-size: 1.8rem; font-weight: 500;
             letter-spacing: 0.2em; color: var(--text-primary); margin-bottom: 6px;
@@ -1216,6 +1229,45 @@
             background: rgba(212, 168, 85, 0.05);
         }
 
+        /* ===== ESTILOS DA INBOX (NOVO) ===== */
+        #inbox-modal {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; z-index: 350; padding: 24px;
+        }
+        #inbox-modal.active { opacity: 1; visibility: visible; }
+
+        .inbox-card {
+            background: linear-gradient(135deg, rgba(212, 168, 85, 0.1) 0%, rgba(212, 168, 85, 0.02) 100%);
+            border: 1px solid var(--border-gold);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .inbox-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+        }
+
+        .inbox-time {
+            font-size: 0.7rem; color: var(--text-dim); font-family: var(--font-body);
+        }
+
+        .inbox-body {
+            font-family: var(--font-body); font-size: 0.95rem; color: var(--text-primary); line-height: 1.5; font-style: italic;
+        }
+
+        .btn-delete-msg {
+            background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px;
+        }
+        .btn-delete-msg:hover { color: #e07070; }
+
+        .empty-inbox {
+            text-align: center; padding: 40px 20px; color: var(--text-muted); font-style: italic; font-family: var(--font-body);
+        }
+
         /* Conteúdo principal */
         .prayer-main{
             flex: 1;
@@ -1613,7 +1665,9 @@
 <body>
 <div id="auth-screen">
     <div class="auth-container">
-        <div class="auth-logo"></div>
+        <div class="auth-logo">
+            <img src="/favicon.ico" alt="Logo Rosário">
+        </div>
         <h1 class="auth-title">Rosário</h1>
         <p class="auth-subtitle">Método de São Luís de Montfort</p>
         <div class="auth-info">
@@ -1779,9 +1833,19 @@
             <div style="padding: 24px 24px 100px 24px; min-height: 100%;">
                 
                 <div id="friends-main-view">
-                    <h2 style="font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-primary); text-align: center; margin-bottom: 24px;">
-                        Amigos
-                    </h2>
+                    
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 24px; position: relative;">
+                        <h2 style="font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-primary); margin: 0;">
+                            Amigos
+                        </h2>
+                        <button onclick="openInboxModal()" style="background: none; border: none; color: var(--gold); position: relative; cursor: pointer;">
+                            <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <div id="inbox-badge" style="position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: #e07070; border-radius: 50%; display: none; border: 2px solid var(--bg-deep);"></div>
+                        </button>
+                    </div>
                     
                     <div style="width: 100%; max-width: 400px; margin: 0 auto 24px;">
                         <div style="display: flex; gap: 8px;">
@@ -1840,6 +1904,14 @@
                             <div style="font-family: var(--font-display); font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--burgundy-bright); margin-bottom: 4px;">Intenção</div>
                             <p id="fp-intention" style="font-family: var(--font-body); font-size: 0.95rem; color: var(--text-primary); font-style: italic;"></p>
                         </div>
+
+                        <button id="btn-pray-friend" onclick="sendPrayerToFriend()" style="width: 100%; max-width: 340px; padding: 16px; margin-bottom: 24px; background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-light) 100%); border: 1px solid var(--burgundy-bright); border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(107, 45, 61, 0.3);">
+                            <span style="font-size: 1.5rem;">🙏</span>
+                            <div style="text-align: left;">
+                                <div style="font-family: var(--font-display); font-size: 0.9rem; color: var(--cream); letter-spacing: 0.1em; text-transform: uppercase;">Rezar por esta intenção</div>
+                                <div style="font-family: var(--font-body); font-size: 0.75rem; color: rgba(255,255,255,0.7); font-style: italic;">Notificar este amigo</div>
+                            </div>
+                        </button>
                         
                         <div style="width: 100%; max-width: 360px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             <div style="background: rgba(212, 168, 85, 0.05); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 20px 16px; text-align: center;">
@@ -1983,6 +2055,21 @@
         </button>
     </div>
 </div>
+
+<div id="inbox-modal">
+    <div class="avatar-modal-content" style="max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;">
+        <button type="button" class="avatar-modal-close" onclick="closeInboxModal()">×</button>
+        <h2 class="avatar-modal-title">Caixa de Entrada</h2>
+        
+        <div id="inbox-list" style="flex: 1; overflow-y: auto; margin-bottom: 16px; padding-right: 4px;">
+            </div>
+
+        <button type="button" class="avatar-modal-close-btn" onclick="closeInboxModal()" style="width: 100%; padding: 14px; background: transparent; border: 1px solid var(--border-subtle); color: var(--text-muted); border-radius: 8px; font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;">
+            Fechar
+        </button>
+    </div>
+</div>
+
 <div id="prayer-screen">
     <div class="rosary-rail">
         <div class="rosary-chain"></div>
@@ -2054,10 +2141,12 @@
 import { firebaseConfig } from './config.js';
 import{ initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import{ getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import{ getDatabase, ref, set, get, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import{ getDatabase, ref, set, get, update, remove, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js'; // Adicionado push
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const database = getDatabase(firebaseApp);
+
+let currentFriendUid = null; // Guarda o ID do amigo que estamos visitando
 
 window.getAvatarHTML = function(avatarValue, size = '100%') {
     if (!avatarValue) return '👤';
@@ -2241,6 +2330,7 @@ function updateUserInterface(){
     document.getElementById('home-today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
     document.getElementById('rosary-today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
     renderCalendar();
+    checkInbox(); // Atualiza a badge do inbox
 }
 // Estado do calendário
 let currentCalendarMonth = new Date().getMonth();
@@ -2539,6 +2629,7 @@ async function loadFriends() {
 }
 
 function viewFriendProfile(uid, user) {
+    currentFriendUid = uid; // GUARDA O ID DO AMIGO PARA REZAR
     document.getElementById('friends-main-view').style.display = 'none';
     const profileView = document.getElementById('friend-profile-view');
     profileView.style.display = 'block';
@@ -2574,6 +2665,158 @@ window.backToFriendsList = function() {
     document.getElementById('friend-profile-view').style.display = 'none';
     document.getElementById('friends-main-view').style.display = 'block';
 }
+
+// ===== SISTEMA DE INBOX =====
+
+// 1. Checar se tem mensagens (Apenas para atualizar o ícone/badge)
+window.checkInbox = async function() {
+    if (!window.currentUser) return;
+    try {
+        const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        const inboxRef = ref(database, `users/${window.currentUser.uid}/inbox`);
+        const snapshot = await get(inboxRef);
+
+        const badge = document.getElementById('inbox-badge');
+        
+        if (snapshot.exists()) {
+            const count = Object.keys(snapshot.val()).length;
+            badge.style.display = 'block'; // Mostra a bolinha vermelha
+        } else {
+            badge.style.display = 'none';
+        }
+    } catch (e) { console.error(e); }
+};
+
+// 2. Abrir Modal e Carregar Mensagens
+window.openInboxModal = async function() {
+    document.getElementById('inbox-modal').classList.add('active');
+    const list = document.getElementById('inbox-list');
+    list.innerHTML = '<div class="loading" style="margin: 20px auto; display:block;"></div>'; // Loading spinner
+
+    if (!window.currentUser) {
+        list.innerHTML = '<div class="empty-inbox">Entre na sua conta para ver mensagens.</div>';
+        return;
+    }
+
+    try {
+        const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        const inboxRef = ref(database, `users/${window.currentUser.uid}/inbox`);
+        const snapshot = await get(inboxRef);
+
+        list.innerHTML = ''; // Limpa loading
+
+        if (!snapshot.exists()) {
+            list.innerHTML = `
+                <div class="empty-inbox">
+                    <div style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;">📭</div>
+                    Sua caixa de entrada está vazia.
+                </div>`;
+            return;
+        }
+
+        const msgs = snapshot.val();
+        // Converte objeto em array e inverte (mais recente primeiro)
+        const msgArray = Object.entries(msgs).sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+        msgArray.forEach(([key, data]) => {
+            const date = new Date(data.timestamp);
+            const dateStr = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' às ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            
+            const div = document.createElement('div');
+            div.className = 'inbox-card';
+            div.innerHTML = `
+                <div class="inbox-header">
+                    <strong style="color: var(--gold); font-family: var(--font-display); font-size: 0.8rem;">${data.fromName}</strong>
+                    <span class="inbox-time">${dateStr}</span>
+                </div>
+                <div class="inbox-body">
+                    🙏 Rezou pela sua intenção!
+                </div>
+                <div style="text-align: right; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+                    <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Apagar</button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+
+    } catch (e) {
+        console.error(e);
+        list.innerHTML = '<div class="empty-inbox">Erro ao carregar mensagens.</div>';
+    }
+};
+
+window.closeInboxModal = function() {
+    document.getElementById('inbox-modal').classList.remove('active');
+    // Atualiza o badge ao fechar, caso tenha apagado tudo
+    window.checkInbox();
+};
+
+// 3. Apagar Mensagem Individual
+window.deleteMessage = async function(key) {
+    if(!confirm("Apagar esta notificação?")) return;
+    
+    // Remove visualmente na hora para parecer rápido
+    const btn = event.target;
+    const card = btn.closest('.inbox-card');
+    card.style.opacity = '0';
+    setTimeout(() => card.remove(), 300);
+
+    try {
+        const { getDatabase, ref, remove } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        await remove(ref(database, `users/${window.currentUser.uid}/inbox/${key}`));
+        
+        // Se ficou vazio, mostra msg de vazio
+        const list = document.getElementById('inbox-list');
+        if (list.children.length <= 1) { // 1 porque acabamos de remover um mas o DOM ainda pode ter lixo
+             // Pequeno delay para verificar se esvaziou mesmo
+             setTimeout(() => {
+                 if (list.children.length === 0) {
+                     list.innerHTML = '<div class="empty-inbox">Sua caixa de entrada está vazia.</div>';
+                 }
+             }, 350);
+        }
+    } catch(e) { console.error(e); }
+};
+
+// 4. ENVIAR ORAÇÃO (Quem clica no botão)
+window.sendPrayerToFriend = async function() {
+    if (!currentFriendUid || !window.currentUser) return;
+    
+    const btn = document.getElementById('btn-pray-friend');
+    const originalContent = btn.innerHTML;
+    
+    // Feedback visual imediato
+    btn.innerHTML = '<span style="color:white;">Enviando...</span>';
+    btn.disabled = true;
+
+    try {
+        // Importação dinâmica do Firebase
+        const { getDatabase, ref, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        
+        // Grava na caixa de entrada de orações do amigo
+        // Caminho: users/ID_AMIGO/inbox/
+        await push(ref(database, `users/${currentFriendUid}/inbox`), {
+            type: 'prayer',
+            fromName: window.userProfile.displayName || window.userProfile.username,
+            timestamp: Date.now()
+        });
+
+        showCustomAlert('Oração Enviada', 'Seu amigo será notificado quando abrir o app.');
+        
+        // Desabilita o botão temporariamente
+        btn.innerHTML = '<span>✨ Enviado!</span>';
+        
+    } catch (error) {
+        console.error(error);
+        showCustomAlert('Erro', 'Não foi possível enviar.');
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+    }
+};
 
 document.addEventListener('DOMContentLoaded', () =>{
     document.querySelectorAll('.auth-tab').forEach(tab =>{
