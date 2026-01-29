@@ -1115,20 +1115,107 @@
             transform: scale(1.15);
         }
 
-        /* ===== IMAGEM DO MISTÉRIO (NOVA CLASSE) ===== */
-        
+        /* ===== IMAGEM DO MISTÉRIO (AJUSTADA) ===== */
         .mystery-image {
-            width: 100%;
-            max-width: 300px;
+            width: auto;
+            max-width: 100%;
             height: auto;
-            /* Sem bordas ou sombras */
-            margin: 16px auto;
+            max-height: 120px; /* Começa pequena */
+            margin: 12px auto;
+            display: none; 
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: zoom-in;
+            border-radius: 8px;
+        }
+
+        .mystery-image.visible {
             display: block;
             opacity: 1;
             transform: scale(1);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        
         }
+
+        .mystery-image.expanded {
+            max-height: 60vh; /* Cresce ao clicar */
+            max-width: 95%;
+            cursor: zoom-out;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            z-index: 50;
+        }
+
+        /* ===== CAMPOS DE PERFIL ===== */
+        .profile-section {
+            width: 100%;
+            max-width: 360px;
+            margin-bottom: 24px;
+        }
+        
+        .profile-label {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+
+        .profile-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .profile-input:focus {
+            outline: none;
+            border-color: var(--gold-dim);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .profile-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .small-btn-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 12px;
+        }
+
+        .small-btn {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .small-btn:hover {
+            border-color: var(--gold-dim);
+            color: var(--gold);
+            background: rgba(212, 168, 85, 0.05);
+        }
+
         /* Conteúdo principal */
         .prayer-main{
             flex: 1;
@@ -1744,7 +1831,15 @@
                         <div id="fp-avatar-container" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); overflow: hidden; margin-bottom: 16px; background: var(--bg-card); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(212, 168, 85, 0.2);">
                             </div>
                         <h2 id="fp-name" style="font-family: var(--font-display); font-size: 1.6rem; color: var(--text-primary); margin-bottom: 4px;"></h2>
-                        <p id="fp-username" style="font-family: var(--font-body); font-size: 1rem; color: var(--gold); margin-bottom: 24px;"></p>
+                        <p id="fp-username" style="font-family: var(--font-body); font-size: 1rem; color: var(--gold); margin-bottom: 12px;"></p>
+                        
+                        <div id="fp-bio-section" style="width: 100%; max-width: 340px; margin-bottom: 12px; display:none;">
+                            <p id="fp-bio" style="font-family: var(--font-body); font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; font-style: italic;"></p>
+                        </div>
+                        <div id="fp-intention-section" style="width: 100%; max-width: 340px; margin-bottom: 24px; padding: 12px; background: rgba(107, 45, 61, 0.1); border-radius: 8px; border: 1px solid rgba(138, 61, 80, 0.3); display:none;">
+                            <div style="font-family: var(--font-display); font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--burgundy-bright); margin-bottom: 4px;">Intenção</div>
+                            <p id="fp-intention" style="font-family: var(--font-body); font-size: 0.95rem; color: var(--text-primary); font-style: italic;"></p>
+                        </div>
                         
                         <div style="width: 100%; max-width: 360px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             <div style="background: rgba(212, 168, 85, 0.05); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 20px 16px; text-align: center;">
@@ -1763,7 +1858,7 @@
         </div>
         <div id="tab-profile" class="tab-content">
             <div style="padding: 24px 24px 100px 24px; min-height: 100%; display: flex; flex-direction: column; align-items: center;">
-                <div style="text-align: center; margin-bottom: 32px;">
+                <div style="text-align: center; margin-bottom: 24px;">
                     <div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 2rem; color: var(--bg-deep); cursor: pointer; transition: all 0.3s;" id="profile-avatar" onclick="openAvatarModal()" onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='0 8px 25px rgba(212, 168, 85, 0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
                         👤
                     </div>
@@ -1774,6 +1869,19 @@
                         Clique no avatar para alterar
                     </p>
                 </div>
+
+                <div class="profile-section">
+                    <label class="profile-label">Sobre Mim (Bio)</label>
+                    <textarea id="profile-bio" class="profile-input profile-textarea" placeholder="Escreva uma breve apresentação..."></textarea>
+                    
+                    <label class="profile-label">Minha Intenção (Pública)</label>
+                    <input type="text" id="profile-intention" class="profile-input" placeholder="Ex: Pela saúde da minha família...">
+                    
+                    <button type="button" onclick="saveProfileData()" style="width: 100%; margin-top: 16px; padding: 12px; background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold) 100%); border: none; border-radius: 8px; font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bg-deep); cursor: pointer; font-weight: 600;">
+                        Atualizar Perfil
+                    </button>
+                </div>
+
                 <div style="width: 100%; max-width: 360px; margin-bottom: 24px; background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 32px 24px; text-align: center; position: relative; overflow: visible; min-height: 200px;">
                     <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim));"></div>
                     <svg style="width: 50px; height: 50px; margin: 0 auto 12px; color: var(--gold);" viewBox="0 0 24 24" fill="currentColor">
@@ -1806,9 +1914,15 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" style="width: 100%; max-width: 300px; padding: 16px; background: linear-gradient(135deg, rgba(180, 60, 60, 0.2) 0%, rgba(180, 60, 60, 0.08) 100%); border: 1px solid rgba(180, 60, 60, 0.3); border-radius: 8px; font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: #c07070; cursor: pointer; transition: all 0.3s;" onclick="firebaseAuth.logoutUser()" onmouseover="this.style.background='rgba(180, 60, 60, 0.15)'; this.style.borderColor='rgba(180, 60, 60, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='linear-gradient(135deg, rgba(180, 60, 60, 0.2) 0%, rgba(180, 60, 60, 0.08) 100%)'; this.style.borderColor='rgba(180, 60, 60, 0.3)'; this.style.transform='translateY(0)';">
+                
+                <button type="button" style="width: 100%; max-width: 300px; padding: 16px; margin-bottom: 12px; background: linear-gradient(135deg, rgba(180, 60, 60, 0.2) 0%, rgba(180, 60, 60, 0.08) 100%); border: 1px solid rgba(180, 60, 60, 0.3); border-radius: 8px; font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: #c07070; cursor: pointer; transition: all 0.3s;" onclick="firebaseAuth.logoutUser()" onmouseover="this.style.background='rgba(180, 60, 60, 0.15)'; this.style.borderColor='rgba(180, 60, 60, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='linear-gradient(135deg, rgba(180, 60, 60, 0.2) 0%, rgba(180, 60, 60, 0.08) 100%)'; this.style.borderColor='rgba(180, 60, 60, 0.3)'; this.style.transform='translateY(0)';">
                     Sair da Conta
                 </button>
+
+                <div class="small-btn-row">
+                    <a href="/faq" class="small-btn">Dúvidas Frequentes</a>
+                    <a href="/privacidade" class="small-btn">Privacidade</a>
+                </div>
             </div>
         </div>
     </div>
@@ -1891,7 +2005,7 @@
             <div class="prayer-mystery" id="prayer-mystery"></div>
             <h2 class="prayer-name" id="prayer-name"></h2>
             
-            <img id="mystery-image" class="mystery-image" alt="Mistério" />
+            <img id="mystery-image" class="mystery-image" alt="Mistério" onclick="app.toggleImageZoom()" />
             
             <div class="prayer-count" id="prayer-count"></div>
             <div class="meditation-box" id="meditation-box">
@@ -2083,6 +2197,10 @@ function updateUserInterface(){
     document.getElementById('profile-name').textContent = displayName;
     document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(avatar);
     
+    // NOVOS CAMPOS: Preencher Bio e Intenção se existirem
+    document.getElementById('profile-bio').value = profile.bio || '';
+    document.getElementById('profile-intention').value = profile.intention || '';
+
     const streak = profile.currentStreak || 0;
     const streakMessage = streak === 0 ? 'Comece hoje sua jornada de oração' :
                           streak === 1 ? 'Continue orando! Você começou bem!' :
@@ -2430,6 +2548,26 @@ function viewFriendProfile(uid, user) {
     document.getElementById('fp-username').textContent = '@' + user.username;
     document.getElementById('fp-streak').textContent = user.currentStreak || 0;
     document.getElementById('fp-rosaries').textContent = user.totalRosaries || 0;
+
+    // MOSTRAR BIO E INTENÇÃO DO AMIGO
+    const bioSection = document.getElementById('fp-bio-section');
+    const bioText = document.getElementById('fp-bio');
+    const intentionSection = document.getElementById('fp-intention-section');
+    const intentionText = document.getElementById('fp-intention');
+
+    if (user.bio && user.bio.trim() !== '') {
+        bioText.textContent = user.bio;
+        bioSection.style.display = 'block';
+    } else {
+        bioSection.style.display = 'none';
+    }
+
+    if (user.intention && user.intention.trim() !== '') {
+        intentionText.textContent = user.intention;
+        intentionSection.style.display = 'block';
+    } else {
+        intentionSection.style.display = 'none';
+    }
 }
 
 window.backToFriendsList = function() {
@@ -2608,6 +2746,39 @@ window.viewFriendProfile = viewFriendProfile;
             alert('Erro ao salvar avatar. Verifique sua conexão.');
             saveBtn.disabled = false;
             saveBtn.textContent = 'Salvar Avatar';
+        }
+    };
+
+    // NOVA FUNÇÃO PARA SALVAR BIO E INTENÇÃO
+    window.saveProfileData = async function() {
+        if (!window.currentUser) {
+            showCustomAlert('Erro', 'Você precisa estar logado.');
+            return;
+        }
+
+        const bio = document.getElementById('profile-bio').value.trim();
+        const intention = document.getElementById('profile-intention').value.trim();
+
+        try {
+            const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+            const database = getDatabase();
+
+            await update(ref(database, `users/${window.currentUser.uid}`), {
+                bio: bio,
+                intention: intention
+            });
+
+            // Atualiza objeto local
+            if (window.userProfile) {
+                window.userProfile.bio = bio;
+                window.userProfile.intention = intention;
+            }
+
+            showCustomAlert('Sucesso!', 'Perfil atualizado com sucesso.');
+
+        } catch (error) {
+            console.error('Erro ao salvar perfil:', error);
+            showCustomAlert('Erro', 'Não foi possível salvar as alterações.');
         }
     };
     
@@ -2843,7 +3014,7 @@ const app = {
             if (e.key.toLowerCase() === 'm') this.toggleAudio();
         });
     },
-generateBeads(type) {
+    generateBeads(type) {
         const beads = []; let id = 0;
         const add = (beadType, name, textKey, meditation = '', meta = {}) => { beads.push({ id: id++, beadType, name, textKey, meditation, ...meta }); };
         
@@ -2862,8 +3033,7 @@ generateBeads(type) {
             group.mysteries.forEach((mystery, mIdx) => {
                 const mysteryNum = mIdx + 1;
                 
-                // CORREÇÃO AQUI: Singular e PNG
-                // 'gozosos' vira 'gozoso', 'dolorosos' vira 'doloroso', etc.
+                // Caminho da imagem (ex: misteriosimagens/gozoso1.png)
                 const filePrefix = groupKey.slice(0, -1); 
                 const imagePath = `misteriosimagens/${filePrefix}${mysteryNum}.png`;
 
@@ -2871,7 +3041,7 @@ generateBeads(type) {
                     group: group.name, 
                     mystery: mystery.title, 
                     count: `${mysteryNum}º Mistério`,
-                    image: imagePath // Agora aponta para o arquivo correto
+                    image: imagePath 
                 });
 
                 mystery.aves.forEach((med, aIdx) => { add('ave', 'Ave Maria', 'ave', med, { group: group.name, mystery: mystery.title, count: `${mysteryNum}ª Dezena · ${aIdx + 1}ª Ave Maria` }); });
@@ -2937,7 +3107,9 @@ generateBeads(type) {
         animElements.forEach(key => {
             if(this.els[key]) this.els[key].classList.remove('visible');
         });
-        this.els.mysteryImage.classList.remove('visible'); // Reset imagem
+        
+        this.els.mysteryImage.classList.remove('visible'); 
+        this.els.mysteryImage.classList.remove('expanded'); // Reseta o zoom ao trocar de conta
 
         void this.els.prayer.offsetWidth; // Reflow
 
@@ -2951,14 +3123,11 @@ generateBeads(type) {
             this.els.mysteryImage.src = bead.image;
             this.els.mysteryImage.style.display = 'block';
             
-            // Pequeno delay para permitir transição suave
             requestAnimationFrame(() => {
                 this.els.mysteryImage.classList.add('visible');
             });
         } else {
-            // Esconde com delay para fade out
             setTimeout(() => {
-                 // Verifica se ainda deve estar escondida (para evitar race condition se o user clicar rápido)
                  if(!this.state.beads[this.state.index].image) {
                     this.els.mysteryImage.style.display = 'none';
                  }
@@ -2986,6 +3155,17 @@ generateBeads(type) {
             const activeEl = beadEls[idx];
             const beadCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
             this.els.track.style.transform = `translate(-50%, -${beadCenter}px)`;
+        }
+    },
+    // FUNÇÃO PARA EXPANDIR A IMAGEM
+    toggleImageZoom() {
+        const img = this.els.mysteryImage;
+        if (!img) return;
+        
+        if (img.classList.contains('expanded')) {
+            img.classList.remove('expanded');
+        } else {
+            img.classList.add('expanded');
         }
     },
     toggleAudio() {
