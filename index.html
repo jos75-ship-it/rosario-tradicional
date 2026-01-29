@@ -1114,6 +1114,27 @@
         .bead.rectangle-bead.active{
             transform: scale(1.15);
         }
+
+        /* ===== IMAGEM DO MISTÉRIO (NOVA CLASSE) ===== */
+        .mystery-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin: 16px auto;
+            display: none; /* Escondida por padrão */
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.6s var(--ease-out);
+        }
+        .mystery-image.visible {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
         /* Conteúdo principal */
         .prayer-main{
             flex: 1;
@@ -1497,7 +1518,6 @@
         }
     </style>
 </head>
-<!-- Modal de Alerta Personalizado -->
 <div id="custom-alert" class="custom-alert">
     <div class="custom-alert-content">
         <svg class="custom-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1876,6 +1896,9 @@
             <div class="prayer-group" id="prayer-group"></div>
             <div class="prayer-mystery" id="prayer-mystery"></div>
             <h2 class="prayer-name" id="prayer-name"></h2>
+            
+            <img id="mystery-image" class="mystery-image" alt="Mistério" />
+            
             <div class="prayer-count" id="prayer-count"></div>
             <div class="meditation-box" id="meditation-box">
                 <div class="meditation-label">Meditação</div>
@@ -1923,31 +1946,22 @@
 import { firebaseConfig } from './config.js';
 import{ initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import{ getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-// ADICIONADO 'remove' AQUI
 import{ getDatabase, ref, set, get, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const database = getDatabase(firebaseApp);
 
-// Função auxiliar para gerar o HTML do Avatar (Imagem ou Emoji)
 window.getAvatarHTML = function(avatarValue, size = '100%') {
-    // Se não tiver valor, retorna o padrão
     if (!avatarValue) return '👤';
-    
-    // Se o valor tiver ponto (ex: .png, .jpg), é um arquivo de imagem
     if (avatarValue.indexOf('.') > -1) {
         return `<img src="img/avatars/${avatarValue}" class="avatar-img" alt="Avatar" style="width:${size}; height:${size}; object-fit: cover;">`;
     }
-    
-    // Se não, é um emoji (legado)
     return `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size: calc(${size} * 0.6);">${avatarValue}</div>`;
 }
 
-// Converter username para email interno
 function usernameToEmail(username){
     return username.toLowerCase().replace(/\s+/g, '') + '@rosario.app';
 }
-// Mensagens de erro em português
 function getFirebaseErrorMessage(errorCode){
     const errors ={
         'auth/email-already-in-use': 'Este nome de usuário já está em uso!',
@@ -1990,7 +2004,7 @@ async function registerUser(username, displayName, password){
         await set(ref(database, 'users/' + user.uid),{
             username: username,
             displayName: displayName,
-            avatar: 'therese.png', // Padrão agora é Santa Teresinha
+            avatar: 'therese.png',
             createdAt: new Date().toISOString(),
             prayedDays:{},
             totalRosaries: 0,
@@ -2071,14 +2085,10 @@ function updateUserInterface(){
     const initial = displayName.charAt(0).toUpperCase();
     const avatar = profile.avatar || initial;
     
-    // Atualizar Home
     document.getElementById('home-user-name').textContent = displayName;
-    // Atualizar Perfil
     document.getElementById('profile-name').textContent = displayName;
-    // ATUALIZADO: Usa innerHTML e a função auxiliar
     document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(avatar);
     
-    // Atualizar Streak
     const streak = profile.currentStreak || 0;
     const streakMessage = streak === 0 ? 'Comece hoje sua jornada de oração' :
                           streak === 1 ? 'Continue orando! Você começou bem!' :
@@ -2089,12 +2099,12 @@ function updateUserInterface(){
     document.getElementById('home-streak-message').textContent = streakMessage;
     document.getElementById('profile-streak-count').textContent = streak;
     document.getElementById('profile-streak-message').textContent = streakMessage;
-    // Atualizar Estatísticas
+
     document.getElementById('profile-total-rosaries').textContent = profile.totalRosaries || 0;
     document.getElementById('profile-longest-streak').textContent = profile.longestStreak || 0;
     document.getElementById('profile-total-aves').textContent = profile.totalAves || 0;
     document.getElementById('profile-total-paters').textContent = profile.totalPaters || 0;
-    // Atualizar Intenção e Mistério do Dia
+
     const intentions = [
         "Pelos que sofrem perseguição por causa da fé.",
         "Pela conversão dos pecadores e a salvação das almas.",
@@ -2118,7 +2128,6 @@ function updateUserInterface(){
     const dayMap ={ 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
     document.getElementById('home-today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
     document.getElementById('rosary-today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
-    // Renderizar Calendário
     renderCalendar();
 }
 // Estado do calendário
@@ -2134,13 +2143,11 @@ function renderCalendar(){
     const daysInMonth = new Date(currentCalendarYear, currentCalendarMonth + 1, 0).getDate();
     const grid = document.getElementById('calendar-grid');
     grid.innerHTML = '';
-    // Dias vazios antes do início do mês
     for (let i = 0; i < firstDay; i++){
         const emptyDay = document.createElement('div');
         emptyDay.style.cssText = 'height: 40px;';
         grid.appendChild(emptyDay);
     }
-    // Dias do mês
     const today = new Date();
     const isCurrentMonth = currentCalendarMonth === today.getMonth() && 
                            currentCalendarYear === today.getFullYear();
@@ -2199,7 +2206,6 @@ function renderCalendar(){
 // ===== LÓGICA DE AMIGOS (INTEGRADA) =====
 // ==========================================
 
-// 1. Buscar amigo por username
 async function searchFriend() {
     const input = document.getElementById('friend-search-input');
     const resultDiv = document.getElementById('search-result');
@@ -2296,7 +2302,6 @@ async function searchFriend() {
     }
 }
 
-// 2. Enviar solicitação
 async function sendFriendRequest(targetUid) {
     try {
         const updates = {};
@@ -2312,7 +2317,6 @@ async function sendFriendRequest(targetUid) {
     }
 }
 
-// 3. Carregar solicitações recebidas
 async function loadFriendRequests() {
     try {
         const requestsRef = ref(database, `users/${window.currentUser.uid}/friendRequests/received`);
@@ -2353,7 +2357,6 @@ async function loadFriendRequests() {
     }
 }
 
-// 4. Aceitar e Recusar
 async function acceptFriendRequest(friendUid) {
     try {
         const updates = {};
@@ -2362,12 +2365,12 @@ async function acceptFriendRequest(friendUid) {
         await update(ref(database), updates);
         await remove(ref(database, `users/${window.currentUser.uid}/friendRequests/received/${friendUid}`));
         await remove(ref(database, `users/${friendUid}/friendRequests/sent/${window.currentUser.uid}`));
-        showCustomAlert('Amizade Confirmada! 🎉', 'Agora vocês são amigos no Rosário.'); // ← NOVO
+        showCustomAlert('Amizade Confirmada! 🎉', 'Agora vocês são amigos no Rosário.');
         loadFriendRequests();
         loadFriends();
     } catch (error) {
         console.error('Erro:', error);
-        showCustomAlert('Erro', 'Não foi possível aceitar o pedido.'); // ← NOVO
+        showCustomAlert('Erro', 'Não foi possível aceitar o pedido.');
     }
 }
 async function rejectFriendRequest(friendUid) {
@@ -2380,7 +2383,6 @@ async function rejectFriendRequest(friendUid) {
     }
 }
 
-// 5. Carregar Lista de Amigos
 async function loadFriends() {
     try {
         const friendsRef = ref(database, `users/${window.currentUser.uid}/friends`);
@@ -2405,7 +2407,6 @@ async function loadFriends() {
                 card.onmouseover = () => { card.style.borderColor = 'var(--gold-dim)'; card.style.transform = 'translateY(-2px)'; };
                 card.onmouseout = () => { card.style.borderColor = 'var(--border-subtle)'; card.style.transform = 'translateY(0)'; };
                 
-                // MUDANÇA: Agora chama viewFriendProfile que troca a tela, não um alert
                 card.onclick = () => viewFriendProfile(uid, user);
                 
                 card.innerHTML = `
@@ -2425,16 +2426,11 @@ async function loadFriends() {
     }
 }
 
-// 6. Visualizar Perfil (Navegação interna na aba)
 function viewFriendProfile(uid, user) {
-    // Esconde a lista principal
     document.getElementById('friends-main-view').style.display = 'none';
-    
-    // Mostra a view de perfil
     const profileView = document.getElementById('friend-profile-view');
     profileView.style.display = 'block';
     
-    // Preenche os dados
     document.getElementById('fp-avatar-container').innerHTML = window.getAvatarHTML(user.avatar, '100%');
     document.getElementById('fp-name').textContent = user.displayName || user.username;
     document.getElementById('fp-username').textContent = '@' + user.username;
@@ -2442,15 +2438,12 @@ function viewFriendProfile(uid, user) {
     document.getElementById('fp-rosaries').textContent = user.totalRosaries || 0;
 }
 
-// 7. Voltar para a lista
 window.backToFriendsList = function() {
     document.getElementById('friend-profile-view').style.display = 'none';
     document.getElementById('friends-main-view').style.display = 'block';
 }
 
-// Event Listeners
 document.addEventListener('DOMContentLoaded', () =>{
-    // Auth tabs
     document.querySelectorAll('.auth-tab').forEach(tab =>{
         tab.addEventListener('click', () =>{
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -2459,14 +2452,12 @@ document.addEventListener('DOMContentLoaded', () =>{
             document.getElementById(tab.dataset.tab + '-form').classList.add('active');
         });
     });
-// Login form
 document.getElementById('login-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value;
     loginUser(username, password);
 });
-// Register form
 document.getElementById('register-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const username = document.getElementById('register-username').value.trim();
@@ -2486,31 +2477,23 @@ document.getElementById('register-form').addEventListener('submit', (e) => {
     
     registerUser(username, displayName, password);
 });
-    // Navegação de tabs
     document.querySelectorAll('.nav-item[data-tab]').forEach(btn =>{
         btn.addEventListener('click', () =>{
-            // Atualizar nav items
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             btn.classList.add('active');
-            // Atualizar tab contents
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
             
-            // Carregar amigos se clicar na tab amigos
             if (btn.dataset.tab === 'friends' && window.currentUser) {
-                // Se estiver vendo um perfil, reseta para a lista
                 backToFriendsList();
                 loadFriends();
                 loadFriendRequests();
             }
         });
     });
-    // Botão Rosário na navbar - abre modal
     document.getElementById('nav-rosary-btn').addEventListener('click', () =>{
-        // Ajuste: Apenas muda para a tab, não abre modal (conforme estrutura atual)
         document.querySelector('.nav-item[data-tab="rosary"]').click();
     });
-    // Navegação do Calendário
     document.getElementById('prev-month-btn').addEventListener('click', () =>{
         currentCalendarMonth--;
         if (currentCalendarMonth < 0){
@@ -2528,7 +2511,6 @@ document.getElementById('register-form').addEventListener('submit', (e) => {
         renderCalendar();
     });
 
-    // Amigos Search Enter Key
     const searchInput = document.getElementById('friend-search-input');
     if (searchInput) {
         searchInput.addEventListener('keypress', (e) => {
@@ -2536,11 +2518,9 @@ document.getElementById('register-form').addEventListener('submit', (e) => {
         });
     }
 });
-// Exportar funções globalmente
 window.firebaseAuth ={ logoutUser };
 window.updateUserInterface = updateUserInterface;
 window.renderCalendar = renderCalendar;
-// Exportar funções de amigos
 window.searchFriend = searchFriend;
 window.sendFriendRequest = sendFriendRequest;
 window.acceptFriendRequest = acceptFriendRequest;
@@ -2548,24 +2528,20 @@ window.rejectFriendRequest = rejectFriendRequest;
 window.viewFriendProfile = viewFriendProfile;
 </script>
 <script>
-    // 1. Função Auxiliar Global (precisa estar disponível logo)
     window.getAvatarHTML = function(avatarValue, size = '100%') {
         if (!avatarValue) return '👤';
-        // Se tem ponto no nome (ex: .png), é imagem
         if (avatarValue.indexOf('.') > -1) {
             return `<img src="img/avatars/${avatarValue}" class="avatar-img" alt="Avatar" style="width:${size}; height:${size}; object-fit: cover;">`;
         }
         return `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size: calc(${size} * 0.6);">${avatarValue}</div>`;
     };
 
-    // 2. Lista de Avatares (Seus arquivos)
     const AVATARS = [
         'therese.png', 'pius.png', 'thomas.png', 
         'kolbe.jpg', 'madonna.png', 'agoustine.png', 'francis.jpg'
     ];
     let selectedAvatar = AVATARS[0];
 
-    // 3. Funções de Interface
     function renderAvatarGrid(){
         const grid = document.getElementById('avatar-grid');
         if(!grid) return;
@@ -2575,7 +2551,6 @@ window.viewFriendProfile = viewFriendProfile;
             const option = document.createElement('div');
             option.className = 'avatar-option';
             
-            // Verifica se é o selecionado atual (usando variavel global do perfil se existir)
             const currentProfileAvatar = (window.userProfile && window.userProfile.avatar) ? window.userProfile.avatar : '';
             
             if (currentProfileAvatar === filename || (filename === selectedAvatar && !currentProfileAvatar)){
@@ -2595,7 +2570,6 @@ window.viewFriendProfile = viewFriendProfile;
         element.classList.add('selected');
     }
 
-    // Estas funções agora são globais e o HTML vai encontrá-las!
     window.openAvatarModal = function(){
         renderAvatarGrid();
         document.getElementById('avatar-modal').classList.add('active');
@@ -2605,15 +2579,12 @@ window.viewFriendProfile = viewFriendProfile;
         document.getElementById('avatar-modal').classList.remove('active');
     };
 
-    // Fechar ao clicar fora
     document.addEventListener('click', (e) =>{
         const modal = document.getElementById('avatar-modal');
         if (e.target === modal) window.closeAvatarModal();
     });
 
-    // 4. Salvar Avatar (Esta precisa conversar com o Firebase)
     window.saveAvatar = async function(){
-        // Verifica se o usuário está logado (variável window.currentUser definida no outro script)
         if (!window.currentUser) {
             alert('Você precisa estar logado para salvar.');
             return;
@@ -2624,15 +2595,13 @@ window.viewFriendProfile = viewFriendProfile;
         saveBtn.textContent = 'Salvando...';
         
         try {
-            // Importa o Firebase dinamicamente aqui para não travar o resto do script se der erro
             const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-            const database = getDatabase(); // Pega a instância já inicializada
+            const database = getDatabase();
             
             await update(ref(database, `users/${window.currentUser.uid}`), {
                 avatar: selectedAvatar
             });
             
-            // Atualiza visualmente
             if (window.userProfile) window.userProfile.avatar = selectedAvatar;
             document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(selectedAvatar);
             
@@ -2648,7 +2617,6 @@ window.viewFriendProfile = viewFriendProfile;
         }
     };
     
-// ===== SISTEMA DE ÁUDIO INTERATIVO =====
 const AudioSystem = {
     ctx: null,
     enabled: false,
@@ -2766,7 +2734,6 @@ const AudioSystem = {
     }
 };
 
-// ===== 2. TEXTOS E MEDITAÇÕES =====
 const TEXTS = {
     cross: `Em nome do Pai, e do Filho, e do Espírito Santo. Amém.`,
     credo: `Creio em Deus Pai todo-poderoso, Criador do Céu e da terra; e em Jesus Cristo, seu único Filho, Nosso Senhor, que foi concebido pelo poder do Espírito Santo; nasceu da Virgem Maria; padeceu sob Pôncio Pilatos, foi crucificado, morto e sepultado; desceu à mansão dos mortos; ressuscitou ao terceiro dia; subiu aos Céus; está sentado à direita de Deus Pai todo-poderoso, de onde há de vir a julgar os vivos e os mortos. Creio no Espírito Santo; na Santa Igreja Católica; na comunhão dos Santos; na remissão dos pecados; na ressurreição da carne; na vida eterna. Amém.`,
@@ -2802,7 +2769,6 @@ const MONTFORT = {
     ]}
 };
 
-// ===== 3. APLICAÇÃO (Prayer Logic) =====
 const app = {
     state: { type: null, beads: [], index: 0, showText: false },
     els: {},
@@ -2824,7 +2790,9 @@ const app = {
             prevBtn: document.getElementById('prev-btn'),
             audioToggle: document.getElementById('audio-toggle'),
             audioIconOn: document.getElementById('audio-icon-on'),
-            audioIconOff: document.getElementById('audio-icon-off')
+            audioIconOff: document.getElementById('audio-icon-off'),
+            // Referência à nova imagem
+            mysteryImage: document.getElementById('mystery-image') 
         };
         this.setTodayInfo();
         this.setupGestures();
@@ -2849,18 +2817,14 @@ const app = {
         }, { passive: true });
 
         body.addEventListener('touchmove', e => {
-            // CORREÇÃO: Se o usuário estiver tocando no texto expandido, 
-            // NÃO impede o comportamento padrão (permite scrollar o texto)
             if (e.target.closest('.prayer-full-text')) return;
 
             const dy = Math.abs(startY - e.touches[0].clientY);
             const dx = Math.abs(startX - e.touches[0].clientX);
-            // Só bloqueia o scroll da página se for um gesto na área geral
             if (dy > dx && dy > 10) e.preventDefault();
         }, { passive: false });
 
         body.addEventListener('touchend', e => {
-            // CORREÇÃO: Se o toque terminou no texto, não troca a conta
             if (e.target.closest('.prayer-full-text')) return;
 
             if (!this.state.type) return;
@@ -2869,7 +2833,6 @@ const app = {
             const dy = startY - endY;
             const dx = Math.abs(startX - endX);
 
-            // Mantém a funcionalidade original de passar conta arrastando
             if (Math.abs(dy) > 30 && Math.abs(dy) > dx) {
                 if (dy > 0) this.next();
                 else this.prev();
@@ -2889,21 +2852,39 @@ const app = {
     generateBeads(type) {
         const beads = []; let id = 0;
         const add = (beadType, name, textKey, meditation = '', meta = {}) => { beads.push({ id: id++, beadType, name, textKey, meditation, ...meta }); };
+        
+        // Início
         add('special', 'Sinal da Cruz', 'cross', 'Fé na presença de Deus.');
         add('special', 'Creio', 'credo', 'Professamos nossa fé.');
         add('pater', 'Pai Nosso', 'pater', 'Unidade de um só Deus.');
         MONTFORT.intro.forEach((med, i) => { add('ave', 'Ave Maria', 'ave', med, { count: `${i + 1}ª Ave Maria` }); });
         add('special', 'Glória', 'gloria', 'Glória à Trindade.');
-        let groups = type === 'completo' ? [MONTFORT.gozosos, MONTFORT.dolorosos, MONTFORT.gloriosos] : [MONTFORT[type]];
-        groups.forEach(group => {
+        
+        // Mistérios
+        // Alteração: Identificar qual grupo (chave) para montar o nome da imagem
+        let groupKeys = type === 'completo' ? ['gozosos', 'dolorosos', 'gloriosos'] : [type];
+        
+        groupKeys.forEach(groupKey => {
+            const group = MONTFORT[groupKey];
             group.mysteries.forEach((mystery, mIdx) => {
                 const mysteryNum = mIdx + 1;
-                add('pater', 'Pai Nosso', 'pater', mystery.pater, { group: group.name, mystery: mystery.title, count: `${mysteryNum}º Mistério` });
+                
+                // Caminho da imagem (ex: misteriosimagens/gozosos1.jpg)
+                const imagePath = `misteriosimagens/${groupKey}${mysteryNum}.jpg`;
+
+                add('pater', 'Pai Nosso', 'pater', mystery.pater, { 
+                    group: group.name, 
+                    mystery: mystery.title, 
+                    count: `${mysteryNum}º Mistério`,
+                    image: imagePath // Adiciona a propriedade de imagem
+                });
+
                 mystery.aves.forEach((med, aIdx) => { add('ave', 'Ave Maria', 'ave', med, { group: group.name, mystery: mystery.title, count: `${mysteryNum}ª Dezena · ${aIdx + 1}ª Ave Maria` }); });
                 add('special', 'Glória', 'gloria', '', { group: group.name, mystery: mystery.title });
                 add('special', 'Oração de Fátima', 'fatima', '', { group: group.name, mystery: mystery.title });
             });
         });
+
         add('special', 'Salve Rainha', 'salve', 'Mãe de Misericórdia.');
         return beads;
     },
@@ -2952,72 +2933,74 @@ const app = {
         const bead = this.state.beads[idx];
         const total = this.state.beads.length;
         
-        // Atualiza barra de progresso
         const pct = ((idx + 1) / total) * 100;
         this.els.progressFill.style.width = `${pct}%`;
         this.els.progressText.textContent = `${idx + 1} / ${total}`;
         
-        // --- CORREÇÃO DO ERRO ---
-        // 1. Removemos a classe 'visible' para reiniciar a animação (fade-out)
+        // Remove classes para resetar animações
         const animElements = ['group', 'mystery', 'name', 'count', 'meditationBox'];
         animElements.forEach(key => {
             if(this.els[key]) this.els[key].classList.remove('visible');
         });
+        this.els.mysteryImage.classList.remove('visible'); // Reset imagem
 
-        // Força o navegador a recalcular (Reflow) para que a animação reinicie
-        void this.els.prayer.offsetWidth;
+        void this.els.prayer.offsetWidth; // Reflow
 
-        // 2. Atualizamos os Textos
         this.els.group.textContent = bead.group || '';
         this.els.mystery.textContent = bead.mystery || '';
         this.els.name.textContent = bead.name;
         this.els.count.textContent = bead.count || '';
         
-        // Lógica da Meditação (só mostra a caixa se tiver texto)
+        // Exibir Imagem se houver
+        if (bead.image) {
+            this.els.mysteryImage.src = bead.image;
+            this.els.mysteryImage.style.display = 'block';
+            
+            // Pequeno delay para permitir transição suave
+            requestAnimationFrame(() => {
+                this.els.mysteryImage.classList.add('visible');
+            });
+        } else {
+            // Esconde com delay para fade out
+            setTimeout(() => {
+                 // Verifica se ainda deve estar escondida (para evitar race condition se o user clicar rápido)
+                 if(!this.state.beads[this.state.index].image) {
+                    this.els.mysteryImage.style.display = 'none';
+                 }
+            }, 600);
+        }
+
         if (bead.meditation) {
              this.els.meditationText.textContent = bead.meditation;
-             // Adiciona classe para aparecer a caixa de meditação
              this.els.meditationBox.classList.add('visible'); 
         } else {
              this.els.meditationText.textContent = '';
-             // Se não tiver meditação, a caixa continua invisível
         }
 
         this.els.fullText.innerHTML = `<p>${TEXTS[bead.textKey]}</p>`;
 
-        // 3. Adicionamos a classe 'visible' para ativar a animação (fade-in)
         if (bead.group) this.els.group.classList.add('visible');
         if (bead.mystery) this.els.mystery.classList.add('visible');
         this.els.name.classList.add('visible');
         if (bead.count) this.els.count.classList.add('visible');
-        // ------------------------
         
-        // Atualiza as contas (bolinhas)
         const beadEls = this.els.track.children;
         Array.from(beadEls).forEach(el => el.classList.remove('active'));
         if (beadEls[idx]) {
             beadEls[idx].classList.add('active');
-            
-            // Centraliza
             const activeEl = beadEls[idx];
             const beadCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
             this.els.track.style.transform = `translate(-50%, -${beadCenter}px)`;
         }
     },
     toggleAudio() {
-        // Ativa/Desativa no sistema de áudio
         const enabled = AudioSystem.toggle();
-        
-        // Atualiza os ícones
         if (this.els.audioIconOn && this.els.audioIconOff) {
             this.els.audioIconOn.style.display = enabled ? 'block' : 'none';
             this.els.audioIconOff.style.display = enabled ? 'none' : 'block';
         }
-        
-        // Atualiza a classe do botão
         if (this.els.audioToggle) {
             this.els.audioToggle.classList.toggle('active', enabled);
-            // Feedback visual/sonoro rápido para saber que funcionou
             if (enabled) {
                 this.els.audioToggle.style.transform = "scale(1.2)";
                 setTimeout(() => this.els.audioToggle.style.transform = "", 200);
@@ -3059,50 +3042,39 @@ const app = {
              const database = getDatabase();
              const userId = window.currentUser.uid;
              
-             // Data de Hoje (Formato YYYY-MM-DD)
              const today = new Date();
              const dateKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
              
-             // === 1. LÓGICA DE CÁLCULO DO STREAK ===
              const prayedDays = window.userProfile.prayedDays || {};
-             // Cria uma lista com todos os dias já rezados + o dia de hoje
              const allDates = Object.keys(prayedDays).filter(k => prayedDays[k]);
              if (!allDates.includes(dateKey)) allDates.push(dateKey);
              
-             // Ordena do mais recente para o mais antigo
              allDates.sort((a, b) => new Date(b) - new Date(a));
              
              let newStreak = 0;
-             // Começamos a checar a partir de hoje
              let checkDate = new Date(dateKey + 'T12:00:00'); 
              
-             // Percorre as datas salvas para ver se são consecutivas
              for (const dateStr of allDates) {
-                 const currentDataDate = new Date(dateStr + 'T12:00:00'); // T12 evita problemas de fuso
-                 
-                 // Se a data da lista bate com a data que estamos procurando (sequência)
+                 const currentDataDate = new Date(dateStr + 'T12:00:00');
                  if (currentDataDate.getTime() === checkDate.getTime()) {
                      newStreak++;
-                     // Recua um dia para checar se o usuário rezou ontem
                      checkDate.setDate(checkDate.getDate() - 1);
                  }
              }
-             // === 2. SALVAR NO BANCO ===
+
              const updates = {};
              updates[`users/${userId}/prayedDays/${dateKey}`] = true;
              updates[`users/${userId}/totalRosaries`] = (window.userProfile.totalRosaries || 0) + 1;
              updates[`users/${userId}/totalAves`] = (window.userProfile.totalAves || 0) + aves;
              updates[`users/${userId}/totalPaters`] = (window.userProfile.totalPaters || 0) + paters;
-             updates[`users/${userId}/currentStreak`] = newStreak; // <--- Atualiza o Streak!
+             updates[`users/${userId}/currentStreak`] = newStreak;
              
-             // Atualiza Recorde se bateu o recorde anterior
              if (newStreak > (window.userProfile.longestStreak || 0)) {
                  updates[`users/${userId}/longestStreak`] = newStreak;
              }
              
              await update(ref(database), updates);
              
-             // === 3. ATUALIZAR TELA SEM RECARREGAR ===
              window.userProfile.prayedDays = window.userProfile.prayedDays || {};
              window.userProfile.prayedDays[dateKey] = true;
              window.userProfile.totalRosaries = (window.userProfile.totalRosaries || 0) + 1;
@@ -3120,7 +3092,6 @@ const app = {
 app.init();
 window.app = app;
 </script>
-<!-- Service Worker Registration -->
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -3128,7 +3099,6 @@ if ('serviceWorker' in navigator) {
       .then(registration => {
         console.log('✅ Service Worker registrado:', registration.scope);
         
-        // Atualizar Service Worker automaticamente
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           newWorker.addEventListener('statechange', () => {
@@ -3146,7 +3116,6 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
-    // Funções do Modal Customizado
 function showCustomAlert(title, message) {
     document.getElementById('alert-title').textContent = title;
     document.getElementById('alert-message').textContent = message;
@@ -3157,17 +3126,13 @@ function closeCustomAlert() {
     document.getElementById('custom-alert').classList.remove('active');
 }
 
-// Fechar ao clicar fora do modal
 document.addEventListener('click', (e) => {
     const modal = document.getElementById('custom-alert');
     if (e.target === modal) closeCustomAlert();
 });
 
-// Exportar globalmente
 window.showCustomAlert = showCustomAlert;
 window.closeCustomAlert = closeCustomAlert;
 </script>
-</body>
-</html>
 </body>
 </html>
