@@ -2849,7 +2849,7 @@ const app = {
             if (e.key.toLowerCase() === 'm') this.toggleAudio();
         });
     },
-    generateBeads(type) {
+generateBeads(type) {
         const beads = []; let id = 0;
         const add = (beadType, name, textKey, meditation = '', meta = {}) => { beads.push({ id: id++, beadType, name, textKey, meditation, ...meta }); };
         
@@ -2861,7 +2861,6 @@ const app = {
         add('special', 'Glória', 'gloria', 'Glória à Trindade.');
         
         // Mistérios
-        // Alteração: Identificar qual grupo (chave) para montar o nome da imagem
         let groupKeys = type === 'completo' ? ['gozosos', 'dolorosos', 'gloriosos'] : [type];
         
         groupKeys.forEach(groupKey => {
@@ -2869,14 +2868,16 @@ const app = {
             group.mysteries.forEach((mystery, mIdx) => {
                 const mysteryNum = mIdx + 1;
                 
-                // Caminho da imagem (ex: misteriosimagens/gozosos1.jpg)
-                const imagePath = `misteriosimagens/${groupKey}${mysteryNum}.jpg`;
+                // CORREÇÃO AQUI: Singular e PNG
+                // 'gozosos' vira 'gozoso', 'dolorosos' vira 'doloroso', etc.
+                const filePrefix = groupKey.slice(0, -1); 
+                const imagePath = `misteriosimagens/${filePrefix}${mysteryNum}.png`;
 
                 add('pater', 'Pai Nosso', 'pater', mystery.pater, { 
                     group: group.name, 
                     mystery: mystery.title, 
                     count: `${mysteryNum}º Mistério`,
-                    image: imagePath // Adiciona a propriedade de imagem
+                    image: imagePath // Agora aponta para o arquivo correto
                 });
 
                 mystery.aves.forEach((med, aIdx) => { add('ave', 'Ave Maria', 'ave', med, { group: group.name, mystery: mystery.title, count: `${mysteryNum}ª Dezena · ${aIdx + 1}ª Ave Maria` }); });
