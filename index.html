@@ -157,6 +157,32 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(212, 168, 85, 0.4);
 }
+/* Modal de Decisão (Sim/Não) */
+.custom-confirm-btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+.custom-confirm-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+}
+.btn-yes {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+    color: var(--bg-deep);
+}
+.btn-no {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+}
+
         /* Textura de fundo refinada */
         body::before{
             content: '';
@@ -220,7 +246,7 @@
             border-radius: 8px; padding: 16px; margin-bottom: 24px;
             font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;
         }
-        /* AVISO DE SEGURANÇA (NOVO) */
+        /* AVISO DE SEGURANÇA */
         .auth-warning {
             color: #e07070;
             font-size: 0.8rem;
@@ -709,7 +735,7 @@
             flex-direction: column;
             gap: 16px;
         }
-        /* ===== BOTÕES ELEGANTES - ESTILO ORIGINAL MELHORADO ===== */
+        /* ===== BOTÕES ELEGANTES ===== */
         .btn-mystery{
             background: rgba(255,255,255,0.02);
             border: 1px solid var(--border-subtle);
@@ -1753,6 +1779,17 @@
         <button type="button" class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
     </div>
 </div>
+<div id="confirm-modal" class="custom-alert">
+    <div class="custom-alert-content">
+        <h3 class="custom-alert-title" id="confirm-title">Confirmar</h3>
+        <p class="custom-alert-message" id="confirm-message">Tem certeza?</p>
+        <div class="custom-confirm-btn-row">
+            <button type="button" class="custom-confirm-btn btn-no" onclick="resolveConfirm(false)">Cancelar</button>
+            <button type="button" class="custom-confirm-btn btn-yes" onclick="resolveConfirm(true)">Confirmar</button>
+        </div>
+    </div>
+</div>
+
 <body>
 <div id="auth-screen">
     <div class="auth-container">
@@ -2376,15 +2413,18 @@ async function loginUser(username, password){
     }
 }
 async function logoutUser(){
-    if (confirm('Deseja realmente sair?')){
-        try{
-            await signOut(auth);
-            document.querySelectorAll('.input-field').forEach(f => f.value = '');
-        } catch (error){
-            console.error('Erro ao sair:', error);
-            alert('Erro ao sair da conta. Tente novamente.');
+    // NOVO: Usa o modal personalizado em vez de confirm()
+    showConfirm('Sair', 'Deseja realmente sair da conta?', async (confirmed) => {
+        if (confirmed) {
+            try{
+                await signOut(auth);
+                document.querySelectorAll('.input-field').forEach(f => f.value = '');
+            } catch (error){
+                console.error('Erro ao sair:', error);
+                showCustomAlert('Erro', 'Erro ao sair da conta. Tente novamente.');
+            }
         }
-    }
+    });
 }
 // Auth State Observer
 onAuthStateChanged(auth, async (user) =>{
@@ -2664,18 +2704,27 @@ async function searchFriend() {
 }
 
 async function sendFriendRequest(targetUid) {
-    try {
-        const updates = {};
-        updates[`friend_requests/${targetUid}/received/${window.currentUser.uid}`] = Date.now();
-        updates[`friend_requests/${window.currentUser.uid}/sent/${targetUid}`] = Date.now();
-        await update(ref(database), updates);
-        showCustomAlert('Pedido Enviado! ✨', 'Aguarde a confirmação do seu amigo.');
-        document.getElementById('friend-search-input').value = '';
-        document.getElementById('search-result').innerHTML = '';
-    } catch (error) {
-        console.error('Erro:', error);
-        showCustomAlert('Erro', 'Não foi possível enviar o pedido. Tente novamente.');
-    }
+    // NOVO: Alerta personalizado
+    showConfirm('Adicionar Amigo', 'Enviar pedido de amizade?', async (confirmed) => {
+        if (!confirmed) return;
+        
+        try {
+            const updates = {};
+            updates[`friend_requests/${targetUid}/received/${window.currentUser.uid}`] = Date.now();
+            updates[`friend_requests/${window.currentUser.uid}/sent/${targetUid}`] = Date.now();
+            
+            const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+            const database = getDatabase();
+            
+            await update(ref(database), updates);
+            showCustomAlert('Pedido Enviado! ✨', 'Aguarde a confirmação do seu amigo.');
+            document.getElementById('friend-search-input').value = '';
+            document.getElementById('search-result').innerHTML = '';
+        } catch (error) {
+            console.error('Erro:', error);
+            showCustomAlert('Erro', 'Não foi possível enviar o pedido. Tente novamente.');
+        }
+    });
 }
 
 async function loadFriendRequests() {
@@ -2951,17 +3000,27 @@ window.closeInboxModal = function() {
 
 // 3. Apagar Mensagem Individual
 window.deleteMessage = async function(key) {
-    if(!confirm("Apagar esta notificação?")) return;
-    const btn = event.target;
-    const card = btn.closest('.inbox-card');
-    card.style.opacity = '0';
-    setTimeout(() => card.remove(), 300);
+    showConfirm('Apagar', 'Apagar esta notificação?', async (confirmed) => {
+        if (!confirmed) return;
 
-    try {
-        const { getDatabase, ref, remove } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-        const database = getDatabase();
-        await remove(ref(database, `inbox/${window.currentUser.uid}/${key}`));
-    } catch(e) { console.error(e); }
+        const btn = event.target || document.activeElement; // Tenta pegar o elemento ativo
+        // Fallback se não conseguir pegar o elemento (raro, mas possível com modal customizado)
+        // Nesse caso, o usuário teria que reabrir o inbox, mas o deleteMessage é chamado ANTES do modal fechar
+        
+        // Simplesmente removemos visualmente se tivermos referência, senão a atualização da lista resolve
+        // Como o showConfirm é assíncrono visualmente, não podemos confiar no event.target original 100%
+        // Então vamos recarregar a lista após deletar
+        
+        try {
+            const { getDatabase, ref, remove } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+            const database = getDatabase();
+            await remove(ref(database, `inbox/${window.currentUser.uid}/${key}`));
+            
+            // Recarrega a lista para atualizar a visualização
+            openInboxModal();
+            
+        } catch(e) { console.error(e); }
+    });
 };
 
 // 4. ENVIAR ORAÇÃO
@@ -2999,24 +3058,27 @@ window.sendPrayerToFriend = async function() {
 window.sendChallengeToFriend = async function() {
     if (!currentFriendUid || !window.currentUser) return;
     
-    if(!confirm("Enviar desafio de 7 dias para este amigo?")) return;
-    
-    try {
-        const { getDatabase, ref, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-        const database = getDatabase();
+    // NOVO: Usando o alerta bonito
+    showConfirm('Desafio', 'Enviar desafio de 7 dias para este amigo?', async (confirmed) => {
+        if (!confirmed) return;
         
-        await push(ref(database, `inbox/${currentFriendUid}`), {
-            type: 'challenge',
-            fromName: window.userProfile.displayName || window.userProfile.username,
-            fromUid: window.currentUser.uid,
-            timestamp: Date.now()
-        });
+        try {
+            const { getDatabase, ref, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+            const database = getDatabase();
+            
+            await push(ref(database, `inbox/${currentFriendUid}`), {
+                type: 'challenge',
+                fromName: window.userProfile.displayName || window.userProfile.username,
+                fromUid: window.currentUser.uid,
+                timestamp: Date.now()
+            });
 
-        showCustomAlert('Desafio Enviado!', 'Aguarde seu amigo aceitar.');
-        
-    } catch (error) {
-        showCustomAlert('Erro', 'Não foi possível enviar o desafio.');
-    }
+            showCustomAlert('Desafio Enviado!', 'Aguarde seu amigo aceitar.');
+            
+        } catch (error) {
+            showCustomAlert('Erro', 'Não foi possível enviar o desafio.');
+        }
+    });
 };
 
 // 6. ACEITAR DESAFIO
@@ -3058,7 +3120,9 @@ window.acceptChallenge = async function(msgKey, fromUid, fromName) {
         
         closeInboxModal();
         showCustomAlert('Desafio Aceito!', 'A guerra começou! Reze todos os dias.');
-        window.location.reload(); // Recarrega para mostrar a barra
+        
+        // Pequeno delay para garantir que o banco atualizou
+        setTimeout(() => window.location.reload(), 1500); 
         
     } catch (e) {
         console.error(e);
@@ -3151,664 +3215,6 @@ window.rejectFriendRequest = rejectFriendRequest;
 window.viewFriendProfile = viewFriendProfile;
 </script>
 <script>
-    window.getAvatarHTML = function(avatarValue, size = '100%') {
-        if (!avatarValue) return '👤';
-        if (avatarValue.indexOf('.') > -1) {
-            return `<img src="img/avatars/${avatarValue}" class="avatar-img" alt="Avatar" style="width:${size}; height:${size}; object-fit: cover;">`;
-        }
-        return `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size: calc(${size} * 0.6);">${avatarValue}</div>`;
-    };
-
-    const AVATARS = [
-        'therese.png', 'pius.png', 'thomas.png', 
-        'kolbe.jpg', 'madonna.png', 'agoustine.png', 'francis.jpg'
-    ];
-    let selectedAvatar = AVATARS[0];
-
-    function renderAvatarGrid(){
-        const grid = document.getElementById('avatar-grid');
-        if(!grid) return;
-        grid.innerHTML = '';
-        
-        AVATARS.forEach(filename => {
-            const option = document.createElement('div');
-            option.className = 'avatar-option';
-            
-            const currentProfileAvatar = (window.userProfile && window.userProfile.avatar) ? window.userProfile.avatar : '';
-            
-            if (currentProfileAvatar === filename || (filename === selectedAvatar && !currentProfileAvatar)){
-                option.classList.add('selected');
-                selectedAvatar = filename;
-            }
-            
-            option.innerHTML = `<img src="img/avatars/${filename}" class="avatar-img">`;
-            option.onclick = () => selectAvatar(filename, option);
-            grid.appendChild(option);
-        });
-    }
-
-    function selectAvatar(filename, element){
-        selectedAvatar = filename;
-        document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
-        element.classList.add('selected');
-    }
-
-    window.openAvatarModal = function(){
-        renderAvatarGrid();
-        document.getElementById('avatar-modal').classList.add('active');
-    };
-
-    window.closeAvatarModal = function(){
-        document.getElementById('avatar-modal').classList.remove('active');
-    };
-
-    document.addEventListener('click', (e) =>{
-        const modal = document.getElementById('avatar-modal');
-        if (e.target === modal) window.closeAvatarModal();
-    });
-
-    window.saveAvatar = async function(){
-        if (!window.currentUser) {
-            alert('Você precisa estar logado para salvar.');
-            return;
-        }
-        
-        const saveBtn = document.getElementById('avatar-save-btn');
-        saveBtn.disabled = true;
-        saveBtn.textContent = 'Salvando...';
-        
-        try {
-            const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-            const database = getDatabase();
-            
-            await update(ref(database, `users/${window.currentUser.uid}`), {
-                avatar: selectedAvatar
-            });
-            
-            if (window.userProfile) window.userProfile.avatar = selectedAvatar;
-            document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(selectedAvatar);
-            
-            window.closeAvatarModal();
-            saveBtn.disabled = false;
-            saveBtn.textContent = 'Salvar Avatar';
-            
-        } catch (error) {
-            console.error('Erro ao salvar:', error);
-            alert('Erro ao salvar avatar. Verifique sua conexão.');
-            saveBtn.disabled = false;
-            saveBtn.textContent = 'Salvar Avatar';
-        }
-    };
-
-    // NOVA FUNÇÃO PARA SALVAR BIO E INTENÇÃO
-    window.saveProfileData = async function() {
-        if (!window.currentUser) {
-            showCustomAlert('Erro', 'Você precisa estar logado.');
-            return;
-        }
-
-        const bio = document.getElementById('profile-bio').value.trim();
-        const intention = document.getElementById('profile-intention').value.trim();
-
-        try {
-            const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-            const database = getDatabase();
-
-            await update(ref(database, `users/${window.currentUser.uid}`), {
-                bio: bio,
-                intention: intention
-            });
-
-            // Atualiza objeto local
-            if (window.userProfile) {
-                window.userProfile.bio = bio;
-                window.userProfile.intention = intention;
-            }
-
-            showCustomAlert('Sucesso!', 'Perfil atualizado com sucesso.');
-
-        } catch (error) {
-            console.error('Erro ao salvar perfil:', error);
-            showCustomAlert('Erro', 'Não foi possível salvar as alterações.');
-        }
-    };
-    
-const AudioSystem = {
-    ctx: null,
-    enabled: false,
-    init() {
-        if (!this.ctx) {
-            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (this.ctx.state === 'suspended') this.ctx.resume();
-    },
-    playBead(type = 'ave') {
-        if (!this.enabled) return;
-        this.init();
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        osc.type = 'triangle';
-        if (type === 'pater') {
-            osc.frequency.setValueAtTime(180, now);
-            osc.frequency.exponentialRampToValueAtTime(90, now + 0.08);
-            filter.frequency.setValueAtTime(600, now);
-            filter.Q.setValueAtTime(3, now);
-            gain.gain.setValueAtTime(0.25, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-        } else if (type === 'special') {
-            osc.frequency.setValueAtTime(220, now);
-            osc.frequency.exponentialRampToValueAtTime(110, now + 0.06);
-            filter.frequency.setValueAtTime(500, now);
-            filter.Q.setValueAtTime(4, now);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-        } else {
-            osc.frequency.setValueAtTime(260, now);
-            osc.frequency.exponentialRampToValueAtTime(130, now + 0.05);
-            filter.frequency.setValueAtTime(450, now);
-            filter.Q.setValueAtTime(5, now);
-            gain.gain.setValueAtTime(0.18, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-        }
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.2);
-        this.addWoodTexture(type);
-    },
-    addWoodTexture(type) {
-        const now = this.ctx.currentTime;
-        const bufferSize = this.ctx.sampleRate * 0.02;
-        const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-        const data = noiseBuffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            const envelope = Math.exp(-i / (bufferSize * 0.15));
-            data[i] = (Math.random() * 2 - 1) * 0.4 * envelope;
-        }
-        const noise = this.ctx.createBufferSource();
-        noise.buffer = noiseBuffer;
-        const noiseGain = this.ctx.createGain();
-        const noiseFilter = this.ctx.createBiquadFilter();
-        noiseFilter.type = 'bandpass';
-        noiseFilter.frequency.setValueAtTime(type === 'pater' ? 800 : 1200, now);
-        noiseFilter.Q.setValueAtTime(2, now);
-        const vol = type === 'pater' ? 0.15 : 0.1;
-        noiseGain.gain.setValueAtTime(vol, now);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
-        noise.connect(noiseFilter);
-        noiseFilter.connect(noiseGain);
-        noiseGain.connect(this.ctx.destination);
-        noise.start(now);
-    },
-    playBell() {
-        if (!this.enabled) return;
-        this.init();
-        const now = this.ctx.currentTime;
-        const frequencies = [523.25, 659.25, 783.99];
-        frequencies.forEach((freq, i) => {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.frequency.setValueAtTime(freq, now);
-            osc.type = 'sine';
-            const startTime = now + i * 0.12;
-            gain.gain.setValueAtTime(0, startTime);
-            gain.gain.linearRampToValueAtTime(0.1 / (i + 1), startTime + 0.06);
-            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 2.5);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(startTime);
-            osc.stop(startTime + 3);
-        });
-    },
-    playComplete() {
-        if (!this.enabled) return;
-        this.init();
-        const now = this.ctx.currentTime;
-        const notes = [261.63, 329.63, 392, 523.25];
-        notes.forEach((freq, i) => {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.frequency.setValueAtTime(freq, now);
-            osc.type = 'sine';
-            const startTime = now + i * 0.18;
-            gain.gain.setValueAtTime(0, startTime);
-            gain.gain.linearRampToValueAtTime(0.12, startTime + 0.06);
-            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 2);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(startTime);
-            osc.stop(startTime + 2.5);
-        });
-    },
-    toggle() {
-        this.enabled = !this.enabled;
-        return this.enabled;
-    }
-};
-
-const TEXTS = {
-    cross: `Em nome do Pai, e do Filho, e do Espírito Santo. Amém.`,
-    credo: `Creio em Deus Pai todo-poderoso, Criador do Céu e da terra; e em Jesus Cristo, seu único Filho, Nosso Senhor, que foi concebido pelo poder do Espírito Santo; nasceu da Virgem Maria; padeceu sob Pôncio Pilatos, foi crucificado, morto e sepultado; desceu à mansão dos mortos; ressuscitou ao terceiro dia; subiu aos Céus; está sentado à direita de Deus Pai todo-poderoso, de onde há de vir a julgar os vivos e os mortos. Creio no Espírito Santo; na Santa Igreja Católica; na comunhão dos Santos; na remissão dos pecados; na ressurreição da carne; na vida eterna. Amém.`,
-    pater: `Pai nosso que estais nos Céus, santificado seja o vosso Nome, venha a nós o vosso Reino, seja feita a vossa vontade assim na terra como no Céu. O pão nosso de cada dia nos dai hoje, perdoai-nos as nossas ofensas assim como nós perdoamos a quem nos tem ofendido, e não nos deixeis cair em tentação, mas livrai-nos do Mal. Amém.`,
-    ave: `Ave Maria, cheia de graça, o Senhor é convosco, bendita sois vós entre as mulheres e bendito é o fruto do vosso ventre, Jesus. Santa Maria, Mãe de Deus, rogai por nós pecadores, agora e na hora da nossa morte. Amém.`,
-    gloria: `Glória ao Pai, e ao Filho, e ao Espírito Santo. Assim como era no princípio, agora e sempre, e por todos os séculos dos séculos. Amém.`,
-    fatima: `Ó meu Jesus, perdoai-nos, livrai-nos do fogo do inferno, levai as almas todas para o Céu, principalmente as que mais precisarem da vossa Misericórdia.`,
-    salve: `Salve Rainha, Mãe de Misericórdia, vida, doçura e esperança nossa, salve! A vós bradamos, os degredados filhos de Eva. A vós suspiramos, gemendo e chorando neste vale de lágrimas. Eia pois, advogada nossa, esses vossos olhos misericordiosos a nós volvei. E depois deste desterro, mostrai-nos Jesus, bendito fruto do vosso ventre. Ó clemente, ó piedosa, ó doce sempre Virgem Maria. Rogai por nós, Santa Mãe de Deus, para que sejamos dignos das promessas de Cristo. Amém.`
-};
-
-const MONTFORT = {
-    intro: ["Em honra do Pai Eterno, que gera seu Filho contemplando-Se.", "Em honra do Verbo Eterno, igual ao Pai, que com Ele produz o Espírito Santo.", "Em honra do Espírito Santo, que procede do Pai e do Filho por via de amor."],
-    gozosos: { name: "Mistérios Gozosos", mysteries: [
-        { title: "A Anunciação", pater: "A caridade de Deus, imensa.", aves: ["Para lamentar o desgraçado estado de Adão.", "Os desejos dos patriarcas.", "Os desejos de Maria.", "A caridade do Pai.", "O amor do Filho.", "A embaixada do anjo.", "O temor de Maria.", "O consentimento de Maria.", "A criação da alma de Jesus.", "A adoração dos anjos."] },
-        { title: "A Visitação", pater: "A majestade de Deus, adorável.", aves: ["O gozo de Maria.", "O sacrifício de Jesus.", "As complacências de Jesus.", "A dúvida de São José.", "A eleição dos escolhidos.", "O fervor na visita.", "A santificação de João.", "A gratidão no Magnificat.", "A caridade em servir.", "A mútua dependência."] },
-        { title: "O Nascimento", pater: "As riquezas de Deus, infinitas.", aves: ["Os desprezos em Belém.", "A pobreza do estábulo.", "A alta contemplação.", "A saída do Verbo.", "Adorações dos anjos.", "Formosura da infância.", "Vinda dos pastores.", "A circuncisão.", "Imposição do nome.", "Adoração dos magos."] },
-        { title: "A Apresentação", pater: "A sabedoria de Deus, eterna.", aves: ["Obediência à Lei.", "Sacrifício de Jesus.", "Sacrifício de Maria.", "Gozo de Simeão.", "Resgate de Jesus.", "Matança dos inocentes.", "Fuga para o Egito.", "Estada no Egito.", "Volta para Nazaré.", "Crescimento em graça."] },
-        { title: "O Encontro", pater: "A santidade de Deus, incompreensível.", aves: ["Vida oculta.", "Perda e encontro.", "Jejum no deserto.", "Batismo.", "Pregação.", "Milagres.", "Eleição dos apóstolos.", "Transfiguração.", "Lava-pés.", "Eucaristia."] }
-    ]},
-    dolorosos: { name: "Mistérios Dolorosos", mysteries: [
-        { title: "A Agonia", pater: "A felicidade de Deus.", aves: ["Retiros de Jesus.", "Orações fervorosas.", "Paciência com apóstolos.", "Tédio da alma.", "Suor de sangue.", "Consolo do anjo.", "Conformidade com o Pai.", "Traição e prisão.", "Valor no encontro.", "Abandono."] },
-        { title: "A Flagelação", pater: "A paciência de Deus.", aves: ["Cordas.", "Bofetada.", "Negações.", "Ignomínias.", "Despojamento.", "Desprezos.", "Varas e açoites.", "Coluna.", "Sangue.", "Queda."] },
-        { title: "A Coroação", pater: "A formosura de Deus.", aves: ["Despojamento 3ª vez.", "Coroa de espinhos.", "Olhos vendados.", "Bofetadas.", "Andrajo.", "Cana.", "Pedra.", "Ultrajes.", "Sangue na cabeça.", "Cabelos arrancados."] },
-        { title: "A Cruz", pater: "A onipotência de Deus.", aves: ["Eis o Homem.", "Preferido a Barrabás.", "Falsos testemunhos.", "Condenação.", "Amor à Cruz.", "Trabalho ao carregar.", "Quedas.", "Encontro com Maria.", "Véu de Verônica.", "Lágrimas."] },
-        { title: "A Crucificação", pater: "A justiça de Deus.", aves: ["Cinco chagas.", "Coração traspassado.", "Cravos e lança.", "Vergonha.", "Compaixão de Maria.", "Sete palavras.", "Desamparo.", "Aflição do Universo.", "Morte.", "Descida e sepultamento."] }
-    ]},
-    gloriosos: { name: "Mistérios Gloriosos", mysteries: [
-        { title: "A Ressurreição", pater: "A eternidade de Deus.", aves: ["Descida aos infernos.", "Gozo dos Santos Padres.", "Reunião alma e corpo.", "Saída do sepulcro.", "Vitórias.", "Dons gloriosos.", "Poder de Jesus.", "Aparições a Maria.", "Conversações.", "Missão dos apóstolos."] },
-        { title: "A Ascensão", pater: "A imensidade de Deus.", aves: ["Promessa do Espírito Santo.", "Reunião no Monte.", "Benção final.", "Subida ao Céu.", "Triunfo no Céu.", "Abertura das portas.", "Assento à direita.", "Poder de julgar.", "Última vinda.", "Justiça final."] },
-        { title: "Pentecostes", pater: "A providência de Deus.", aves: ["Verdade do Espírito.", "Dom do Espírito.", "Estrondo.", "Línguas de fogo.", "Graças a Maria.", "Conduta maravilhosa.", "Doze frutos.", "Sete dons.", "Dom da Sabedoria.", "Vitória sobre o mal."] },
-        { title: "A Assunção", pater: "A liberalidade de Deus.", aves: ["Predestinação.", "Conceição Imaculada.", "Natividade.", "Apresentação.", "Vida isenta de pecado.", "Virtudes.", "Virgindade fecunda.", "Maternidade divina.", "Morte de amor.", "Ressurreição e assunção."] },
-        { title: "A Coroação", pater: "A glória de Deus.", aves: ["Tríplice coroa.", "Gozo do Céu.", "Rainha do Céu.", "Tesoureira.", "Medianeira.", "Destruidora de heresias.", "Refúgio.", "Mãe.", "Doçura dos justos.", "Asilo universal."] }
-    ]}
-};
-
-const app = {
-    state: { type: null, beads: [], index: 0, showText: false },
-    els: {},
-    init() {
-        this.els = {
-            prayer: document.getElementById('prayer-screen'),
-            completion: document.getElementById('completion-screen'),
-            track: document.getElementById('bead-track'),
-            progressFill: document.getElementById('progress-fill'),
-            progressText: document.getElementById('progress-text'),
-            group: document.getElementById('prayer-group'),
-            mystery: document.getElementById('prayer-mystery'),
-            name: document.getElementById('prayer-name'),
-            count: document.getElementById('prayer-count'),
-            meditationBox: document.getElementById('meditation-box'),
-            meditationText: document.getElementById('meditation-text'),
-            textToggle: document.getElementById('prayer-text-toggle'),
-            fullText: document.getElementById('prayer-full-text'),
-            prevBtn: document.getElementById('prev-btn'),
-            audioToggle: document.getElementById('audio-toggle'),
-            audioIconOn: document.getElementById('audio-icon-on'),
-            audioIconOff: document.getElementById('audio-icon-off'),
-            // Referência à nova imagem
-            mysteryImage: document.getElementById('mystery-image') 
-        };
-        this.setTodayInfo();
-        this.setupGestures();
-        this.setupKeyboard();
-    },
-    setTodayInfo() {
-        const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-        const mysteries = { 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
-        const d = new Date().getDay();
-        const infoEl = document.getElementById('today-info');
-        if(infoEl) infoEl.innerHTML = `Hoje é <strong>${days[d]}</strong> — Mistérios <strong>${mysteries[d]}</strong>`;
-    },
-    setupGestures() {
-        let startY = 0;
-        let startX = 0;
-        const body = document.getElementById('prayer-body');
-        if(!body) return;
-
-        body.addEventListener('touchstart', e => {
-            startY = e.touches[0].clientY;
-            startX = e.touches[0].clientX;
-        }, { passive: true });
-
-        body.addEventListener('touchmove', e => {
-            if (e.target.closest('.prayer-full-text')) return;
-
-            const dy = Math.abs(startY - e.touches[0].clientY);
-            const dx = Math.abs(startX - e.touches[0].clientX);
-            if (dy > dx && dy > 10) e.preventDefault();
-        }, { passive: false });
-
-        body.addEventListener('touchend', e => {
-            if (e.target.closest('.prayer-full-text')) return;
-
-            if (!this.state.type) return;
-            const endY = e.changedTouches[0].clientY;
-            const endX = e.changedTouches[0].clientX;
-            const dy = startY - endY;
-            const dx = Math.abs(startX - endX);
-
-            if (Math.abs(dy) > 30 && Math.abs(dy) > dx) {
-                if (dy > 0) this.next();
-                else this.prev();
-            }
-        }, { passive: true });
-    },
-    setupKeyboard() {
-        document.addEventListener('keydown', e => {
-            if (!this.state.type) return;
-            if (['ArrowDown', 'ArrowRight', ' '].includes(e.key)) { e.preventDefault(); this.next(); }
-            if (['ArrowUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); this.prev(); }
-            if (e.key === 'Escape') this.confirmExit();
-            if (e.key.toLowerCase() === 't') this.toggleText();
-            if (e.key.toLowerCase() === 'm') this.toggleAudio();
-        });
-    },
-    generateBeads(type) {
-        const beads = []; let id = 0;
-        const add = (beadType, name, textKey, meditation = '', meta = {}) => { beads.push({ id: id++, beadType, name, textKey, meditation, ...meta }); };
-        
-        // Início
-        add('special', 'Sinal da Cruz', 'cross', 'Fé na presença de Deus.');
-        add('special', 'Creio', 'credo', 'Professamos nossa fé.');
-        add('pater', 'Pai Nosso', 'pater', 'Unidade de um só Deus.');
-        MONTFORT.intro.forEach((med, i) => { add('ave', 'Ave Maria', 'ave', med, { count: `${i + 1}ª Ave Maria` }); });
-        add('special', 'Glória', 'gloria', 'Glória à Trindade.');
-        
-        // Mistérios
-        let groupKeys = type === 'completo' ? ['gozosos', 'dolorosos', 'gloriosos'] : [type];
-        
-        groupKeys.forEach(groupKey => {
-            const group = MONTFORT[groupKey];
-            group.mysteries.forEach((mystery, mIdx) => {
-                const mysteryNum = mIdx + 1;
-                
-                // Caminho da imagem (ex: misteriosimagens/gozoso1.png)
-                const filePrefix = groupKey.slice(0, -1); 
-                const imagePath = `misteriosimagens/${filePrefix}${mysteryNum}.png`;
-
-                add('pater', 'Pai Nosso', 'pater', mystery.pater, { 
-                    group: group.name, 
-                    mystery: mystery.title, 
-                    count: `${mysteryNum}º Mistério`,
-                    image: imagePath 
-                });
-
-                mystery.aves.forEach((med, aIdx) => { add('ave', 'Ave Maria', 'ave', med, { group: group.name, mystery: mystery.title, count: `${mysteryNum}ª Dezena · ${aIdx + 1}ª Ave Maria` }); });
-                add('special', 'Glória', 'gloria', '', { group: group.name, mystery: mystery.title });
-                add('special', 'Oração de Fátima', 'fatima', '', { group: group.name, mystery: mystery.title });
-            });
-        });
-
-        add('special', 'Salve Rainha', 'salve', 'Mãe de Misericórdia.');
-        return beads;
-    },
-    start(type) {
-        this.state.type = type;
-        this.state.beads = this.generateBeads(type);
-        this.state.index = 0;
-        this.els.track.innerHTML = '';
-        this.state.beads.forEach((bead, idx) => {
-            const el = document.createElement('div');
-            el.className = `bead ${bead.beadType}`;
-            if (bead.beadType !== 'ave' && bead.beadType !== 'pater') el.classList.add('special');
-            if (idx === 0) el.classList.add('active');
-            el.onclick = () => this.goTo(idx);
-            this.els.track.appendChild(el);
-        });
-        this.els.prayer.classList.add('active');
-        AudioSystem.playBell();
-        this.update();
-    },
-    goTo(idx) {
-        if (idx >= 0 && idx < this.state.beads.length) {
-            this.state.index = idx;
-            this.update();
-            AudioSystem.playBead(this.state.beads[idx].beadType);
-        }
-    },
-    next() {
-        if (this.state.index < this.state.beads.length - 1) {
-            this.state.index++;
-            this.update();
-            AudioSystem.playBead(this.state.beads[this.state.index].beadType);
-        } else {
-            this.complete();
-        }
-    },
-    prev() {
-        if (this.state.index > 0) {
-            this.state.index--;
-            this.update();
-            AudioSystem.playBead(this.state.beads[this.state.index].beadType);
-        }
-    },
-    update() {
-        const idx = this.state.index;
-        const bead = this.state.beads[idx];
-        const total = this.state.beads.length;
-        
-        const pct = ((idx + 1) / total) * 100;
-        this.els.progressFill.style.width = `${pct}%`;
-        this.els.progressText.textContent = `${idx + 1} / ${total}`;
-        
-        // Remove classes para resetar animações
-        const animElements = ['group', 'mystery', 'name', 'count', 'meditationBox'];
-        animElements.forEach(key => {
-            if(this.els[key]) this.els[key].classList.remove('visible');
-        });
-        
-        this.els.mysteryImage.classList.remove('visible'); 
-        this.els.mysteryImage.classList.remove('expanded'); // Reseta o zoom ao trocar de conta
-
-        void this.els.prayer.offsetWidth; // Reflow
-
-        this.els.group.textContent = bead.group || '';
-        this.els.mystery.textContent = bead.mystery || '';
-        this.els.name.textContent = bead.name;
-        this.els.count.textContent = bead.count || '';
-        
-        // Exibir Imagem se houver
-        if (bead.image) {
-            this.els.mysteryImage.src = bead.image;
-            this.els.mysteryImage.style.display = 'block';
-            
-            requestAnimationFrame(() => {
-                this.els.mysteryImage.classList.add('visible');
-            });
-        } else {
-            setTimeout(() => {
-                 if(!this.state.beads[this.state.index].image) {
-                    this.els.mysteryImage.style.display = 'none';
-                 }
-            }, 600);
-        }
-
-        if (bead.meditation) {
-             this.els.meditationText.textContent = bead.meditation;
-             this.els.meditationBox.classList.add('visible'); 
-        } else {
-             this.els.meditationText.textContent = '';
-        }
-
-        this.els.fullText.innerHTML = `<p>${TEXTS[bead.textKey]}</p>`;
-
-        if (bead.group) this.els.group.classList.add('visible');
-        if (bead.mystery) this.els.mystery.classList.add('visible');
-        this.els.name.classList.add('visible');
-        if (bead.count) this.els.count.classList.add('visible');
-        
-        const beadEls = this.els.track.children;
-        Array.from(beadEls).forEach(el => el.classList.remove('active'));
-        if (beadEls[idx]) {
-            beadEls[idx].classList.add('active');
-            const activeEl = beadEls[idx];
-            const beadCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
-            this.els.track.style.transform = `translate(-50%, -${beadCenter}px)`;
-        }
-    },
-    // FUNÇÃO PARA EXPANDIR A IMAGEM
-    toggleImageZoom() {
-        const img = this.els.mysteryImage;
-        if (!img) return;
-        
-        if (img.classList.contains('expanded')) {
-            img.classList.remove('expanded');
-        } else {
-            img.classList.add('expanded');
-        }
-    },
-    toggleAudio() {
-        const enabled = AudioSystem.toggle();
-        if (this.els.audioIconOn && this.els.audioIconOff) {
-            this.els.audioIconOn.style.display = enabled ? 'block' : 'none';
-            this.els.audioIconOff.style.display = enabled ? 'none' : 'block';
-        }
-        if (this.els.audioToggle) {
-            this.els.audioToggle.classList.toggle('active', enabled);
-            if (enabled) {
-                this.els.audioToggle.style.transform = "scale(1.2)";
-                setTimeout(() => this.els.audioToggle.style.transform = "", 200);
-            }
-        }
-    },
-    toggleText() {
-        this.state.showText = !this.state.showText;
-        if (this.state.showText) {
-            this.els.fullText.classList.add('visible');
-            this.els.textToggle.classList.add('expanded');
-        } else {
-            this.els.fullText.classList.remove('visible');
-            this.els.textToggle.classList.remove('expanded');
-        }
-    },
-    confirmExit() { if (confirm('Sair?')) this.home(); },
-    home() {
-        this.state.type = null;
-        this.els.prayer.classList.remove('active');
-        this.els.completion.classList.remove('active');
-    },
-    complete() {
-        AudioSystem.playComplete();
-        const aves = this.state.beads.filter(b => b.beadType === 'ave').length;
-        const paters = this.state.beads.filter(b => b.beadType === 'pater').length;
-        document.getElementById('stat-aves').textContent = aves;
-        document.getElementById('stat-paters').textContent = paters;
-        document.getElementById('completion-msg').textContent = "Rosário completado.";
-        if (window.currentUser && window.userProfile) {
-            this.saveCompletion(aves, paters);
-        }
-        this.els.prayer.classList.remove('active');
-        this.els.completion.classList.add('active');
-    },
-    // CORREÇÃO: Lógica de Streak Robusta (Fuso Horário)
-    async saveCompletion(aves, paters) {
-        try {
-             const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-             const database = getDatabase();
-             const userId = window.currentUser.uid;
-             
-             // Usa a data atual, mas normaliza para MEIO-DIA para evitar problemas de fuso
-             const now = new Date();
-             const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-             
-             const prayedDays = window.userProfile.prayedDays || {};
-             
-             // Atualiza a lista local de dias rezados
-             prayedDays[dateKey] = true;
-             
-             // Recalcula o streak
-             // 1. Cria array de datas únicas
-             const allDates = Object.keys(prayedDays).filter(k => prayedDays[k]).sort().reverse();
-             
-             let newStreak = 0;
-             if (allDates.length > 0) {
-                 // Começa checando a partir de hoje (ou da data mais recente rezada)
-                 let checkDate = new Date(allDates[0] + 'T12:00:00');
-                 // Data atual (meio-dia)
-                 const todayNoon = new Date(dateKey + 'T12:00:00');
-                 
-                 // Se a última oração não foi hoje nem ontem, o streak quebrou e começa em 1
-                 const diffTime = Math.abs(todayNoon - checkDate);
-                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-                 
-                 if (diffDays > 1) {
-                     newStreak = 1; // Recomeça
-                 } else {
-                     // Lógica de contagem
-                     newStreak = 0;
-                     let currentCheck = new Date(dateKey + 'T12:00:00'); // Começa de hoje
-                     
-                     // Percorre para trás
-                     for (let i = 0; i < allDates.length; i++) {
-                         const dString = allDates[i];
-                         const dDate = new Date(dString + 'T12:00:00');
-                         
-                         if (dDate.getTime() === currentCheck.getTime()) {
-                             newStreak++;
-                             // Recua um dia
-                             currentCheck.setDate(currentCheck.getDate() - 1);
-                         } else {
-                             // Buraco na sequência
-                             break;
-                         }
-                     }
-                 }
-             } else {
-                 newStreak = 1;
-             }
-
-             const updates = {};
-             updates[`users/${userId}/prayedDays/${dateKey}`] = true;
-             updates[`users/${userId}/totalRosaries`] = (window.userProfile.totalRosaries || 0) + 1;
-             updates[`users/${userId}/totalAves`] = (window.userProfile.totalAves || 0) + aves;
-             updates[`users/${userId}/totalPaters`] = (window.userProfile.totalPaters || 0) + paters;
-             updates[`users/${userId}/currentStreak`] = newStreak;
-             
-             if (newStreak > (window.userProfile.longestStreak || 0)) {
-                 updates[`users/${userId}/longestStreak`] = newStreak;
-             }
-             
-             // ATUALIZAR DESAFIO SE HOUVER
-             if (window.userProfile.active_challenge && window.userProfile.active_challenge.active) {
-                 const challenge = window.userProfile.active_challenge;
-                 // Incrementa meu progresso
-                 challenge.my_progress = (challenge.my_progress || 0) + 1;
-                 
-                 // Atualiza meu perfil
-                 updates[`users/${userId}/active_challenge/my_progress`] = challenge.my_progress;
-                 
-                 // Atualiza perfil do amigo (precisa inverter: meu progresso lá é 'friend_progress')
-                 updates[`users/${challenge.friend_uid}/active_challenge/friend_progress`] = challenge.my_progress;
-                 
-                 // Se completou 7 dias
-                 if (challenge.my_progress >= 7) {
-                     showCustomAlert('VITÓRIA! 🏆', 'Você completou o desafio de 7 dias!');
-                     // Lógica de finalizar desafio poderia vir aqui
-                 }
-             }
-             
-             await update(ref(database), updates);
-             
-             // Atualiza interface localmente
-             window.userProfile.prayedDays = prayedDays;
-             window.userProfile.totalRosaries = (window.userProfile.totalRosaries || 0) + 1;
-             window.userProfile.currentStreak = newStreak;
-             if (newStreak > (window.userProfile.longestStreak || 0)) {
-                 window.userProfile.longestStreak = newStreak;
-             }
-             
-             window.updateUserInterface();
-             
-        } catch(e) { console.error(e); }
-    }
-};
-    
-app.init();
-window.app = app;
-</script>
-<script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -3842,9 +3248,32 @@ function closeCustomAlert() {
     document.getElementById('custom-alert').classList.remove('active');
 }
 
+// NOVA FUNÇÃO: Confirm Modal (Substitui o window.confirm feio)
+window.confirmCallback = null;
+
+function showConfirm(title, message, callback) {
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-message').textContent = message;
+    document.getElementById('confirm-modal').classList.add('active');
+    window.confirmCallback = callback;
+}
+
+function resolveConfirm(result) {
+    document.getElementById('confirm-modal').classList.remove('active');
+    if (window.confirmCallback) {
+        window.confirmCallback(result);
+        window.confirmCallback = null;
+    }
+}
+
+// Global window exposure
+window.showConfirm = showConfirm;
+window.resolveConfirm = resolveConfirm;
+
+// Fechar ao clicar fora (cuidado para não fechar o confirm sem querer)
 document.addEventListener('click', (e) => {
-    const modal = document.getElementById('custom-alert');
-    if (e.target === modal) closeCustomAlert();
+    const alertModal = document.getElementById('custom-alert');
+    if (e.target === alertModal) closeCustomAlert();
 });
 
 window.showCustomAlert = showCustomAlert;
