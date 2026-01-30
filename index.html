@@ -3002,23 +3002,15 @@ window.closeInboxModal = function() {
 window.deleteMessage = async function(key) {
     showConfirm('Apagar', 'Apagar esta notificação?', async (confirmed) => {
         if (!confirmed) return;
+        const btn = event.target;
+        const card = btn.closest('.inbox-card');
+        card.style.opacity = '0';
+        setTimeout(() => card.remove(), 300);
 
-        const btn = event.target || document.activeElement; // Tenta pegar o elemento ativo
-        // Fallback se não conseguir pegar o elemento (raro, mas possível com modal customizado)
-        // Nesse caso, o usuário teria que reabrir o inbox, mas o deleteMessage é chamado ANTES do modal fechar
-        
-        // Simplesmente removemos visualmente se tivermos referência, senão a atualização da lista resolve
-        // Como o showConfirm é assíncrono visualmente, não podemos confiar no event.target original 100%
-        // Então vamos recarregar a lista após deletar
-        
         try {
             const { getDatabase, ref, remove } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
             const database = getDatabase();
             await remove(ref(database, `inbox/${window.currentUser.uid}/${key}`));
-            
-            // Recarrega a lista para atualizar a visualização
-            openInboxModal();
-            
         } catch(e) { console.error(e); }
     });
 };
@@ -3120,9 +3112,7 @@ window.acceptChallenge = async function(msgKey, fromUid, fromName) {
         
         closeInboxModal();
         showCustomAlert('Desafio Aceito!', 'A guerra começou! Reze todos os dias.');
-        
-        // Pequeno delay para garantir que o banco atualizou
-        setTimeout(() => window.location.reload(), 1500); 
+        window.location.reload(); // Recarrega para mostrar a barra
         
     } catch (e) {
         console.error(e);
