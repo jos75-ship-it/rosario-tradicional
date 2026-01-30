@@ -2996,28 +2996,63 @@ window.sendPrayerToFriend = async function() {
 };
 
 // 5. ENVIAR DESAFIO (Convite)
-window.sendChallengeToFriend = async function() {
-    if (!currentFriendUid || !window.currentUser) return;
+let pendingChallengeUid = null;
+let pendingChallengeName = null;
+
+window.sendChallengeToFriend = function() {
+    if (!window.currentFriendUid || !window.currentUser) return;
     
-    if(!confirm("Enviar desafio de 7 dias para este amigo?")) return;
+    pendingChallengeUid = window.currentFriendUid;
+    
+    const friendNameEl = document.getElementById('fp-name');
+    pendingChallengeName = friendNameEl ? friendNameEl.textContent : 'seu amigo';
+    
+    document.getElementById('challenge-friend-name').textContent = pendingChallengeName;
+    
+    document.getElementById('challenge-confirm-modal').classList.add('active');
+};
+
+window.closeChallengeConfirm = function() {
+    document.getElementById('challenge-confirm-modal').classList.remove('active');
+    pendingChallengeUid = null;
+    pendingChallengeName = null;
+};
+
+window.confirmSendChallenge = async function() {
+    if (!pendingChallengeUid || !window.currentUser) return;
+    
+    window.closeChallengeConfirm();
     
     try {
         const { getDatabase, ref, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
         const database = getDatabase();
         
-        await push(ref(database, `inbox/${currentFriendUid}`), {
+        await push(ref(database, `inbox/${pendingChallengeUid}`), {
             type: 'challenge',
             fromName: window.userProfile.displayName || window.userProfile.username,
             fromUid: window.currentUser.uid,
             timestamp: Date.now()
         });
 
-        showCustomAlert('Desafio Enviado!', 'Aguarde seu amigo aceitar.');
+        window.showCustomAlert('⚔️ Desafio Enviado!', `${pendingChallengeName} foi desafiado! Aguarde a aceitação.`);
         
     } catch (error) {
-        showCustomAlert('Erro', 'Não foi possível enviar o desafio.');
+        console.error(error);
+        window.showCustomAlert('Erro', 'Não foi possível enviar o desafio.');
     }
+    
+    pendingChallengeUid = null;
+    pendingChallengeName = null;
 };
+
+const challengeModal = document.getElementById('challenge-confirm-modal');
+if (challengeModal) {
+    challengeModal.addEventListener('click', (e) => {
+        if (e.target === challengeModal) {
+            window.closeChallengeConfirm();
+        }
+    });
+}
 
 // 6. ACEITAR DESAFIO
 window.acceptChallenge = async function(msgKey, fromUid, fromName) {
