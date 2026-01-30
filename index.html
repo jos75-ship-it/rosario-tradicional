@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Rosário">
+    
     <title>Santo Rosário · Método Montfort</title>
     
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -15,9 +20,6 @@
     <link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png">
     <link rel="apple-touch-icon" sizes="167x167" href="/icon-192.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Rosário">
     
     <meta name="description" content="Reze o Santo Rosário pelo Método de São Luís de Montfort. App completo com meditações, calendário e acompanhamento.">
     <meta name="theme-color" content="#080709">
@@ -61,9 +63,8 @@
             --rail-width: 110px;
         }
         *{ box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent;}
-        html, body{ height: 100%; overflow: hidden;}
+        html, body{ height: 100%; overflow: hidden; background: var(--bg-deep);}
         body{
-            background: var(--bg-deep);
             color: var(--text-primary);
             font-family: var(--font-body);
             font-size: 18px;
@@ -187,13 +188,13 @@
         
         /* LOGO DOURADA COM MOLDURA */
         .auth-logo { 
-            width: 80px; 
-            height: 80px; 
+            width: 90px; 
+            height: 90px; 
             margin: 0 auto 24px; 
             position: relative; 
-            border-radius: 16px; /* Quadrado arredondado */
+            border-radius: 18px;
             border: 2px solid var(--gold);
-            box-shadow: 0 0 25px rgba(212, 168, 85, 0.3), inset 0 0 15px rgba(212, 168, 85, 0.2);
+            box-shadow: 0 0 30px rgba(212, 168, 85, 0.4), inset 0 0 15px rgba(212, 168, 85, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -219,6 +220,18 @@
             border-radius: 8px; padding: 16px; margin-bottom: 24px;
             font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;
         }
+        /* AVISO DE SEGURANÇA (NOVO) */
+        .auth-warning {
+            color: #e07070;
+            font-size: 0.8rem;
+            margin-top: 12px;
+            font-style: italic;
+            border: 1px solid rgba(180, 60, 60, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            background: rgba(180, 60, 60, 0.1);
+        }
+
         .auth-tabs{ display: flex; margin-bottom: 28px; border-bottom: 1px solid var(--border-subtle);}
         .auth-tab{
             flex: 1; padding: 14px; background: none; border: none;
@@ -1259,6 +1272,25 @@
         .inbox-body {
             font-family: var(--font-body); font-size: 0.95rem; color: var(--text-primary); line-height: 1.5; font-style: italic;
         }
+        
+        .challenge-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-challenge-accept {
+            flex: 1;
+            padding: 8px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+            border: none;
+            border-radius: 6px;
+            color: var(--bg-deep);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
         .btn-delete-msg {
             background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px;
@@ -1267,6 +1299,64 @@
 
         .empty-inbox {
             text-align: center; padding: 40px 20px; color: var(--text-muted); font-style: italic; font-family: var(--font-body);
+        }
+        
+        /* BARRA DE PROGRESSO DO DESAFIO NO PERFIL */
+        .challenge-progress-container {
+            width: 100%;
+            max-width: 360px;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, rgba(212, 168, 85, 0.15) 0%, rgba(212, 168, 85, 0.05) 100%);
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .challenge-title {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .challenge-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .challenge-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .challenge-name {
+            font-size: 0.8rem;
+            width: 80px;
+            text-align: right;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .challenge-track {
+            flex: 1;
+            height: 8px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .challenge-fill {
+            height: 100%;
+            background: var(--gold);
+            width: 0%;
+            transition: width 0.5s ease-out;
         }
 
         /* Conteúdo principal */
@@ -1667,12 +1757,15 @@
 <div id="auth-screen">
     <div class="auth-container">
         <div class="auth-logo">
-            <img src="/favicon.ico" alt="Logo Rosário">
+            <img src="/icon-192.png" alt="Logo Rosário">
         </div>
         <h1 class="auth-title">Rosário</h1>
         <p class="auth-subtitle">Método de São Luís de Montfort</p>
         <div class="auth-info">
             ✨ <strong>Autenticação Segura:</strong> Seus dados são protegidos com Firebase!
+        </div>
+        <div class="auth-warning">
+            ⚠️ <strong>Atenção:</strong> Não há recuperação de senha. Anote seus dados em local seguro.
         </div>
         <div class="auth-tabs">
             <button class="auth-tab active" data-tab="login" type="button">Entrar</button>
@@ -1898,6 +1991,26 @@
                         <h2 id="fp-name" style="font-family: var(--font-display); font-size: 1.6rem; color: var(--text-primary); margin-bottom: 4px;"></h2>
                         <p id="fp-username" style="font-family: var(--font-body); font-size: 1rem; color: var(--gold); margin-bottom: 12px;"></p>
                         
+                        <div id="fp-challenge-progress" class="challenge-progress-container" style="display:none;">
+                            <div class="challenge-title">⚔️ Desafio 7 Dias</div>
+                            <div class="challenge-bars">
+                                <div class="challenge-row">
+                                    <div class="challenge-name" id="challenge-p1-name">Eu</div>
+                                    <div class="challenge-track">
+                                        <div class="challenge-fill" id="challenge-p1-fill" style="width: 0%"></div>
+                                    </div>
+                                    <div style="font-size:0.75rem; width:20px;" id="challenge-p1-count">0</div>
+                                </div>
+                                <div class="challenge-row">
+                                    <div class="challenge-name" id="challenge-p2-name">Amigo</div>
+                                    <div class="challenge-track">
+                                        <div class="challenge-fill" id="challenge-p2-fill" style="width: 0%; background: var(--burgundy-bright);"></div>
+                                    </div>
+                                    <div style="font-size:0.75rem; width:20px;" id="challenge-p2-count">0</div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="fp-bio-section" style="width: 100%; max-width: 340px; margin-bottom: 12px; display:none;">
                             <p id="fp-bio" style="font-family: var(--font-body); font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; font-style: italic;"></p>
                         </div>
@@ -1906,13 +2019,17 @@
                             <p id="fp-intention" style="font-family: var(--font-body); font-size: 0.95rem; color: var(--text-primary); font-style: italic;"></p>
                         </div>
 
-                        <button id="btn-pray-friend" onclick="sendPrayerToFriend()" style="width: 100%; max-width: 340px; padding: 16px; margin-bottom: 24px; background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-light) 100%); border: 1px solid var(--burgundy-bright); border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(107, 45, 61, 0.3);">
-                            <span style="font-size: 1.5rem;">🙏</span>
-                            <div style="text-align: left;">
-                                <div style="font-family: var(--font-display); font-size: 0.9rem; color: var(--cream); letter-spacing: 0.1em; text-transform: uppercase;">Rezar por esta intenção</div>
-                                <div style="font-family: var(--font-body); font-size: 0.75rem; color: rgba(255,255,255,0.7); font-style: italic;">Notificar este amigo</div>
-                            </div>
-                        </button>
+                        <div class="challenge-actions" style="width: 100%; max-width: 340px; margin-bottom: 24px;">
+                            <button id="btn-pray-friend" onclick="sendPrayerToFriend()" style="flex:1; padding: 12px; background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-light) 100%); border: 1px solid var(--burgundy-bright); border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.3s;">
+                                <span style="font-size: 1.2rem;">🙏</span>
+                                <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--cream); letter-spacing: 0.05em; text-transform: uppercase;">Rezar</span>
+                            </button>
+                            
+                            <button id="btn-challenge-friend" onclick="sendChallengeToFriend()" style="flex:1; padding: 12px; background: linear-gradient(135deg, #2a252e 0%, #1a171c 100%); border: 1px solid var(--gold-dim); border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.3s;">
+                                <span style="font-size: 1.2rem;">⚔️</span>
+                                <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.05em; text-transform: uppercase;">Desafiar</span>
+                            </button>
+                        </div>
                         
                         <div style="width: 100%; max-width: 360px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             <div style="background: rgba(212, 168, 85, 0.05); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 20px 16px; text-align: center;">
@@ -1935,9 +2052,11 @@
                     <div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 2rem; color: var(--bg-deep); cursor: pointer; transition: all 0.3s;" id="profile-avatar" onclick="openAvatarModal()" onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='0 8px 25px rgba(212, 168, 85, 0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
                         👤
                     </div>
-                    <h2 style="font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.1em; color: var(--text-primary); margin-bottom: 8px;" id="profile-name">
+                    <h2 style="font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.1em; color: var(--text-primary); margin-bottom: 4px;" id="profile-name">
                         Usuário
                     </h2>
+                    <p id="profile-handle" style="font-family: var(--font-body); font-size: 0.9rem; color: var(--gold); margin-bottom: 8px;">@usuario</p>
+                    
                     <p style="font-family: var(--font-body); font-size: 0.75rem; color: var(--text-dim); font-style: italic; cursor: pointer;" onclick="openAvatarModal()">
                         Clique no avatar para alterar
                     </p>
@@ -1953,6 +2072,26 @@
                     <button type="button" onclick="saveProfileData()" style="width: 100%; margin-top: 16px; padding: 12px; background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold) 100%); border: none; border-radius: 8px; font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bg-deep); cursor: pointer; font-weight: 600;">
                         Atualizar Perfil
                     </button>
+                </div>
+                
+                <div id="my-challenge-progress" class="challenge-progress-container" style="display:none;">
+                    <div class="challenge-title">⚔️ Desafio Ativo</div>
+                    <div class="challenge-bars">
+                        <div class="challenge-row">
+                            <div class="challenge-name" id="my-challenge-p1">Eu</div>
+                            <div class="challenge-track">
+                                <div class="challenge-fill" id="my-challenge-p1-fill" style="width: 0%"></div>
+                            </div>
+                            <div style="font-size:0.75rem; width:20px;" id="my-challenge-p1-count">0</div>
+                        </div>
+                        <div class="challenge-row">
+                            <div class="challenge-name" id="my-challenge-p2">Amigo</div>
+                            <div class="challenge-track">
+                                <div class="challenge-fill" id="my-challenge-p2-fill" style="width: 0%; background: var(--burgundy-bright);"></div>
+                            </div>
+                            <div style="font-size:0.75rem; width:20px;" id="my-challenge-p2-count">0</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div style="width: 100%; max-width: 360px; margin-bottom: 24px; background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 32px 24px; text-align: center; position: relative; overflow: visible; min-height: 200px;">
@@ -1993,7 +2132,7 @@
                 </button>
 
                 <div class="small-btn-row">
-                    <a href="/FAQ" class="small-btn">Dúvidas Frequentes</a>
+                    <a href="/faq" class="small-btn">Dúvidas Frequentes</a>
                     <a href="/privacidade" class="small-btn">Privacidade</a>
                 </div>
             </div>
@@ -2285,6 +2424,7 @@ function updateUserInterface(){
     
     document.getElementById('home-user-name').textContent = displayName;
     document.getElementById('profile-name').textContent = displayName;
+    document.getElementById('profile-handle').textContent = '@' + profile.username; // MOSTRA HANDLE
     document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(avatar);
     
     // NOVOS CAMPOS: Preencher Bio e Intenção se existirem
@@ -2306,6 +2446,21 @@ function updateUserInterface(){
     document.getElementById('profile-longest-streak').textContent = profile.longestStreak || 0;
     document.getElementById('profile-total-aves').textContent = profile.totalAves || 0;
     document.getElementById('profile-total-paters').textContent = profile.totalPaters || 0;
+    
+    // ATUALIZAR BARRA DE DESAFIO NO MEU PERFIL (Se existir)
+    if (profile.active_challenge) {
+        document.getElementById('my-challenge-progress').style.display = 'block';
+        const c = profile.active_challenge;
+        document.getElementById('my-challenge-p1').textContent = "Eu";
+        document.getElementById('my-challenge-p1-count').textContent = c.my_progress + "/7";
+        document.getElementById('my-challenge-p1-fill').style.width = (c.my_progress / 7 * 100) + "%";
+        
+        document.getElementById('my-challenge-p2').textContent = c.friend_name;
+        document.getElementById('my-challenge-p2-count').textContent = c.friend_progress + "/7";
+        document.getElementById('my-challenge-p2-fill').style.width = (c.friend_progress / 7 * 100) + "%";
+    } else {
+        document.getElementById('my-challenge-progress').style.display = 'none';
+    }
 
     const intentions = [
         "Pelos que sofrem perseguição por causa da fé.",
@@ -2356,6 +2511,7 @@ function renderCalendar(){
                            currentCalendarYear === today.getFullYear();
     const prayedDays = window.userProfile?.prayedDays ||{};
     for (let day = 1; day <= daysInMonth; day++){
+        // CORREÇÃO DATA: Força 2 dígitos
         const dateKey = `${currentCalendarYear}-${String(currentCalendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const hasPrayed = prayedDays[dateKey] === true;
         const isToday = isCurrentMonth && day === today.getDate();
@@ -2412,11 +2568,11 @@ function renderCalendar(){
 async function searchFriend() {
     const input = document.getElementById('friend-search-input');
     const resultDiv = document.getElementById('search-result');
-    let username = input.value.trim();
+    let searchTerm = input.value.trim().toLowerCase();
     
-    username = username.replace(/^@/, '');
+    searchTerm = searchTerm.replace(/^@/, '');
     
-    if (!username || username.length < 2) {
+    if (!searchTerm || searchTerm.length < 2) {
         resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Digite pelo menos 2 caracteres</p>';
         return;
     }
@@ -2433,25 +2589,27 @@ async function searchFriend() {
         }
         
         const users = snapshot.val();
-        let found = null;
-        let foundUid = null;
+        let results = [];
         
+        // CORREÇÃO: BUSCA INTELIGENTE (INCLUDES)
         for (const uid in users) {
-            if (users[uid].username && users[uid].username.toLowerCase() === username.toLowerCase()) {
-                if (uid === window.currentUser.uid) {
-                    resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Você não pode adicionar a si mesmo!</p>';
-                    return;
-                }
-                found = users[uid];
-                foundUid = uid;
-                break;
+            const u = users[uid];
+            if (uid === window.currentUser.uid) continue; // Pula eu mesmo
+
+            if (u.username.toLowerCase().includes(searchTerm) || 
+                (u.displayName && u.displayName.toLowerCase().includes(searchTerm))) {
+                results.push({uid, ...u});
             }
         }
         
-        if (!found) {
-            resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Usuário não encontrado</p>';
+        if (results.length === 0) {
+            resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Nenhum usuário encontrado</p>';
             return;
         }
+
+        // Mostra o primeiro resultado (ou lista, mas vamos focar no primeiro para simplificar layout mobile)
+        const found = results[0]; 
+        const foundUid = found.uid;
         
         const myFriendsRef = ref(database, `users/${window.currentUser.uid}/friends/${foundUid}`);
         const friendCheck = await get(myFriendsRef);
@@ -2470,7 +2628,7 @@ async function searchFriend() {
             return;
         }
         
-        const sentRef = ref(database, `users/${window.currentUser.uid}/friendRequests/sent/${foundUid}`);
+        const sentRef = ref(database, `friend_requests/${window.currentUser.uid}/sent/${foundUid}`);
         const sentCheck = await get(sentRef);
         
         if (sentCheck.exists()) {
@@ -2508,8 +2666,8 @@ async function searchFriend() {
 async function sendFriendRequest(targetUid) {
     try {
         const updates = {};
-        updates[`users/${window.currentUser.uid}/friendRequests/sent/${targetUid}`] = Date.now();
-        updates[`users/${targetUid}/friendRequests/received/${window.currentUser.uid}`] = Date.now();
+        updates[`friend_requests/${targetUid}/received/${window.currentUser.uid}`] = Date.now();
+        updates[`friend_requests/${window.currentUser.uid}/sent/${targetUid}`] = Date.now();
         await update(ref(database), updates);
         showCustomAlert('Pedido Enviado! ✨', 'Aguarde a confirmação do seu amigo.');
         document.getElementById('friend-search-input').value = '';
@@ -2522,7 +2680,7 @@ async function sendFriendRequest(targetUid) {
 
 async function loadFriendRequests() {
     try {
-        const requestsRef = ref(database, `users/${window.currentUser.uid}/friendRequests/received`);
+        const requestsRef = ref(database, `friend_requests/${window.currentUser.uid}/received`);
         const snapshot = await get(requestsRef);
         const section = document.getElementById('friend-requests-section');
         const list = document.getElementById('friend-requests-list');
@@ -2566,8 +2724,8 @@ async function acceptFriendRequest(friendUid) {
         updates[`users/${window.currentUser.uid}/friends/${friendUid}`] = Date.now();
         updates[`users/${friendUid}/friends/${window.currentUser.uid}`] = Date.now();
         await update(ref(database), updates);
-        await remove(ref(database, `users/${window.currentUser.uid}/friendRequests/received/${friendUid}`));
-        await remove(ref(database, `users/${friendUid}/friendRequests/sent/${window.currentUser.uid}`));
+        await remove(ref(database, `friend_requests/${window.currentUser.uid}/received/${friendUid}`));
+        await remove(ref(database, `friend_requests/${friendUid}/sent/${window.currentUser.uid}`));
         showCustomAlert('Amizade Confirmada! 🎉', 'Agora vocês são amigos no Rosário.');
         loadFriendRequests();
         loadFriends();
@@ -2578,8 +2736,8 @@ async function acceptFriendRequest(friendUid) {
 }
 async function rejectFriendRequest(friendUid) {
     try {
-        await remove(ref(database, `users/${window.currentUser.uid}/friendRequests/received/${friendUid}`));
-        await remove(ref(database, `users/${friendUid}/friendRequests/sent/${window.currentUser.uid}`));
+        await remove(ref(database, `friend_requests/${window.currentUser.uid}/received/${friendUid}`));
+        await remove(ref(database, `friend_requests/${friendUid}/sent/${window.currentUser.uid}`));
         loadFriendRequests();
     } catch (error) {
         console.error('Erro:', error);
@@ -2660,6 +2818,27 @@ function viewFriendProfile(uid, user) {
     } else {
         intentionSection.style.display = 'none';
     }
+    
+    // MOSTRAR BARRA DE DESAFIO NO PERFIL DO AMIGO (SE HOUVER)
+    if (user.active_challenge && user.active_challenge.friend_uid === window.currentUser.uid) {
+         document.getElementById('fp-challenge-progress').style.display = 'block';
+         const c = user.active_challenge;
+         
+         // Inverte as barras pq aqui estamos vendo do ponto de vista do amigo
+         document.getElementById('challenge-p1-name').textContent = "Ele";
+         document.getElementById('challenge-p1-count').textContent = c.my_progress + "/7";
+         document.getElementById('challenge-p1-fill').style.width = (c.my_progress / 7 * 100) + "%";
+
+         document.getElementById('challenge-p2-name').textContent = "Você";
+         document.getElementById('challenge-p2-count').textContent = c.friend_progress + "/7";
+         document.getElementById('challenge-p2-fill').style.width = (c.friend_progress / 7 * 100) + "%";
+         
+         // Esconde botão de desafiar se já tem desafio
+         document.getElementById('btn-challenge-friend').style.display = 'none';
+    } else {
+         document.getElementById('fp-challenge-progress').style.display = 'none';
+         document.getElementById('btn-challenge-friend').style.display = 'flex';
+    }
 }
 
 window.backToFriendsList = function() {
@@ -2667,7 +2846,7 @@ window.backToFriendsList = function() {
     document.getElementById('friends-main-view').style.display = 'block';
 }
 
-// ===== SISTEMA DE INBOX =====
+// ===== SISTEMA DE INBOX E DESAFIOS =====
 
 // 1. Checar se tem mensagens (Apenas para atualizar o ícone/badge)
 window.checkInbox = async function() {
@@ -2675,13 +2854,12 @@ window.checkInbox = async function() {
     try {
         const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
         const database = getDatabase();
-        const inboxRef = ref(database, `users/${window.currentUser.uid}/inbox`);
+        const inboxRef = ref(database, `inbox/${window.currentUser.uid}`);
         const snapshot = await get(inboxRef);
 
         const badge = document.getElementById('inbox-badge');
         
         if (snapshot.exists()) {
-            const count = Object.keys(snapshot.val()).length;
             badge.style.display = 'block'; // Mostra a bolinha vermelha
         } else {
             badge.style.display = 'none';
@@ -2703,7 +2881,7 @@ window.openInboxModal = async function() {
     try {
         const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
         const database = getDatabase();
-        const inboxRef = ref(database, `users/${window.currentUser.uid}/inbox`);
+        const inboxRef = ref(database, `inbox/${window.currentUser.uid}`);
         const snapshot = await get(inboxRef);
 
         list.innerHTML = ''; // Limpa loading
@@ -2723,22 +2901,39 @@ window.openInboxModal = async function() {
 
         msgArray.forEach(([key, data]) => {
             const date = new Date(data.timestamp);
-            const dateStr = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' às ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            const dateStr = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
             
             const div = document.createElement('div');
             div.className = 'inbox-card';
-            div.innerHTML = `
-                <div class="inbox-header">
-                    <strong style="color: var(--gold); font-family: var(--font-display); font-size: 0.8rem;">${data.fromName}</strong>
-                    <span class="inbox-time">${dateStr}</span>
-                </div>
-                <div class="inbox-body">
-                    🙏 Rezou pela sua intenção!
-                </div>
-                <div style="text-align: right; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
-                    <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Apagar</button>
-                </div>
-            `;
+            
+            if (data.type === 'prayer') {
+                div.innerHTML = `
+                    <div class="inbox-header">
+                        <strong style="color: var(--gold); font-family: var(--font-display); font-size: 0.8rem;">${data.fromName}</strong>
+                        <span class="inbox-time">${dateStr}</span>
+                    </div>
+                    <div class="inbox-body">
+                        🙏 Rezou pela sua intenção!
+                    </div>
+                    <div style="text-align: right; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+                        <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Apagar</button>
+                    </div>
+                `;
+            } else if (data.type === 'challenge') {
+                div.innerHTML = `
+                    <div class="inbox-header">
+                        <strong style="color: var(--gold); font-family: var(--font-display); font-size: 0.8rem;">${data.fromName}</strong>
+                        <span class="inbox-time">${dateStr}</span>
+                    </div>
+                    <div class="inbox-body" style="margin-bottom: 12px;">
+                        ⚔️ Desafiou você para 7 dias de oração!
+                    </div>
+                    <div class="challenge-actions">
+                        <button class="btn-challenge-accept" onclick="acceptChallenge('${key}', '${data.fromUid}', '${data.fromName}')">Aceitar Desafio</button>
+                        <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Recusar</button>
+                    </div>
+                `;
+            }
             list.appendChild(div);
         });
 
@@ -2757,8 +2952,6 @@ window.closeInboxModal = function() {
 // 3. Apagar Mensagem Individual
 window.deleteMessage = async function(key) {
     if(!confirm("Apagar esta notificação?")) return;
-    
-    // Remove visualmente na hora para parecer rápido
     const btn = event.target;
     const card = btn.closest('.inbox-card');
     card.style.opacity = '0';
@@ -2767,48 +2960,31 @@ window.deleteMessage = async function(key) {
     try {
         const { getDatabase, ref, remove } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
         const database = getDatabase();
-        await remove(ref(database, `users/${window.currentUser.uid}/inbox/${key}`));
-        
-        // Se ficou vazio, mostra msg de vazio
-        const list = document.getElementById('inbox-list');
-        if (list.children.length <= 1) { // 1 porque acabamos de remover um mas o DOM ainda pode ter lixo
-             // Pequeno delay para verificar se esvaziou mesmo
-             setTimeout(() => {
-                 if (list.children.length === 0) {
-                     list.innerHTML = '<div class="empty-inbox">Sua caixa de entrada está vazia.</div>';
-                 }
-             }, 350);
-        }
+        await remove(ref(database, `inbox/${window.currentUser.uid}/${key}`));
     } catch(e) { console.error(e); }
 };
 
-// 4. ENVIAR ORAÇÃO (Quem clica no botão)
+// 4. ENVIAR ORAÇÃO
 window.sendPrayerToFriend = async function() {
     if (!currentFriendUid || !window.currentUser) return;
     
     const btn = document.getElementById('btn-pray-friend');
     const originalContent = btn.innerHTML;
     
-    // Feedback visual imediato
     btn.innerHTML = '<span style="color:white;">Enviando...</span>';
     btn.disabled = true;
 
     try {
-        // Importação dinâmica do Firebase
         const { getDatabase, ref, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
         const database = getDatabase();
         
-        // Grava na caixa de entrada de orações do amigo
-        // Caminho: users/ID_AMIGO/inbox/
-        await push(ref(database, `users/${currentFriendUid}/inbox`), {
+        await push(ref(database, `inbox/${currentFriendUid}`), {
             type: 'prayer',
             fromName: window.userProfile.displayName || window.userProfile.username,
             timestamp: Date.now()
         });
 
-        showCustomAlert('Oração Enviada', 'Seu amigo será notificado quando abrir o app.');
-        
-        // Desabilita o botão temporariamente
+        showCustomAlert('Oração Enviada', 'Seu amigo será notificado.');
         btn.innerHTML = '<span>✨ Enviado!</span>';
         
     } catch (error) {
@@ -2816,6 +2992,77 @@ window.sendPrayerToFriend = async function() {
         showCustomAlert('Erro', 'Não foi possível enviar.');
         btn.innerHTML = originalContent;
         btn.disabled = false;
+    }
+};
+
+// 5. ENVIAR DESAFIO (Convite)
+window.sendChallengeToFriend = async function() {
+    if (!currentFriendUid || !window.currentUser) return;
+    
+    if(!confirm("Enviar desafio de 7 dias para este amigo?")) return;
+    
+    try {
+        const { getDatabase, ref, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        
+        await push(ref(database, `inbox/${currentFriendUid}`), {
+            type: 'challenge',
+            fromName: window.userProfile.displayName || window.userProfile.username,
+            fromUid: window.currentUser.uid,
+            timestamp: Date.now()
+        });
+
+        showCustomAlert('Desafio Enviado!', 'Aguarde seu amigo aceitar.');
+        
+    } catch (error) {
+        showCustomAlert('Erro', 'Não foi possível enviar o desafio.');
+    }
+};
+
+// 6. ACEITAR DESAFIO
+window.acceptChallenge = async function(msgKey, fromUid, fromName) {
+    try {
+        const { getDatabase, ref, update, remove } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const database = getDatabase();
+        const myUid = window.currentUser.uid;
+        const myName = window.userProfile.displayName || window.userProfile.username;
+
+        // Cria o objeto do desafio (igual para os dois)
+        const challengeData = {
+            active: true,
+            start_date: Date.now(),
+            my_progress: 0,
+            friend_progress: 0,
+            friend_uid: fromUid,
+            friend_name: fromName
+        };
+        
+        const reverseChallengeData = {
+            active: true,
+            start_date: Date.now(),
+            my_progress: 0,
+            friend_progress: 0,
+            friend_uid: myUid,
+            friend_name: myName
+        };
+
+        const updates = {};
+        // Grava no meu perfil
+        updates[`users/${myUid}/active_challenge`] = challengeData;
+        // Grava no perfil do amigo
+        updates[`users/${fromUid}/active_challenge`] = reverseChallengeData;
+        // Remove o convite da inbox
+        updates[`inbox/${myUid}/${msgKey}`] = null;
+
+        await update(ref(database), updates);
+        
+        closeInboxModal();
+        showCustomAlert('Desafio Aceito!', 'A guerra começou! Reze todos os dias.');
+        window.location.reload(); // Recarrega para mostrar a barra
+        
+    } catch (e) {
+        console.error(e);
+        showCustomAlert('Erro', 'Falha ao aceitar desafio.');
     }
 };
 
@@ -3455,30 +3702,61 @@ const app = {
         this.els.prayer.classList.remove('active');
         this.els.completion.classList.add('active');
     },
+    // CORREÇÃO: Lógica de Streak Robusta (Fuso Horário)
     async saveCompletion(aves, paters) {
         try {
              const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
              const database = getDatabase();
              const userId = window.currentUser.uid;
              
-             const today = new Date();
-             const dateKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+             // Usa a data atual, mas normaliza para MEIO-DIA para evitar problemas de fuso
+             const now = new Date();
+             const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
              
              const prayedDays = window.userProfile.prayedDays || {};
-             const allDates = Object.keys(prayedDays).filter(k => prayedDays[k]);
-             if (!allDates.includes(dateKey)) allDates.push(dateKey);
              
-             allDates.sort((a, b) => new Date(b) - new Date(a));
+             // Atualiza a lista local de dias rezados
+             prayedDays[dateKey] = true;
+             
+             // Recalcula o streak
+             // 1. Cria array de datas únicas
+             const allDates = Object.keys(prayedDays).filter(k => prayedDays[k]).sort().reverse();
              
              let newStreak = 0;
-             let checkDate = new Date(dateKey + 'T12:00:00'); 
-             
-             for (const dateStr of allDates) {
-                 const currentDataDate = new Date(dateStr + 'T12:00:00');
-                 if (currentDataDate.getTime() === checkDate.getTime()) {
-                     newStreak++;
-                     checkDate.setDate(checkDate.getDate() - 1);
+             if (allDates.length > 0) {
+                 // Começa checando a partir de hoje (ou da data mais recente rezada)
+                 let checkDate = new Date(allDates[0] + 'T12:00:00');
+                 // Data atual (meio-dia)
+                 const todayNoon = new Date(dateKey + 'T12:00:00');
+                 
+                 // Se a última oração não foi hoje nem ontem, o streak quebrou e começa em 1
+                 const diffTime = Math.abs(todayNoon - checkDate);
+                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                 
+                 if (diffDays > 1) {
+                     newStreak = 1; // Recomeça
+                 } else {
+                     // Lógica de contagem
+                     newStreak = 0;
+                     let currentCheck = new Date(dateKey + 'T12:00:00'); // Começa de hoje
+                     
+                     // Percorre para trás
+                     for (let i = 0; i < allDates.length; i++) {
+                         const dString = allDates[i];
+                         const dDate = new Date(dString + 'T12:00:00');
+                         
+                         if (dDate.getTime() === currentCheck.getTime()) {
+                             newStreak++;
+                             // Recua um dia
+                             currentCheck.setDate(currentCheck.getDate() - 1);
+                         } else {
+                             // Buraco na sequência
+                             break;
+                         }
+                     }
                  }
+             } else {
+                 newStreak = 1;
              }
 
              const updates = {};
@@ -3492,10 +3770,29 @@ const app = {
                  updates[`users/${userId}/longestStreak`] = newStreak;
              }
              
+             // ATUALIZAR DESAFIO SE HOUVER
+             if (window.userProfile.active_challenge && window.userProfile.active_challenge.active) {
+                 const challenge = window.userProfile.active_challenge;
+                 // Incrementa meu progresso
+                 challenge.my_progress = (challenge.my_progress || 0) + 1;
+                 
+                 // Atualiza meu perfil
+                 updates[`users/${userId}/active_challenge/my_progress`] = challenge.my_progress;
+                 
+                 // Atualiza perfil do amigo (precisa inverter: meu progresso lá é 'friend_progress')
+                 updates[`users/${challenge.friend_uid}/active_challenge/friend_progress`] = challenge.my_progress;
+                 
+                 // Se completou 7 dias
+                 if (challenge.my_progress >= 7) {
+                     showCustomAlert('VITÓRIA! 🏆', 'Você completou o desafio de 7 dias!');
+                     // Lógica de finalizar desafio poderia vir aqui
+                 }
+             }
+             
              await update(ref(database), updates);
              
-             window.userProfile.prayedDays = window.userProfile.prayedDays || {};
-             window.userProfile.prayedDays[dateKey] = true;
+             // Atualiza interface localmente
+             window.userProfile.prayedDays = prayedDays;
              window.userProfile.totalRosaries = (window.userProfile.totalRosaries || 0) + 1;
              window.userProfile.currentStreak = newStreak;
              if (newStreak > (window.userProfile.longestStreak || 0)) {
