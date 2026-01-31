@@ -1098,7 +1098,7 @@ async function loadFriends() {
 }
 
 function viewFriendProfile(uid, user) {
-    currentFriendUid = uid; // GUARDA O ID DO AMIGO PARA REZAR
+    window.currentFriendUid = uid; // <--- ADICIONE "window." AQUI
     document.getElementById('friends-main-view').style.display = 'none';
     const profileView = document.getElementById('friend-profile-view');
     profileView.style.display = 'block';
