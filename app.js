@@ -821,20 +821,26 @@ window.saveAvatar = async function() {
     }
 };
 
-// Fechar modal ao clicar fora
+// Fechar modal de avatar ao clicar fora
 document.addEventListener('click', (e) => {
     const modal = document.getElementById('avatar-modal');
-    if (e.target === modal) {
-        closeAvatarModal();
+    // Verifica se o modal existe antes de checar o alvo
+    if (modal && e.target === modal) {
+        if (typeof window.closeAvatarModal === 'function') {
+            window.closeAvatarModal();
+        }
     }
-}); // Aqui fechamos o event listener corretamente
+}); 
+// ▲ O ERRO ESTAVA AQUI: Faltava fechar este bloco antes de criar a função abaixo
 
-// Função para o botão Desafiar Amigos
-function desafiarAmigos() {
+// Função GLOBAL para o botão Desafiar Amigos
+window.desafiarAmigos = function() {
     const text = "Aceita o desafio? Vamos rezar o Santo Rosário tradicional juntos! Acesse aqui:";
-    const url = "https://rosariotradicionalmontfort.online"; // Usei sua URL oficial
+    // Garante que usa a URL correta, mesmo se estiver em subpáginas
+    const url = "https://rosariotradicionalmontfort.online"; 
 
     if (navigator.share) {
+        // Tenta usar o compartilhamento nativo do celular (Android/iOS)
         navigator.share({
             title: 'Rosário Tradicional',
             text: text,
@@ -843,8 +849,8 @@ function desafiarAmigos() {
         .then(() => console.log('Compartilhado com sucesso'))
         .catch((error) => console.log('Erro ao compartilhar', error));
     } else {
-        // Caso o navegador não suporte o compartilhamento nativo (ex: desktop)
+        // Fallback para WhatsApp caso esteja no computador
         const shareText = encodeURIComponent(text + " " + url);
         window.open(`https://wa.me/?text=${shareText}`, '_blank');
     }
-}
+};
