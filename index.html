@@ -169,6 +169,129 @@
             pointer-events: none;
             z-index: 0;
         }
+    /* ===== MODAL DE CONFIRMAÇÃO DE DESAFIO ===== */
+.challenge-confirm-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 450;
+    padding: 24px;
+}
+
+.challenge-confirm-modal.active {
+    display: flex;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.challenge-confirm-content {
+    background: linear-gradient(135deg, rgba(107, 45, 61, 0.15) 0%, rgba(8, 7, 9, 0.95) 100%);
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 36px 28px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 50px rgba(212, 168, 85, 0.3);
+    animation: slideUpBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+@keyframes slideUpBounce {
+    from { transform: translateY(50px) scale(0.9); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.challenge-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: swordPulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(212, 168, 85, 0.6));
+}
+
+@keyframes swordPulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(5deg); }
+}
+
+.challenge-confirm-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+    margin-bottom: 16px;
+    text-shadow: 0 0 15px rgba(212, 168, 85, 0.5);
+}
+
+.challenge-confirm-message {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.challenge-friend-name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--gold);
+    background: rgba(212, 168, 85, 0.1);
+    border: 1px solid var(--gold-dim);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 20px 0;
+    letter-spacing: 0.1em;
+    box-shadow: inset 0 0 20px rgba(212, 168, 85, 0.15);
+}
+
+.challenge-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.challenge-btn {
+    flex: 1;
+    padding: 16px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.challenge-btn-cancel {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+}
+
+.challenge-btn-cancel:hover {
+    border-color: var(--gold-dim);
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.challenge-btn-confirm {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+    color: var(--bg-deep);
+    box-shadow: 0 4px 15px rgba(212, 168, 85, 0.4);
+}
+
+.challenge-btn-confirm:hover {
+    background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(212, 168, 85, 0.6);
+}
         /* ===== TELA DE AUTENTICAÇÃO ===== */
         #auth-screen{
             position: fixed; inset: 0;
@@ -1740,6 +1863,29 @@
             .prayer-name{ font-size: 1.5rem; margin-bottom: 5px;}
             .meditation-box{ padding: 14px 16px; margin-bottom: 14px;}
         }
+
+<!-- Modal de Confirmação de Desafio -->
+<div id="challenge-confirm-modal" class="challenge-confirm-modal">
+    <div class="challenge-confirm-content">
+        <div class="challenge-icon">⚔️</div>
+        <h3 class="challenge-confirm-title">Desafiar Amigo</h3>
+        <p class="challenge-confirm-message">
+            Você está prestes a desafiar seu amigo para uma jornada espiritual de 7 dias consecutivos de oração do Rosário.
+        </p>
+        <div class="challenge-friend-name" id="challenge-friend-name">Nome do Amigo</div>
+        <p class="challenge-confirm-message" style="font-size: 0.95rem; margin-bottom: 0;">
+            Que esta batalha espiritual fortaleça a ambos na fé! 🙏
+        </p>
+        <div class="challenge-buttons">
+            <button type="button" class="challenge-btn challenge-btn-cancel" onclick="closeChallengeConfirm()">
+                Cancelar
+            </button>
+            <button type="button" class="challenge-btn challenge-btn-confirm" onclick="confirmSendChallenge()">
+                Enviar Desafio
+            </button>
+        </div>
+    </div>
+</div>
     </style>
 </head>
 <div id="custom-alert" class="custom-alert">
