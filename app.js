@@ -827,4 +827,24 @@ document.addEventListener('click', (e) => {
     if (e.target === modal) {
         closeAvatarModal();
     }
-});
+}); // Aqui fechamos o event listener corretamente
+
+// Função para o botão Desafiar Amigos
+function desafiarAmigos() {
+    const text = "Aceita o desafio? Vamos rezar o Santo Rosário tradicional juntos! Acesse aqui:";
+    const url = "https://rosariotradicionalmontfort.online"; // Usei sua URL oficial
+
+    if (navigator.share) {
+        navigator.share({
+            title: 'Rosário Tradicional',
+            text: text,
+            url: url,
+        })
+        .then(() => console.log('Compartilhado com sucesso'))
+        .catch((error) => console.log('Erro ao compartilhar', error));
+    } else {
+        // Caso o navegador não suporte o compartilhamento nativo (ex: desktop)
+        const shareText = encodeURIComponent(text + " " + url);
+        window.open(`https://wa.me/?text=${shareText}`, '_blank');
+    }
+}
