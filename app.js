@@ -830,8 +830,7 @@ document.addEventListener('click', (e) => {
             window.closeAvatarModal();
         }
     }
-}); 
-// ▲ O ERRO ESTAVA AQUI: Faltava fechar este bloco antes de criar a função abaixo
+});
 
 // Função GLOBAL para o botão Desafiar Amigos
 window.desafiarAmigos = function() {
@@ -854,3 +853,4 @@ window.desafiarAmigos = function() {
         window.open(`https://wa.me/?text=${shareText}`, '_blank');
     }
 };
+// FIM DO ARQUIVO
