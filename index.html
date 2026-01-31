@@ -1098,7 +1098,9 @@ async function loadFriends() {
 }
 
 function viewFriendProfile(uid, user) {
-    window.currentFriendUid = uid; // <--- ADICIONE "window." AQUI
+    currentFriendUid = uid; 
+    window.currentFriendUid = uid; // FIX 1: Torna o ID global para o botão Desafiar
+    
     document.getElementById('friends-main-view').style.display = 'none';
     const profileView = document.getElementById('friend-profile-view');
     profileView.style.display = 'block';
@@ -1213,6 +1215,10 @@ window.openInboxModal = async function() {
             const date = new Date(data.timestamp);
             const dateStr = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
             
+            // FIX 3: Sanitizar nome para não quebrar o HTML com aspas simples
+            const safeName = (data.fromName || 'Alguém').replace(/'/g, ""); 
+            const safeUid = data.fromUid || '';
+
             const div = document.createElement('div');
             div.className = 'inbox-card';
             
@@ -1239,7 +1245,7 @@ window.openInboxModal = async function() {
                         ⚔️ Desafiou você para 7 dias de oração!
                     </div>
                     <div class="challenge-actions">
-                        <button class="btn-challenge-accept" onclick="acceptChallenge('${key}', '${data.fromUid}', '${data.fromName}')">Aceitar Desafio</button>
+                        <button class="btn-challenge-accept" onclick="acceptChallenge('${key}', '${safeUid}', '${safeName}')">Aceitar Desafio</button>
                         <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Recusar</button>
                     </div>
                 `;
@@ -1329,30 +1335,34 @@ window.closeChallengeConfirm = function() {
 };
 
 window.confirmSendChallenge = async function() {
+    // Verificações iniciais
     if (!pendingChallengeUid || !window.currentUser) return;
     
+    // FIX 2: SALVAMOS OS DADOS EM VARIÁVEIS LOCAIS *ANTES* DE FECHAR O MODAL
+    const targetUid = pendingChallengeUid;
+    const targetName = pendingChallengeName || 'Seu amigo'; 
+
+    // Agora fechamos o modal (que limpa as variáveis globais, mas já salvamos o que precisava)
     window.closeChallengeConfirm();
     
     try {
         const { getDatabase, ref, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
         const database = getDatabase();
         
-        await push(ref(database, `inbox/${pendingChallengeUid}`), {
+        await push(ref(database, `inbox/${targetUid}`), {
             type: 'challenge',
             fromName: window.userProfile.displayName || window.userProfile.username,
             fromUid: window.currentUser.uid,
             timestamp: Date.now()
         });
 
-        window.showCustomAlert('⚔️ Desafio Enviado!', `${pendingChallengeName} foi desafiado! Aguarde a aceitação.`);
+        // Usamos a variável local 'targetName' que guardamos no passo 1
+        window.showCustomAlert('⚔️ Desafio Enviado!', `${targetName} foi desafiado! Aguarde a aceitação.`);
         
     } catch (error) {
         console.error(error);
         window.showCustomAlert('Erro', 'Não foi possível enviar o desafio.');
     }
-    
-    pendingChallengeUid = null;
-    pendingChallengeName = null;
 };
 
 const challengeModal = document.getElementById('challenge-confirm-modal');
@@ -1366,13 +1376,18 @@ if (challengeModal) {
 
 // 6. ACEITAR DESAFIO
 window.acceptChallenge = async function(msgKey, fromUid, fromName) {
+    // FIX 4: Verificação de segurança
+    if(!fromUid || fromUid === 'undefined' || !window.currentUser) {
+        showCustomAlert('Erro', 'Dados do desafio inválidos.');
+        return;
+    }
+
     try {
-        const { getDatabase, ref, update, remove } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
         const database = getDatabase();
         const myUid = window.currentUser.uid;
         const myName = window.userProfile.displayName || window.userProfile.username;
 
-        // Cria o objeto do desafio (igual para os dois)
         const challengeData = {
             active: true,
             start_date: Date.now(),
@@ -1392,22 +1407,25 @@ window.acceptChallenge = async function(msgKey, fromUid, fromName) {
         };
 
         const updates = {};
-        // Grava no meu perfil
         updates[`users/${myUid}/active_challenge`] = challengeData;
-        // Grava no perfil do amigo
         updates[`users/${fromUid}/active_challenge`] = reverseChallengeData;
-        // Remove o convite da inbox
-        updates[`inbox/${myUid}/${msgKey}`] = null;
+        updates[`inbox/${myUid}/${msgKey}`] = null; // Remove a mensagem
 
         await update(ref(database), updates);
         
-        closeInboxModal();
+        // Fecha o modal e avisa
+        if(typeof window.closeInboxModal === 'function') window.closeInboxModal();
+        
         showCustomAlert('Desafio Aceito!', 'A guerra começou! Reze todos os dias.');
-        window.location.reload(); // Recarrega para mostrar a barra
+        
+        // Pequeno delay para o usuário ler antes de recarregar
+        setTimeout(() => {
+            window.location.reload(); 
+        }, 2000);
         
     } catch (e) {
         console.error(e);
-        showCustomAlert('Erro', 'Falha ao aceitar desafio.');
+        showCustomAlert('Erro', 'Falha técnica ao aceitar desafio.');
     }
 };
 
