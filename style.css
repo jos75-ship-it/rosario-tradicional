@@ -31,6 +31,8 @@
     --bead-size-pater: 56px;
     --bead-gap: 20px;
     --rail-width: 110px;
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 *{ 
@@ -287,7 +289,7 @@ body::before{
     align-items: center; 
     justify-content: flex-start;
     padding: 28px;
-    padding-top: 60px;
+    padding-top: calc(60px + var(--safe-area-top));
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 200;
@@ -685,7 +687,7 @@ body::before{
     overflow-y: auto;
     overflow-x: hidden;
     height: 100%;
-    padding: 24px 24px 100px 24px;
+    padding: 24px 24px calc(100px + var(--safe-area-bottom)) 24px;
     position: relative;
 }
 
@@ -707,7 +709,7 @@ body::before{
 .tab-content::after{
     content: '';
     position: fixed;
-    bottom: 70px;
+    bottom: calc(70px + var(--safe-area-bottom));
     left: 0;
     right: 0;
     height: 60px;
@@ -720,7 +722,7 @@ body::before{
 .home-screen-content::after{
     content: '';
     position: fixed;
-    bottom: 70px;
+    bottom: calc(70px + var(--safe-area-bottom));
     left: 0;
     right: 0;
     height: 60px;
@@ -735,6 +737,7 @@ body::before{
     inset: 0;
     display: flex; 
     flex-direction: column;
+    padding-top: var(--safe-area-top);
     transition: opacity 0.6s var(--ease-out), visibility 0.6s;
     z-index: 100;
 }
@@ -749,7 +752,7 @@ body::before{
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-bottom: 70px;
+    padding-bottom: calc(70px + var(--safe-area-bottom));
 }
 
 .tab-content{
@@ -769,13 +772,13 @@ body::before{
     bottom: 0;
     left: 0;
     right: 0;
-    height: 70px;
+    height: calc(70px + var(--safe-area-bottom));
     background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-deep) 100%);
     border-top: 1px solid var(--border-subtle);
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 10px var(--safe-area-bottom) 10px;
     z-index: 150;
 }
 
