@@ -233,6 +233,31 @@
                 </div>
             </div>
         </div>
+        <div id="tab-biblia" class="tab-content">
+            <div style="padding: 24px 24px 100px 24px; min-height: 100%; display: flex; flex-direction: column;">
+                <h2 style="font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-primary); text-align: center; margin-bottom: 8px;">
+                    Bíblia Sagrada
+                </h2>
+                <p style="text-align: center; font-family: var(--font-body); font-size: 0.9rem; color: var(--gold); margin-bottom: 24px; font-style: italic;">
+                    Vulgata — Pe. Matos Soares
+                </p>
+                
+                <div class="biblia-controls">
+                    <select id="select-livro" onchange="window.carregarCapitulos()">
+                        <option value="">Carregando livros...</option>
+                    </select>
+                    <select id="select-capitulo" onchange="window.exibirVersiculos()" disabled>
+                        <option value="">Capítulo</option>
+                    </select>
+                </div>
+                
+                <div id="biblia-texto" class="biblia-texto">
+                    <p style="text-align: center; color: var(--text-muted); font-style: italic; margin-top: 40px;">
+                        Selecione um livro e um capítulo acima para iniciar a leitura.
+                    </p>
+                </div>
+            </div>
+        </div>
         <div id="tab-friends" class="tab-content">
             <div style="padding: 24px 24px 100px 24px; min-height: 100%;">
                 
@@ -476,6 +501,13 @@
             <line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
         <span class="nav-label">Calendário</span>
+    </button>
+        <button type="button" class="nav-item" data-tab="biblia">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        <span class="nav-label">Bíblia</span>
     </button>
     <button type="button" class="nav-item" data-tab="friends">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2188,5 +2220,6 @@ document.addEventListener('click', (e) => {
 window.showCustomAlert = showCustomAlert;
 window.closeCustomAlert = closeCustomAlert;
 </script>
+    <script src="biblia.js"></script>
 </body>
 </html>
