@@ -519,7 +519,8 @@ body::before{
 }
 
 /* ===== MODAL DE AVATAR ===== */
-#avatar-modal{
+#avatar-modal,
+#profile-settings-modal{
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.85);
@@ -534,7 +535,8 @@ body::before{
     padding: 24px;
 }
 
-#avatar-modal.active{
+#avatar-modal.active,
+#profile-settings-modal.active{
     opacity: 1;
     visibility: visible;
 }

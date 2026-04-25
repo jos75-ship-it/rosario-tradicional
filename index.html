@@ -383,6 +383,14 @@
         </div>
         <div id="tab-profile" class="tab-content">
             <div style="padding: 24px 24px 100px 24px; min-height: 100%; display: flex; flex-direction: column; align-items: center;">
+                <div style="width: 100%; max-width: 360px; display: flex; justify-content: flex-end; margin-bottom: 8px;">
+                    <button type="button" onclick="openProfileSettingsModal()" title="Editar perfil" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-subtle); background: var(--bg-card); color: var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </button>
+                </div>
                 <div style="text-align: center; margin-bottom: 24px;">
                     <div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 2rem; color: var(--bg-deep); cursor: pointer; transition: all 0.3s;" id="profile-avatar" onclick="openAvatarModal()" onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='0 8px 25px rgba(212, 168, 85, 0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
                         👤
@@ -399,14 +407,14 @@
 
                 <div class="profile-section">
                     <label class="profile-label">Sobre Mim (Bio)</label>
-                    <textarea id="profile-bio" class="profile-input profile-textarea" placeholder="Escreva uma breve apresentação..."></textarea>
+                    <div id="profile-bio-display" class="profile-input profile-textarea" style="cursor: default; min-height: 130px; white-space: pre-wrap;">
+                        —
+                    </div>
                     
                     <label class="profile-label">Minha Intenção (Pública)</label>
-                    <input type="text" id="profile-intention" class="profile-input" placeholder="Ex: Pela saúde da minha família...">
-                    
-                    <button type="button" onclick="saveProfileData()" style="width: 100%; margin-top: 16px; padding: 12px; background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold) 100%); border: none; border-radius: 8px; font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bg-deep); cursor: pointer; font-weight: 600;">
-                        Atualizar Perfil
-                    </button>
+                    <div id="profile-intention-display" class="profile-input" style="cursor: default;">
+                        —
+                    </div>
                 </div>
                 
                 <div id="my-challenge-progress" class="challenge-progress-container" style="display:none;">
@@ -534,6 +542,23 @@
             </div>
         <button type="button" class="avatar-save-btn" id="avatar-save-btn" onclick="saveAvatar()">
             Salvar Avatar
+        </button>
+    </div>
+</div>
+
+<div id="profile-settings-modal">
+    <div class="avatar-modal-content">
+        <button type="button" class="avatar-modal-close" onclick="closeProfileSettingsModal()">×</button>
+        <h2 class="avatar-modal-title">Editar Perfil</h2>
+
+        <label class="profile-label">Sobre Mim (Bio)</label>
+        <textarea id="settings-bio" class="profile-input profile-textarea" placeholder="Escreva uma breve apresentação..."></textarea>
+
+        <label class="profile-label">Minha Intenção (Pública)</label>
+        <input type="text" id="settings-intention" class="profile-input" placeholder="Ex: Pela saúde da minha família...">
+
+        <button type="button" class="avatar-save-btn" id="profile-save-btn" onclick="saveProfileData()">
+            Salvar Alterações
         </button>
     </div>
 </div>
@@ -741,6 +766,7 @@ onAuthStateChanged(auth, async (user) =>{
         if (snapshot.exists()){
             window.userProfile = snapshot.val();
             window.currentUser = user;
+            await closeExpiredChallengeIfNeeded();
             // Atualizar UI
             updateUserInterface();
             // Carregar Amigos e Pedidos se estiver na aba
@@ -756,6 +782,70 @@ onAuthStateChanged(auth, async (user) =>{
         window.currentUser = null;
     }
 });
+
+async function closeExpiredChallengeIfNeeded() {
+    const profile = window.userProfile;
+    const myUid = window.currentUser?.uid;
+    if (!profile?.active_challenge?.active || !myUid) return;
+
+    const challenge = profile.active_challenge;
+    const startDate = Number(challenge.start_date || 0);
+    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+    if (!startDate || (Date.now() - startDate) < sevenDaysMs) return;
+
+    const updates = {};
+    updates[`users/${myUid}/active_challenge`] = null;
+    if (challenge.friend_uid) {
+        updates[`users/${challenge.friend_uid}/active_challenge`] = null;
+    }
+
+    const myProgress = Number(challenge.my_progress || 0);
+    const friendProgress = Number(challenge.friend_progress || 0);
+
+    let myResult = 'draw';
+    let friendResult = 'draw';
+    let winnerName = 'Ninguém';
+
+    if (myProgress > friendProgress) {
+        myResult = 'win';
+        friendResult = 'lose';
+        winnerName = profile.displayName || profile.username || 'Você';
+    } else if (friendProgress > myProgress) {
+        myResult = 'lose';
+        friendResult = 'win';
+        winnerName = challenge.friend_name || 'Seu amigo';
+    }
+
+    const ts = Date.now();
+    const myInboxKey = push(ref(database, `inbox/${myUid}`)).key;
+    updates[`inbox/${myUid}/${myInboxKey}`] = {
+        type: 'challenge_result',
+        result: myResult,
+        message: myResult === 'draw'
+            ? 'Desafio encerrado após 7 dias com empate. Continue firme!'
+            : myResult === 'win'
+                ? 'Parabéns! Você venceu no fechamento automático de 7 dias!'
+                : `${winnerName} venceu no fechamento automático de 7 dias. Tente outra vez!`,
+        timestamp: ts
+    };
+
+    if (challenge.friend_uid) {
+        const friendInboxKey = push(ref(database, `inbox/${challenge.friend_uid}`)).key;
+        updates[`inbox/${challenge.friend_uid}/${friendInboxKey}`] = {
+            type: 'challenge_result',
+            result: friendResult,
+            message: friendResult === 'draw'
+                ? 'Desafio encerrado após 7 dias com empate. Continue firme!'
+                : friendResult === 'win'
+                    ? 'Parabéns! Você venceu no fechamento automático de 7 dias!'
+                    : `${winnerName} venceu no fechamento automático de 7 dias. Tente outra vez!`,
+            timestamp: ts
+        };
+    }
+
+    await update(ref(database), updates);
+    window.userProfile.active_challenge = null;
+}
 // Atualizar interface com dados do usuário
 function updateUserInterface(){
     const profile = window.userProfile;
@@ -769,9 +859,15 @@ function updateUserInterface(){
     document.getElementById('profile-handle').textContent = '@' + profile.username; // MOSTRA HANDLE
     document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(avatar);
     
-    // NOVOS CAMPOS: Preencher Bio e Intenção se existirem
-    document.getElementById('profile-bio').value = profile.bio || '';
-    document.getElementById('profile-intention').value = profile.intention || '';
+    // NOVOS CAMPOS: Exibe Bio e Intenção no perfil (somente leitura) e preenche modal de edição.
+    const bio = profile.bio || '';
+    const profileIntention = profile.intention || '';
+    document.getElementById('profile-bio-display').textContent = bio || 'Sem bio definida.';
+    document.getElementById('profile-intention-display').textContent = profileIntention || 'Sem intenção pública definida.';
+    const settingsBio = document.getElementById('settings-bio');
+    const settingsIntention = document.getElementById('settings-intention');
+    if (settingsBio) settingsBio.value = bio;
+    if (settingsIntention) settingsIntention.value = profileIntention;
 
     const streak = profile.currentStreak || 0;
     const streakMessage = streak === 0 ? 'Comece hoje sua jornada de oração' :
@@ -1351,9 +1447,12 @@ window.openInboxModal = async function() {
                 `;
             } else if (data.type === 'challenge_result') {
                 const isWin = data.result === 'win';
-                const icon = isWin ? '🏆' : '🙏';
-                const title = isWin ? 'Parabéns! Você venceu o desafio de 7 dias!' : 'Tente outra vez! Você não venceu desta vez.';
-                const subtitle = data.message || (isWin ? 'Continue firme na oração!' : 'Continue perseverando na fé.');
+                const isDraw = data.result === 'draw';
+                const icon = isWin ? '🏆' : (isDraw ? '🤝' : '🙏');
+                const title = isWin
+                    ? 'Parabéns! Você venceu o desafio de 7 dias!'
+                    : (isDraw ? 'Desafio encerrado com empate.' : 'Tente outra vez! Você não venceu desta vez.');
+                const subtitle = data.message || (isWin ? 'Continue firme na oração!' : (isDraw ? 'Ambos perseveraram até o fim!' : 'Continue perseverando na fé.'));
 
                 div.innerHTML = `
                     <div class="inbox-header">
@@ -1702,6 +1801,22 @@ import { TEXTS, MONTFORT } from './prayers.js';
         if (e.target === modal) window.closeAvatarModal();
     });
 
+    window.openProfileSettingsModal = function() {
+        if (!window.userProfile) return;
+        document.getElementById('settings-bio').value = window.userProfile.bio || '';
+        document.getElementById('settings-intention').value = window.userProfile.intention || '';
+        document.getElementById('profile-settings-modal').classList.add('active');
+    };
+
+    window.closeProfileSettingsModal = function() {
+        document.getElementById('profile-settings-modal').classList.remove('active');
+    };
+
+    document.addEventListener('click', (e) => {
+        const settingsModal = document.getElementById('profile-settings-modal');
+        if (e.target === settingsModal) window.closeProfileSettingsModal();
+    });
+
     window.saveAvatar = async function(){
         if (!window.currentUser) {
             alert('Você precisa estar logado para salvar.');
@@ -1742,8 +1857,13 @@ import { TEXTS, MONTFORT } from './prayers.js';
             return;
         }
 
-        const bio = document.getElementById('profile-bio').value.trim();
-        const intention = document.getElementById('profile-intention').value.trim();
+        const bio = document.getElementById('settings-bio').value.trim();
+        const intention = document.getElementById('settings-intention').value.trim();
+        const saveBtn = document.getElementById('profile-save-btn');
+        if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Salvando...';
+        }
 
         try {
             const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
@@ -1761,10 +1881,17 @@ import { TEXTS, MONTFORT } from './prayers.js';
             }
 
             showCustomAlert('Sucesso!', 'Perfil atualizado com sucesso.');
+            window.closeProfileSettingsModal();
+            window.updateUserInterface();
 
         } catch (error) {
             console.error('Erro ao salvar perfil:', error);
             showCustomAlert('Erro', 'Não foi possível salvar as alterações.');
+        } finally {
+            if (saveBtn) {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Salvar Alterações';
+            }
         }
     };
     
