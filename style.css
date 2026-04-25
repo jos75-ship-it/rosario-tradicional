@@ -2263,3 +2263,76 @@ body::before{
         margin-bottom: 14px;
     }
 }
+/* ===== ABA BÍBLIA ===== */
+.biblia-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.biblia-controls select {
+    flex: 1;
+    min-width: 0; /* Previne overflow no mobile */
+    padding: 14px 12px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23d4a855%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px top 50%;
+    background-size: 10px auto;
+}
+
+.biblia-controls select:focus,
+.biblia-controls select:hover {
+    border-color: var(--gold-dim);
+}
+
+.biblia-controls select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.biblia-texto {
+    flex: 1;
+    background: linear-gradient(135deg, rgba(212, 168, 85, 0.05) 0%, rgba(212, 168, 85, 0.01) 100%);
+    border: 1px solid var(--border-subtle);
+    padding: 24px 20px;
+    border-radius: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+    overflow-y: auto;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+}
+
+.biblia-texto p {
+    margin-bottom: 16px;
+    text-align: justify;
+    line-height: 1.7;
+}
+
+.versiculo-num {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--burgundy-bright);
+    vertical-align: super;
+    margin-right: 6px;
+    letter-spacing: 0.05em;
+}
+
+.versiculo-texto {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+}
