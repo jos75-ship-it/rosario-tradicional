@@ -63,6 +63,26 @@
         </div>
     </div>
 </div>
+<div id="close-challenge-modal" class="challenge-confirm-modal">
+    <div class="challenge-confirm-content">
+        <div class="challenge-icon">⚠️</div>
+        <h3 class="challenge-confirm-title">Encerrar Desafio</h3>
+        <p class="challenge-confirm-message">
+            Tem certeza que deseja encerrar este desafio agora?
+        </p>
+        <p class="challenge-confirm-message" style="font-size: 0.95rem; margin-bottom: 0;">
+            Esta ação remove o desafio do seu perfil.
+        </p>
+        <div class="challenge-buttons">
+            <button type="button" class="challenge-btn challenge-btn-cancel" onclick="closeCloseChallengeConfirm()">
+                Não
+            </button>
+            <button type="button" class="challenge-btn challenge-btn-confirm" onclick="confirmCloseChallenge()">
+                Sim
+            </button>
+        </div>
+    </div>
+</div>
 <div id="auth-screen">
     <div class="auth-container">
         <div class="auth-logo">
@@ -406,7 +426,7 @@
 
                 <div class="profile-section">
                     <label class="profile-label">Sobre Mim (Bio)</label>
-                    <div id="profile-bio-display" class="profile-input profile-textarea" style="cursor: default; min-height: 130px; white-space: pre-wrap;">
+                    <div id="profile-bio-display" class="profile-input" style="cursor: default; white-space: pre-wrap;">
                         —
                     </div>
                     
@@ -417,6 +437,9 @@
                 </div>
                 
                 <div id="my-challenge-progress" class="challenge-progress-container" style="display:none;">
+                    <button type="button" onclick="openCloseChallengeConfirm()" title="Encerrar desafio" style="position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%; border:1px solid var(--border-subtle); background:rgba(0,0,0,0.3); color:var(--text-secondary); cursor:pointer; font-size:0.9rem; line-height:1;">
+                        ✕
+                    </button>
                     <div class="challenge-title">⚔️ Desafio Ativo</div>
                     <div class="challenge-bars">
                         <div class="challenge-row">
@@ -1674,6 +1697,38 @@ window.closeChallengeConfirm = function() {
     pendingChallengeName = null;
 };
 
+window.openCloseChallengeConfirm = function() {
+    if (!window.userProfile?.active_challenge) return;
+    document.getElementById('close-challenge-modal').classList.add('active');
+};
+
+window.closeCloseChallengeConfirm = function() {
+    document.getElementById('close-challenge-modal').classList.remove('active');
+};
+
+window.confirmCloseChallenge = async function() {
+    if (!window.currentUser || !window.userProfile?.active_challenge) return;
+    const myUid = window.currentUser.uid;
+    const friendUid = window.userProfile.active_challenge.friend_uid;
+
+    try {
+        const updates = {};
+        updates[`users/${myUid}/active_challenge`] = null;
+        if (friendUid) {
+            updates[`users/${friendUid}/active_challenge`] = null;
+        }
+        await update(ref(database), updates);
+
+        window.userProfile.active_challenge = null;
+        window.updateUserInterface();
+        window.closeCloseChallengeConfirm();
+        showCustomAlert('Desafio encerrado', 'O desafio foi removido do seu perfil.');
+    } catch (error) {
+        console.error('Erro ao encerrar desafio:', error);
+        showCustomAlert('Erro', 'Não foi possível encerrar o desafio agora.');
+    }
+};
+
 window.confirmSendChallenge = async function() {
     // Verificações iniciais
     if (!pendingChallengeUid || !window.currentUser) return;
@@ -1710,6 +1765,15 @@ if (challengeModal) {
     challengeModal.addEventListener('click', (e) => {
         if (e.target === challengeModal) {
             window.closeChallengeConfirm();
+        }
+    });
+}
+
+const closeChallengeModal = document.getElementById('close-challenge-modal');
+if (closeChallengeModal) {
+    closeChallengeModal.addEventListener('click', (e) => {
+        if (e.target === closeChallengeModal) {
+            window.closeCloseChallengeConfirm();
         }
     });
 }
