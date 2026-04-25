@@ -556,6 +556,19 @@
         <label class="profile-label">Minha Intenção (Pública)</label>
         <input type="text" id="settings-intention" class="profile-input" placeholder="Ex: Pela saúde da minha família...">
 
+        <label class="profile-label">Notificações Diárias</label>
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+            <button type="button" id="push-enable-btn" style="flex:1; padding: 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;">
+                Ativar Push
+            </button>
+            <button type="button" id="push-disable-btn" style="flex:1; padding: 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;">
+                Desativar
+            </button>
+        </div>
+        <p id="push-status-text" style="font-family: var(--font-body); font-size: 0.9rem; color: var(--text-muted); margin-bottom: 14px;">
+            Push diário desativado.
+        </p>
+
         <button type="button" class="avatar-save-btn" id="profile-save-btn" onclick="saveProfileData()">
             Salvar Alterações
         </button>
@@ -644,7 +657,7 @@
     </svg>
 </button>
 <script type="module">
-import { firebaseConfig } from './config.js';
+import { firebaseConfig, webPushPublicKey } from './config.js';
 import{ initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import{ getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import{ getDatabase, ref, set, get, update, remove, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js'; // Adicionado push
@@ -678,6 +691,112 @@ function getFirebaseErrorMessage(errorCode){
         'auth/too-many-requests': 'Muitas tentativas. Aguarde um momento e tente novamente.'
     };
     return errors[errorCode] || 'Erro ao processar solicitação. Tente novamente.';
+}
+function getMysteryForDate(dateObj = new Date()) {
+    const dayMap ={ 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
+    return dayMap[dateObj.getDay()];
+}
+const DAILY_INTENTIONS = [
+    "Pelos que sofrem perseguição por causa da fé.",
+    "Pela conversão dos pecadores e a salvação das almas.",
+    "Pelas vocações sacerdotais e religiosas.",
+    "Pela paz no mundo e o fim das guerras.",
+    "Pelos enfermos e todos que cuidam deles.",
+    "Pelas almas do purgatório, especialmente as mais abandonadas.",
+    "Pela santificação das famílias.",
+    "Pelos jovens, para que encontrem seu caminho em Cristo.",
+    "Pela Igreja e pelo Santo Padre.",
+    "Pelos missionários em terras distantes.",
+];
+function getIntentionForDate(dateObj = new Date()) {
+    const dayOfYear = Math.floor((dateObj - new Date(dateObj.getFullYear(), 0, 0)) / 86400000);
+    return DAILY_INTENTIONS[dayOfYear % DAILY_INTENTIONS.length];
+}
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+    return outputArray;
+}
+async function refreshPushStatusUI() {
+    const statusEl = document.getElementById('push-status-text');
+    if (!statusEl || !window.currentUser) return;
+
+    const pushConfigSnap = await get(ref(database, `users/${window.currentUser.uid}/pushConfig`));
+    const pushConfig = pushConfigSnap.exists() ? pushConfigSnap.val() : {};
+
+    if (pushConfig.enabled) {
+        statusEl.textContent = 'Push diário ativo.';
+        statusEl.style.color = 'var(--gold)';
+    } else {
+        statusEl.textContent = 'Push diário desativado.';
+        statusEl.style.color = 'var(--text-muted)';
+    }
+}
+
+async function enableDailyPushNotifications() {
+    if (!window.currentUser) return;
+
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        showCustomAlert('Indisponível', 'Seu navegador não suporta Web Push.');
+        return;
+    }
+    if (!('Notification' in window)) {
+        showCustomAlert('Indisponível', 'Notificações não são suportadas neste navegador.');
+        return;
+    }
+    if (!webPushPublicKey || webPushPublicKey.includes('COLE_AQUI')) {
+        showCustomAlert('Configuração pendente', 'Chave VAPID pública ainda não configurada.');
+        return;
+    }
+
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+        showCustomAlert('Permissão negada', 'Ative notificações no navegador para receber lembretes.');
+        return;
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+    let subscription = await registration.pushManager.getSubscription();
+    if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(webPushPublicKey)
+        });
+    }
+
+    await update(ref(database, `users/${window.currentUser.uid}`), {
+        pushConfig: {
+            enabled: true,
+            subscribedAt: Date.now(),
+            mystery: getMysteryForDate(new Date()),
+            intention: getIntentionForDate(new Date())
+        },
+        pushSubscription: subscription.toJSON()
+    });
+
+    showCustomAlert('Push ativado', 'Você receberá a intenção e o mistério do dia.');
+    await refreshPushStatusUI();
+}
+
+async function disableDailyPushNotifications() {
+    if (!window.currentUser) return;
+
+    if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+        if (subscription) await subscription.unsubscribe();
+    }
+
+    await update(ref(database, `users/${window.currentUser.uid}`), {
+        pushConfig: { enabled: false, disabledAt: Date.now() },
+        pushSubscription: null
+    });
+
+    showCustomAlert('Push desativado', 'Notificações diárias foram desativadas.');
+    await refreshPushStatusUI();
 }
 function showElement(id){ document.getElementById(id).classList.add('visible');}
 function hideElement(id){ document.getElementById(id).classList.remove('visible');}
@@ -912,31 +1031,19 @@ function updateUserInterface(){
         document.getElementById('my-challenge-progress').style.display = 'none';
     }
 
-    const intentions = [
-        "Pelos que sofrem perseguição por causa da fé.",
-        "Pela conversão dos pecadores e a salvação das almas.",
-        "Pelas vocações sacerdotais e religiosas.",
-        "Pela paz no mundo e o fim das guerras.",
-        "Pelos enfermos e todos que cuidam deles.",
-        "Pelas almas do purgatório, especialmente as mais abandonadas.",
-        "Pela santificação das famílias.",
-        "Pelos jovens, para que encontrem seu caminho em Cristo.",
-        "Pela Igreja e pelo Santo Padre.",
-        "Pelos missionários em terras distantes.",
-    ];
-    const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-    const intention = intentions[dayOfYear % intentions.length];
+    const intention = getIntentionForDate(new Date());
     document.getElementById('home-intention').textContent = intention;
     document.getElementById('calendar-intention').textContent = intention;
     const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
     const today = new Date();
     document.getElementById('home-today-day').textContent = days[today.getDay()];
     document.getElementById('rosary-today-day').textContent = days[today.getDay()];
-    const dayMap ={ 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
-    document.getElementById('home-today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
-    document.getElementById('rosary-today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
+    const mystery = getMysteryForDate(today);
+    document.getElementById('home-today-mystery').textContent = 'Mistérios ' + mystery;
+    document.getElementById('rosary-today-mystery').textContent = 'Mistérios ' + mystery;
     renderCalendar();
     checkInbox(); // Atualiza a badge do inbox
+    refreshPushStatusUI().catch(console.error);
 }
 // Estado do calendário
 let currentCalendarMonth = new Date().getMonth();
@@ -1818,6 +1925,7 @@ import { TEXTS, MONTFORT } from './prayers.js';
         document.getElementById('settings-bio').value = window.userProfile.bio || '';
         document.getElementById('settings-intention').value = window.userProfile.intention || '';
         document.getElementById('profile-settings-modal').classList.add('active');
+        refreshPushStatusUI().catch(console.error);
     };
 
     window.closeProfileSettingsModal = function() {
@@ -1828,6 +1936,11 @@ import { TEXTS, MONTFORT } from './prayers.js';
         const settingsModal = document.getElementById('profile-settings-modal');
         if (e.target === settingsModal) window.closeProfileSettingsModal();
     });
+
+    const pushEnableBtn = document.getElementById('push-enable-btn');
+    if (pushEnableBtn) pushEnableBtn.addEventListener('click', () => enableDailyPushNotifications().catch(console.error));
+    const pushDisableBtn = document.getElementById('push-disable-btn');
+    if (pushDisableBtn) pushDisableBtn.addEventListener('click', () => disableDailyPushNotifications().catch(console.error));
 
     window.saveAvatar = async function(){
         if (!window.currentUser) {
