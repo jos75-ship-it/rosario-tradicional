@@ -908,10 +908,17 @@ function renderCalendar(){
 // ==========================================
 
 function setSearchResultMessage(resultDiv, message, color = 'var(--text-dim)') {
+    resultDiv.innerHTML = '';
     resultDiv.textContent = message;
-    resultDiv.style.color = color;
-    resultDiv.style.fontSize = '0.85rem';
-    resultDiv.style.padding = '8px';
+    resultDiv.style.cssText = `color: ${color}; font-size: 0.85rem; padding: 8px;`;
+}
+
+function resetSearchResultStyle(resultDiv) {
+    resultDiv.style.cssText = '';
+}
+
+function normalizeSearchText(value) {
+    return typeof value === 'string' ? value.trim().toLowerCase() : '';
 }
 
 function createSafeAvatarElement(avatarValue) {
@@ -940,6 +947,7 @@ function createSafeAvatarElement(avatarValue) {
 }
 
 function renderSearchFriendResult(resultDiv, found, { infoText, action }) {
+    resetSearchResultStyle(resultDiv);
     resultDiv.innerHTML = '';
 
     const card = document.createElement('div');
@@ -982,6 +990,11 @@ function renderSearchFriendResult(resultDiv, found, { infoText, action }) {
 async function searchFriend() {
     const input = document.getElementById('friend-search-input');
     const resultDiv = document.getElementById('search-result');
+    if (!window.currentUser?.uid) {
+        setSearchResultMessage(resultDiv, 'Entre na sua conta para buscar amigos.', '#c07070');
+        return;
+    }
+
     let searchTerm = input.value.trim().toLowerCase();
     
     searchTerm = searchTerm.replace(/^@/, '');
@@ -1010,8 +1023,10 @@ async function searchFriend() {
             const u = users[uid];
             if (uid === window.currentUser.uid) continue; // Pula eu mesmo
 
-            if (u.username.toLowerCase().includes(searchTerm) || 
-                (u.displayName && u.displayName.toLowerCase().includes(searchTerm))) {
+            const username = normalizeSearchText(u?.username);
+            const displayName = normalizeSearchText(u?.displayName);
+
+            if (username.includes(searchTerm) || displayName.includes(searchTerm)) {
                 results.push({uid, ...u});
             }
         }
@@ -1041,7 +1056,8 @@ async function searchFriend() {
             return;
         }
         
-        const safeStreak = Number.isFinite(Number(found.currentStreak)) ? Number(found.currentStreak) : 0;
+        const parsedStreak = Number(found.currentStreak);
+        const safeStreak = Number.isFinite(parsedStreak) && parsedStreak > 0 ? parsedStreak : 0;
         renderSearchFriendResult(resultDiv, found, {
             infoText: `🔥 ${safeStreak} dias`,
             action: {
