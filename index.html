@@ -765,7 +765,19 @@ onAuthStateChanged(auth, async (user) =>{
         if (snapshot.exists()){
             window.userProfile = snapshot.val();
             window.currentUser = user;
-            await closeExpiredChallengeIfNeeded();
+
+            try {
+                await closeExpiredChallengeIfNeeded();
+                // Recarrega perfil após possível fechamento automático de desafio
+                const refreshedSnapshot = await get(userRef);
+                if (refreshedSnapshot.exists()) {
+                    window.userProfile = refreshedSnapshot.val();
+                }
+            } catch (challengeError) {
+                console.error('Falha ao verificar/fechar desafio expirado:', challengeError);
+                // Não bloquear renderização do perfil por causa da rotina de desafio.
+            }
+
             // Atualizar UI
             updateUserInterface();
             // Carregar Amigos e Pedidos se estiver na aba
@@ -849,13 +861,14 @@ async function closeExpiredChallengeIfNeeded() {
 function updateUserInterface(){
     const profile = window.userProfile;
     if (!profile) return;
-    const displayName = profile.displayName || profile.username;
+    const displayName = profile.displayName || profile.username || 'Usuário';
+    const username = profile.username || 'usuario';
     const initial = displayName.charAt(0).toUpperCase();
     const avatar = profile.avatar || initial;
     
     document.getElementById('home-user-name').textContent = displayName;
     document.getElementById('profile-name').textContent = displayName;
-    document.getElementById('profile-handle').textContent = '@' + profile.username; // MOSTRA HANDLE
+    document.getElementById('profile-handle').textContent = '@' + username; // MOSTRA HANDLE
     document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(avatar);
     
     // NOVOS CAMPOS: Exibe Bio e Intenção no perfil (somente leitura) e preenche modal de edição.
