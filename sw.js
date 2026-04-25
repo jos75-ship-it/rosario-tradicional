@@ -1,6 +1,6 @@
 // sw.js - Service Worker para PWA
 
-const CACHE_NAME = 'rosario-v3';
+const CACHE_NAME = 'rosario-v4';
 const urlsToCache = [
   '/',
   '/index.html',
