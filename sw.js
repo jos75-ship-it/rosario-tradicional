@@ -1,10 +1,12 @@
 // sw.js - Service Worker para PWA
 
-const CACHE_NAME = 'rosario-v2';
+const CACHE_NAME = 'rosario-v3';
 const urlsToCache = [
   '/',
   '/index.html',
   '/app.js',
+  '/biblia.js',
+  '/biblia.json',
   '/manifest.json',
   '/icon-72.png',
   '/icon-96.png',
@@ -16,7 +18,6 @@ const urlsToCache = [
   '/icon-512.png',
   'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap'
 ];
-
 // Instalar Service Worker
 self.addEventListener('install', (event) => {
   console.log('📦 Service Worker: Instalando...');
