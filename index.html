@@ -760,66 +760,82 @@ async function refreshPushStatusUI() {
 }
 
 async function enableDailyPushNotifications() {
-    if (!window.currentUser) return;
-
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        showCustomAlert('Indisponível', 'Seu navegador não suporta Web Push.');
-        return;
-    }
-    if (!('Notification' in window)) {
-        showCustomAlert('Indisponível', 'Notificações não são suportadas neste navegador.');
-        return;
-    }
-    if (!webPushPublicKey || webPushPublicKey.includes('COLE_AQUI')) {
-        showCustomAlert('Configuração pendente', 'Chave VAPID pública ainda não configurada.');
+    if (!window.currentUser) {
+        showCustomAlert('Entre na conta', 'Faça login para ativar notificações push.');
         return;
     }
 
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-        showCustomAlert('Permissão negada', 'Ative notificações no navegador para receber lembretes.');
-        return;
-    }
+    try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            showCustomAlert('Indisponível', 'Seu navegador não suporta Web Push.');
+            return;
+        }
+        if (!('Notification' in window)) {
+            showCustomAlert('Indisponível', 'Notificações não são suportadas neste navegador.');
+            return;
+        }
+        if (!webPushPublicKey || webPushPublicKey.includes('COLE_AQUI')) {
+            showCustomAlert('Configuração pendente', 'Falta configurar a chave VAPID pública em config.js.');
+            return;
+        }
 
-    const registration = await navigator.serviceWorker.ready;
-    let subscription = await registration.pushManager.getSubscription();
-    if (!subscription) {
-        subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(webPushPublicKey)
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+            showCustomAlert('Permissão negada', 'Ative notificações no navegador para receber lembretes.');
+            return;
+        }
+
+        const registration = await navigator.serviceWorker.ready;
+        let subscription = await registration.pushManager.getSubscription();
+        if (!subscription) {
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(webPushPublicKey)
+            });
+        }
+
+        await update(ref(database, `users/${window.currentUser.uid}`), {
+            pushConfig: {
+                enabled: true,
+                subscribedAt: Date.now(),
+                mystery: getMysteryForDate(new Date()),
+                intention: getIntentionForDate(new Date())
+            },
+            pushSubscription: subscription.toJSON()
         });
+
+        showCustomAlert('Push ativado', 'Você receberá a intenção e o mistério do dia.');
+        await refreshPushStatusUI();
+    } catch (error) {
+        console.error('Erro ao ativar push:', error);
+        showCustomAlert('Erro no Push', 'Não foi possível ativar. Verifique permissões e suporte do navegador.');
     }
-
-    await update(ref(database, `users/${window.currentUser.uid}`), {
-        pushConfig: {
-            enabled: true,
-            subscribedAt: Date.now(),
-            mystery: getMysteryForDate(new Date()),
-            intention: getIntentionForDate(new Date())
-        },
-        pushSubscription: subscription.toJSON()
-    });
-
-    showCustomAlert('Push ativado', 'Você receberá a intenção e o mistério do dia.');
-    await refreshPushStatusUI();
 }
 
 async function disableDailyPushNotifications() {
-    if (!window.currentUser) return;
-
-    if ('serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.getSubscription();
-        if (subscription) await subscription.unsubscribe();
+    if (!window.currentUser) {
+        showCustomAlert('Entre na conta', 'Faça login para gerenciar notificações.');
+        return;
     }
 
-    await update(ref(database, `users/${window.currentUser.uid}`), {
-        pushConfig: { enabled: false, disabledAt: Date.now() },
-        pushSubscription: null
-    });
+    try {
+        if ('serviceWorker' in navigator) {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+            if (subscription) await subscription.unsubscribe();
+        }
 
-    showCustomAlert('Push desativado', 'Notificações diárias foram desativadas.');
-    await refreshPushStatusUI();
+        await update(ref(database, `users/${window.currentUser.uid}`), {
+            pushConfig: { enabled: false, disabledAt: Date.now() },
+            pushSubscription: null
+        });
+
+        showCustomAlert('Push desativado', 'Notificações diárias foram desativadas.');
+        await refreshPushStatusUI();
+    } catch (error) {
+        console.error('Erro ao desativar push:', error);
+        showCustomAlert('Erro no Push', 'Não foi possível desativar agora.');
+    }
 }
 function showElement(id){ document.getElementById(id).classList.add('visible');}
 function hideElement(id){ document.getElementById(id).classList.remove('visible');}
@@ -1709,15 +1725,12 @@ window.closeCloseChallengeConfirm = function() {
 window.confirmCloseChallenge = async function() {
     if (!window.currentUser || !window.userProfile?.active_challenge) return;
     const myUid = window.currentUser.uid;
-    const friendUid = window.userProfile.active_challenge.friend_uid;
 
     try {
-        const updates = {};
-        updates[`users/${myUid}/active_challenge`] = null;
-        if (friendUid) {
-            updates[`users/${friendUid}/active_challenge`] = null;
-        }
-        await update(ref(database), updates);
+        // Fechamento manual: remove do próprio perfil para evitar bloqueios de permissão.
+        await update(ref(database, `users/${myUid}`), {
+            active_challenge: null
+        });
 
         window.userProfile.active_challenge = null;
         window.updateUserInterface();
