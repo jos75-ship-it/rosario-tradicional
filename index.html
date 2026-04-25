@@ -1349,6 +1349,28 @@ window.openInboxModal = async function() {
                         <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Recusar</button>
                     </div>
                 `;
+            } else if (data.type === 'challenge_result') {
+                const isWin = data.result === 'win';
+                const icon = isWin ? '🏆' : '🙏';
+                const title = isWin ? 'Parabéns! Você venceu o desafio de 7 dias!' : 'Tente outra vez! Você não venceu desta vez.';
+                const subtitle = data.message || (isWin ? 'Continue firme na oração!' : 'Continue perseverando na fé.');
+
+                div.innerHTML = `
+                    <div class="inbox-header">
+                        <strong style="color: var(--gold); font-family: var(--font-display); font-size: 0.8rem;">Desafio 7 Dias</strong>
+                        <span class="inbox-time">${dateStr}</span>
+                    </div>
+                    <div class="inbox-body" style="display:flex; align-items:flex-start; gap:8px;">
+                        <span style="font-size: 1.1rem;">${icon}</span>
+                        <div>
+                            <div style="font-weight:600; margin-bottom: 4px;">${title}</div>
+                            <div style="opacity:0.9;">${subtitle}</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+                        <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Apagar</button>
+                    </div>
+                `;
             }
             list.appendChild(div);
         });
@@ -2143,7 +2165,7 @@ const app = {
     // CORREÇÃO: Lógica de Streak Robusta (Fuso Horário)
     async saveCompletion(aves, paters) {
         try {
-             const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+             const { getDatabase, ref, update, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
              const database = getDatabase();
              const userId = window.currentUser.uid;
              
@@ -2212,18 +2234,46 @@ const app = {
              if (window.userProfile.active_challenge && window.userProfile.active_challenge.active) {
                  const challenge = window.userProfile.active_challenge;
                  // Incrementa meu progresso
-                 challenge.my_progress = (challenge.my_progress || 0) + 1;
+                 const myProgress = Math.min((challenge.my_progress || 0) + 1, 7);
+                 challenge.my_progress = myProgress;
                  
                  // Atualiza meu perfil
-                 updates[`users/${userId}/active_challenge/my_progress`] = challenge.my_progress;
+                 updates[`users/${userId}/active_challenge/my_progress`] = myProgress;
                  
                  // Atualiza perfil do amigo (precisa inverter: meu progresso lá é 'friend_progress')
-                 updates[`users/${challenge.friend_uid}/active_challenge/friend_progress`] = challenge.my_progress;
+                 updates[`users/${challenge.friend_uid}/active_challenge/friend_progress`] = myProgress;
                  
-                 // Se completou 7 dias
-                 if (challenge.my_progress >= 7) {
+                 // Se completou 7 dias, finaliza desafio para ambos e envia resultado para inbox.
+                 if (myProgress >= 7) {
                      showCustomAlert('VITÓRIA! 🏆', 'Você completou o desafio de 7 dias!');
-                     // Lógica de finalizar desafio poderia vir aqui
+
+                     const winnerUid = userId;
+                     const loserUid = challenge.friend_uid;
+                     const winnerName = window.userProfile.displayName || window.userProfile.username || 'Você';
+
+                     updates[`users/${winnerUid}/active_challenge`] = null;
+                     updates[`users/${loserUid}/active_challenge`] = null;
+
+                     const winnerInboxKey = push(ref(database, `inbox/${winnerUid}`)).key;
+                     const loserInboxKey = push(ref(database, `inbox/${loserUid}`)).key;
+                     const ts = Date.now();
+
+                     updates[`inbox/${winnerUid}/${winnerInboxKey}`] = {
+                         type: 'challenge_result',
+                         result: 'win',
+                         message: 'Parabéns! Você venceu o desafio de 7 dias consecutivos!',
+                         byUid: winnerUid,
+                         byName: winnerName,
+                         timestamp: ts
+                     };
+                     updates[`inbox/${loserUid}/${loserInboxKey}`] = {
+                         type: 'challenge_result',
+                         result: 'lose',
+                         message: `${winnerName} completou os 7 dias primeiro. Tente outra vez!`,
+                         byUid: winnerUid,
+                         byName: winnerName,
+                         timestamp: ts
+                     };
                  }
              }
              
@@ -2235,6 +2285,9 @@ const app = {
              window.userProfile.currentStreak = newStreak;
              if (newStreak > (window.userProfile.longestStreak || 0)) {
                  window.userProfile.longestStreak = newStreak;
+             }
+             if (window.userProfile.active_challenge?.my_progress >= 7) {
+                 window.userProfile.active_challenge = null;
              }
              
              window.updateUserInterface();
