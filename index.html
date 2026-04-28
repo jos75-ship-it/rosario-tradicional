@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="no">
+    <meta name="apple-mobile-web-app-capable" content="no">
     <meta name="apple-mobile-web-app-title" content="Rosário">
     
     <title>Santo Rosário · Método Montfort</title>
@@ -62,6 +61,33 @@
                 Enviar Desafio
             </button>
         </div>
+    </div>
+</div>
+<div id="close-challenge-modal" class="challenge-confirm-modal">
+    <div class="challenge-confirm-content">
+        <div class="challenge-icon">⚠️</div>
+        <h3 class="challenge-confirm-title">Encerrar Desafio</h3>
+        <p class="challenge-confirm-message">
+            Tem certeza que deseja encerrar este desafio agora?
+        </p>
+        <p class="challenge-confirm-message" style="font-size: 0.95rem; margin-bottom: 0;">
+            Esta ação remove o desafio do seu perfil.
+        </p>
+        <div class="challenge-buttons">
+            <button type="button" class="challenge-btn challenge-btn-cancel" onclick="closeCloseChallengeConfirm()">
+                Não
+            </button>
+            <button type="button" class="challenge-btn challenge-btn-confirm" onclick="confirmCloseChallenge()">
+                Sim
+            </button>
+        </div>
+    </div>
+</div>
+<div id="app-splash">
+    <div class="splash-content">
+        <img src="/icon-192.png" alt="Logo Rosário" class="splash-logo">
+        <h1 class="splash-title">Rosário</h1>
+        <p class="splash-subtitle">Método de São Luís de Montfort</p>
     </div>
 </div>
 <div id="auth-screen">
@@ -150,6 +176,42 @@
                     <p style="font-family: var(--font-display); font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px;" id="home-today-day">Segunda-feira</p>
                     <p style="font-family: var(--font-body); font-size: 1.1rem; color: var(--gold);" id="home-today-mystery">Mistérios Gozosos</p>
                 </div>
+                <div style="width: 100%; max-width: 400px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: space-between;">
+                    <button type="button" id="prev-month-btn" style="background: none; border: 1px solid var(--border-subtle); border-radius: 4px; padding: 8px 12px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--gold-dim)'; this.style.color='var(--gold)';" onmouseout="this.style.borderColor='var(--border-subtle)'; this.style.color='var(--text-secondary)';">
+                        <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <h3 style="font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.1em; color: var(--text-primary);" id="calendar-month-year">Janeiro 2026</h3>
+                    <button type="button" id="next-month-btn" style="background: none; border: 1px solid var(--border-subtle); border-radius: 4px; padding: 8px 12px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--gold-dim)'; this.style.color='var(--gold)';" onmouseout="this.style.borderColor='var(--border-subtle)'; this.style.color='var(--text-secondary)';">
+                        <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </button>
+                </div>
+                <div style="width: 100%; max-width: 400px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 16px;">
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 12px;">
+                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Dom</div>
+                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Seg</div>
+                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Ter</div>
+                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Qua</div>
+                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Qui</div>
+                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Sex</div>
+                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Sáb</div>
+                    </div>
+                    <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
+                    </div>
+                </div>
+                <div style="width: 100%; max-width: 400px; margin: 20px auto 0; display: flex; gap: 16px; justify-content: center; font-family: var(--font-body); font-size: 0.85rem; color: var(--text-muted);">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold-glow);"></div>
+                        <span>Rezou</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--border-subtle);"></div>
+                        <span>Não rezou</span>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="tab-rosary" class="tab-content">
@@ -181,55 +243,16 @@
                 </div>
             </div>
         </div>
-        <div id="tab-calendar" class="tab-content">
-            <div style="padding: 24px 24px 100px 24px; min-height: 100%;">
-                <h2 style="font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-primary); text-align: center; margin-bottom: 24px;">
-                    Calendário de Oração
+        <div id="tab-prayers" class="tab-content">
+            <div style="padding: 24px 24px 100px 24px; min-height: 100%; display: flex; flex-direction: column;">
+                <h2 style="font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-primary); margin-bottom: 12px; text-align:center;">
+                    Orações
                 </h2>
-                <div style="width: 100%; max-width: 400px; margin: 0 auto 24px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px;">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
-                        <svg style="width: 24px; height: 24px; color: var(--burgundy-light);" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                        <span style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted);">Intenção do Dia</span>
-                    </div>
-                    <p style="font-family: var(--font-body); font-size: 1.05rem; font-style: italic; color: var(--text-secondary); line-height: 1.6;" id="calendar-intention">Carregando...</p>
-                </div>
-                <div style="width: 100%; max-width: 400px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: space-between;">
-                    <button type="button" id="prev-month-btn" style="background: none; border: 1px solid var(--border-subtle); border-radius: 4px; padding: 8px 12px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--gold-dim)'; this.style.color='var(--gold)';" onmouseout="this.style.borderColor='var(--border-subtle)'; this.style.color='var(--text-secondary)';">
-                        <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M15 18l-6-6 6-6"/>
-                        </svg>
-                    </button>
-                    <h3 style="font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.1em; color: var(--text-primary);" id="calendar-month-year">Janeiro 2026</h3>
-                    <button type="button" id="next-month-btn" style="background: none; border: 1px solid var(--border-subtle); border-radius: 4px; padding: 8px 12px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--gold-dim)'; this.style.color='var(--gold)';" onmouseout="this.style.borderColor='var(--border-subtle)'; this.style.color='var(--text-secondary)';">
-                        <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 18l6-6-6-6"/>
-                        </svg>
-                    </button>
-                </div>
-                <div style="width: 100%; max-width: 400px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 16px;">
-                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 12px;">
-                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Dom</div>
-                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Seg</div>
-                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Ter</div>
-                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Qua</div>
-                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Qui</div>
-                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Sex</div>
-                        <div style="font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-align: center;">Sáb</div>
-                    </div>
-                    <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
-                        </div>
-                </div>
-                <div style="width: 100%; max-width: 400px; margin: 24px auto 0; display: flex; gap: 16px; justify-content: center; font-family: var(--font-body); font-size: 0.85rem; color: var(--text-muted);">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold-glow);"></div>
-                        <span>Rezou</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--border-subtle);"></div>
-                        <span>Não rezou</span>
-                    </div>
+                <p style="font-family: var(--font-body); font-size: 1.05rem; color: var(--text-muted); font-style: italic; max-width: 440px; text-align:center; margin: 0 auto 20px;">
+                    Orações organizadas para sua devoção diária.
+                </p>
+                <div id="prayers-list" class="prayers-list">
+                    <p class="prayers-loading">Carregando orações...</p>
                 </div>
             </div>
         </div>
@@ -383,6 +406,14 @@
         </div>
         <div id="tab-profile" class="tab-content">
             <div style="padding: 24px 24px 100px 24px; min-height: 100%; display: flex; flex-direction: column; align-items: center;">
+                <div style="width: 100%; max-width: 360px; display: flex; justify-content: flex-end; margin-bottom: 8px;">
+                    <button type="button" onclick="openProfileSettingsModal()" title="Editar perfil" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-subtle); background: var(--bg-card); color: var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </button>
+                </div>
                 <div style="text-align: center; margin-bottom: 24px;">
                     <div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 2rem; color: var(--bg-deep); cursor: pointer; transition: all 0.3s;" id="profile-avatar" onclick="openAvatarModal()" onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='0 8px 25px rgba(212, 168, 85, 0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
                         👤
@@ -399,17 +430,20 @@
 
                 <div class="profile-section">
                     <label class="profile-label">Sobre Mim (Bio)</label>
-                    <textarea id="profile-bio" class="profile-input profile-textarea" placeholder="Escreva uma breve apresentação..."></textarea>
+                    <div id="profile-bio-display" class="profile-input" style="cursor: default; white-space: pre-wrap;">
+                        —
+                    </div>
                     
                     <label class="profile-label">Minha Intenção (Pública)</label>
-                    <input type="text" id="profile-intention" class="profile-input" placeholder="Ex: Pela saúde da minha família...">
-                    
-                    <button type="button" onclick="saveProfileData()" style="width: 100%; margin-top: 16px; padding: 12px; background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold) 100%); border: none; border-radius: 8px; font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bg-deep); cursor: pointer; font-weight: 600;">
-                        Atualizar Perfil
-                    </button>
+                    <div id="profile-intention-display" class="profile-input" style="cursor: default;">
+                        —
+                    </div>
                 </div>
                 
                 <div id="my-challenge-progress" class="challenge-progress-container" style="display:none;">
+                    <button type="button" onclick="openCloseChallengeConfirm()" title="Encerrar desafio" style="position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%; border:1px solid var(--border-subtle); background:rgba(0,0,0,0.3); color:var(--text-secondary); cursor:pointer; font-size:0.9rem; line-height:1;">
+                        ✕
+                    </button>
                     <div class="challenge-title">⚔️ Desafio Ativo</div>
                     <div class="challenge-bars">
                         <div class="challenge-row">
@@ -493,14 +527,15 @@
         </svg>
         <span class="nav-label">Rosário</span>
     </button>
-    <button type="button" class="nav-item" data-tab="calendar">
+    <button type="button" class="nav-item" data-tab="prayers">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
+            <path d="M12 2v20"/>
+            <path d="M8 6h8"/>
+            <path d="M8 10h8"/>
+            <path d="M8 14h8"/>
+            <path d="M8 18h8"/>
         </svg>
-        <span class="nav-label">Calendário</span>
+        <span class="nav-label">Orações</span>
     </button>
         <button type="button" class="nav-item" data-tab="biblia">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -534,6 +569,36 @@
             </div>
         <button type="button" class="avatar-save-btn" id="avatar-save-btn" onclick="saveAvatar()">
             Salvar Avatar
+        </button>
+    </div>
+</div>
+
+<div id="profile-settings-modal">
+    <div class="avatar-modal-content">
+        <button type="button" class="avatar-modal-close" onclick="closeProfileSettingsModal()">×</button>
+        <h2 class="avatar-modal-title">Editar Perfil</h2>
+
+        <label class="profile-label">Sobre Mim (Bio)</label>
+        <textarea id="settings-bio" class="profile-input profile-textarea" placeholder="Escreva uma breve apresentação..."></textarea>
+
+        <label class="profile-label">Minha Intenção (Pública)</label>
+        <input type="text" id="settings-intention" class="profile-input" placeholder="Ex: Pela saúde da minha família...">
+
+        <label class="profile-label">Notificações Diárias</label>
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+            <button type="button" id="push-enable-btn" style="flex:1; padding: 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;">
+                Ativar Push
+            </button>
+            <button type="button" id="push-disable-btn" style="flex:1; padding: 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;">
+                Desativar
+            </button>
+        </div>
+        <p id="push-status-text" style="font-family: var(--font-body); font-size: 0.9rem; color: var(--text-muted); margin-bottom: 14px;">
+            Push diário desativado.
+        </p>
+
+        <button type="button" class="avatar-save-btn" id="profile-save-btn" onclick="saveProfileData()">
+            Salvar Alterações
         </button>
     </div>
 </div>
@@ -620,7 +685,7 @@
     </svg>
 </button>
 <script type="module">
-import { firebaseConfig } from './config.js';
+import { firebaseConfig, webPushPublicKey } from './config.js';
 import{ initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import{ getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import{ getDatabase, ref, set, get, update, remove, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js'; // Adicionado push
@@ -655,8 +720,141 @@ function getFirebaseErrorMessage(errorCode){
     };
     return errors[errorCode] || 'Erro ao processar solicitação. Tente novamente.';
 }
+function getMysteryForDate(dateObj = new Date()) {
+    const dayMap ={ 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
+    return dayMap[dateObj.getDay()];
+}
+const DAILY_INTENTIONS = [
+    "Pelos que sofrem perseguição por causa da fé.",
+    "Pela conversão dos pecadores e a salvação das almas.",
+    "Pelas vocações sacerdotais e religiosas.",
+    "Pela paz no mundo e o fim das guerras.",
+    "Pelos enfermos e todos que cuidam deles.",
+    "Pelas almas do purgatório, especialmente as mais abandonadas.",
+    "Pela santificação das famílias.",
+    "Pelos jovens, para que encontrem seu caminho em Cristo.",
+    "Pela Igreja e pelo Santo Padre.",
+    "Pelos missionários em terras distantes.",
+];
+function getIntentionForDate(dateObj = new Date()) {
+    const dayOfYear = Math.floor((dateObj - new Date(dateObj.getFullYear(), 0, 0)) / 86400000);
+    return DAILY_INTENTIONS[dayOfYear % DAILY_INTENTIONS.length];
+}
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+    return outputArray;
+}
+async function refreshPushStatusUI() {
+    const statusEl = document.getElementById('push-status-text');
+    if (!statusEl || !window.currentUser) return;
+
+    const pushConfigSnap = await get(ref(database, `users/${window.currentUser.uid}/pushConfig`));
+    const pushConfig = pushConfigSnap.exists() ? pushConfigSnap.val() : {};
+
+    if (pushConfig.enabled) {
+        statusEl.textContent = 'Push diário ativo.';
+        statusEl.style.color = 'var(--gold)';
+    } else {
+        statusEl.textContent = 'Push diário desativado.';
+        statusEl.style.color = 'var(--text-muted)';
+    }
+}
+
+async function enableDailyPushNotifications() {
+    if (!window.currentUser) {
+        showCustomAlert('Entre na conta', 'Faça login para ativar notificações push.');
+        return;
+    }
+
+    try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            showCustomAlert('Indisponível', 'Seu navegador não suporta Web Push.');
+            return;
+        }
+        if (!('Notification' in window)) {
+            showCustomAlert('Indisponível', 'Notificações não são suportadas neste navegador.');
+            return;
+        }
+        if (!webPushPublicKey || webPushPublicKey.includes('COLE_AQUI')) {
+            showCustomAlert('Configuração pendente', 'Falta configurar a chave VAPID pública em config.js.');
+            return;
+        }
+
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+            showCustomAlert('Permissão negada', 'Ative notificações no navegador para receber lembretes.');
+            return;
+        }
+
+        const registration = await navigator.serviceWorker.ready;
+        let subscription = await registration.pushManager.getSubscription();
+        if (!subscription) {
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(webPushPublicKey)
+            });
+        }
+
+        await update(ref(database, `users/${window.currentUser.uid}`), {
+            pushConfig: {
+                enabled: true,
+                subscribedAt: Date.now(),
+                mystery: getMysteryForDate(new Date()),
+                intention: getIntentionForDate(new Date())
+            },
+            pushSubscription: subscription.toJSON()
+        });
+
+        showCustomAlert('Push ativado', 'Você receberá a intenção e o mistério do dia.');
+        await refreshPushStatusUI();
+    } catch (error) {
+        console.error('Erro ao ativar push:', error);
+        showCustomAlert('Erro no Push', 'Não foi possível ativar. Verifique permissões e suporte do navegador.');
+    }
+}
+
+async function disableDailyPushNotifications() {
+    if (!window.currentUser) {
+        showCustomAlert('Entre na conta', 'Faça login para gerenciar notificações.');
+        return;
+    }
+
+    try {
+        if ('serviceWorker' in navigator) {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+            if (subscription) await subscription.unsubscribe();
+        }
+
+        await update(ref(database, `users/${window.currentUser.uid}`), {
+            pushConfig: { enabled: false, disabledAt: Date.now() },
+            pushSubscription: null
+        });
+
+        showCustomAlert('Push desativado', 'Notificações diárias foram desativadas.');
+        await refreshPushStatusUI();
+    } catch (error) {
+        console.error('Erro ao desativar push:', error);
+        showCustomAlert('Erro no Push', 'Não foi possível desativar agora.');
+    }
+}
 function showElement(id){ document.getElementById(id).classList.add('visible');}
 function hideElement(id){ document.getElementById(id).classList.remove('visible');}
+let splashHidden = false;
+function hideSplashScreen() {
+    if (splashHidden) return;
+    splashHidden = true;
+    const splash = document.getElementById('app-splash');
+    if (!splash) return;
+    splash.classList.add('hide');
+    setTimeout(() => splash.remove(), 700);
+}
+window.hideSplashScreen = hideSplashScreen;
+setTimeout(() => hideSplashScreen(), 2500);
 function showError(id, message){
     const el = document.getElementById(id);
     el.textContent = message;
@@ -741,6 +939,19 @@ onAuthStateChanged(auth, async (user) =>{
         if (snapshot.exists()){
             window.userProfile = snapshot.val();
             window.currentUser = user;
+
+            try {
+                await closeExpiredChallengeIfNeeded();
+                // Recarrega perfil após possível fechamento automático de desafio
+                const refreshedSnapshot = await get(userRef);
+                if (refreshedSnapshot.exists()) {
+                    window.userProfile = refreshedSnapshot.val();
+                }
+            } catch (challengeError) {
+                console.error('Falha ao verificar/fechar desafio expirado:', challengeError);
+                // Não bloquear renderização do perfil por causa da rotina de desafio.
+            }
+
             // Atualizar UI
             updateUserInterface();
             // Carregar Amigos e Pedidos se estiver na aba
@@ -755,23 +966,95 @@ onAuthStateChanged(auth, async (user) =>{
         window.userProfile = null;
         window.currentUser = null;
     }
+    hideSplashScreen();
 });
+
+async function closeExpiredChallengeIfNeeded() {
+    const profile = window.userProfile;
+    const myUid = window.currentUser?.uid;
+    if (!profile?.active_challenge?.active || !myUid) return;
+
+    const challenge = profile.active_challenge;
+    const startDate = Number(challenge.start_date || 0);
+    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+    if (!startDate || (Date.now() - startDate) < sevenDaysMs) return;
+
+    const updates = {};
+    updates[`users/${myUid}/active_challenge`] = null;
+    if (challenge.friend_uid) {
+        updates[`users/${challenge.friend_uid}/active_challenge`] = null;
+    }
+
+    const myProgress = Number(challenge.my_progress || 0);
+    const friendProgress = Number(challenge.friend_progress || 0);
+
+    let myResult = 'draw';
+    let friendResult = 'draw';
+    let winnerName = 'Ninguém';
+
+    if (myProgress > friendProgress) {
+        myResult = 'win';
+        friendResult = 'lose';
+        winnerName = profile.displayName || profile.username || 'Você';
+    } else if (friendProgress > myProgress) {
+        myResult = 'lose';
+        friendResult = 'win';
+        winnerName = challenge.friend_name || 'Seu amigo';
+    }
+
+    const ts = Date.now();
+    const myInboxKey = push(ref(database, `inbox/${myUid}`)).key;
+    updates[`inbox/${myUid}/${myInboxKey}`] = {
+        type: 'challenge_result',
+        result: myResult,
+        message: myResult === 'draw'
+            ? 'Desafio encerrado após 7 dias com empate. Continue firme!'
+            : myResult === 'win'
+                ? 'Parabéns! Você venceu no fechamento automático de 7 dias!'
+                : `${winnerName} venceu no fechamento automático de 7 dias. Tente outra vez!`,
+        timestamp: ts
+    };
+
+    if (challenge.friend_uid) {
+        const friendInboxKey = push(ref(database, `inbox/${challenge.friend_uid}`)).key;
+        updates[`inbox/${challenge.friend_uid}/${friendInboxKey}`] = {
+            type: 'challenge_result',
+            result: friendResult,
+            message: friendResult === 'draw'
+                ? 'Desafio encerrado após 7 dias com empate. Continue firme!'
+                : friendResult === 'win'
+                    ? 'Parabéns! Você venceu no fechamento automático de 7 dias!'
+                    : `${winnerName} venceu no fechamento automático de 7 dias. Tente outra vez!`,
+            timestamp: ts
+        };
+    }
+
+    await update(ref(database), updates);
+    window.userProfile.active_challenge = null;
+}
 // Atualizar interface com dados do usuário
 function updateUserInterface(){
     const profile = window.userProfile;
     if (!profile) return;
-    const displayName = profile.displayName || profile.username;
+    const displayName = profile.displayName || profile.username || 'Usuário';
+    const username = profile.username || 'usuario';
     const initial = displayName.charAt(0).toUpperCase();
     const avatar = profile.avatar || initial;
     
     document.getElementById('home-user-name').textContent = displayName;
     document.getElementById('profile-name').textContent = displayName;
-    document.getElementById('profile-handle').textContent = '@' + profile.username; // MOSTRA HANDLE
+    document.getElementById('profile-handle').textContent = '@' + username; // MOSTRA HANDLE
     document.getElementById('profile-avatar').innerHTML = window.getAvatarHTML(avatar);
     
-    // NOVOS CAMPOS: Preencher Bio e Intenção se existirem
-    document.getElementById('profile-bio').value = profile.bio || '';
-    document.getElementById('profile-intention').value = profile.intention || '';
+    // NOVOS CAMPOS: Exibe Bio e Intenção no perfil (somente leitura) e preenche modal de edição.
+    const bio = profile.bio || '';
+    const profileIntention = profile.intention || '';
+    document.getElementById('profile-bio-display').textContent = bio || 'Sem bio definida.';
+    document.getElementById('profile-intention-display').textContent = profileIntention || 'Sem intenção pública definida.';
+    const settingsBio = document.getElementById('settings-bio');
+    const settingsIntention = document.getElementById('settings-intention');
+    if (settingsBio) settingsBio.value = bio;
+    if (settingsIntention) settingsIntention.value = profileIntention;
 
     const streak = profile.currentStreak || 0;
     const streakMessage = streak === 0 ? 'Comece hoje sua jornada de oração' :
@@ -804,31 +1087,18 @@ function updateUserInterface(){
         document.getElementById('my-challenge-progress').style.display = 'none';
     }
 
-    const intentions = [
-        "Pelos que sofrem perseguição por causa da fé.",
-        "Pela conversão dos pecadores e a salvação das almas.",
-        "Pelas vocações sacerdotais e religiosas.",
-        "Pela paz no mundo e o fim das guerras.",
-        "Pelos enfermos e todos que cuidam deles.",
-        "Pelas almas do purgatório, especialmente as mais abandonadas.",
-        "Pela santificação das famílias.",
-        "Pelos jovens, para que encontrem seu caminho em Cristo.",
-        "Pela Igreja e pelo Santo Padre.",
-        "Pelos missionários em terras distantes.",
-    ];
-    const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-    const intention = intentions[dayOfYear % intentions.length];
+    const intention = getIntentionForDate(new Date());
     document.getElementById('home-intention').textContent = intention;
-    document.getElementById('calendar-intention').textContent = intention;
     const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
     const today = new Date();
     document.getElementById('home-today-day').textContent = days[today.getDay()];
     document.getElementById('rosary-today-day').textContent = days[today.getDay()];
-    const dayMap ={ 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Gozosos', 5: 'Dolorosos', 6: 'Gozosos' };
-    document.getElementById('home-today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
-    document.getElementById('rosary-today-mystery').textContent = 'Mistérios ' + dayMap[today.getDay()];
+    const mystery = getMysteryForDate(today);
+    document.getElementById('home-today-mystery').textContent = 'Mistérios ' + mystery;
+    document.getElementById('rosary-today-mystery').textContent = 'Mistérios ' + mystery;
     renderCalendar();
     checkInbox(); // Atualiza a badge do inbox
+    refreshPushStatusUI().catch(console.error);
 }
 // Estado do calendário
 let currentCalendarMonth = new Date().getMonth();
@@ -907,26 +1177,111 @@ function renderCalendar(){
 // ===== LÓGICA DE AMIGOS (INTEGRADA) =====
 // ==========================================
 
+function setSearchResultMessage(resultDiv, message, color = 'var(--text-dim)') {
+    resultDiv.innerHTML = '';
+    resultDiv.textContent = message;
+    resultDiv.style.cssText = `color: ${color}; font-size: 0.85rem; padding: 8px;`;
+}
+
+function resetSearchResultStyle(resultDiv) {
+    resultDiv.style.cssText = '';
+}
+
+function normalizeSearchText(value) {
+    return typeof value === 'string' ? value.trim().toLowerCase() : '';
+}
+
+function createSafeAvatarElement(avatarValue) {
+    const avatarWrap = document.createElement('div');
+    avatarWrap.style.cssText = 'width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;';
+
+    const avatarName = typeof avatarValue === 'string' ? avatarValue.trim() : '';
+    const validAvatarFilename = /^[a-zA-Z0-9._-]+\.(png|jpg|jpeg|webp|gif)$/i.test(avatarName);
+
+    if (validAvatarFilename) {
+        const img = document.createElement('img');
+        img.src = `img/avatars/${avatarName}`;
+        img.alt = 'Avatar';
+        img.className = 'avatar-img';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        avatarWrap.appendChild(img);
+        return avatarWrap;
+    }
+
+    const fallback = document.createElement('span');
+    fallback.textContent = avatarName || '👤';
+    avatarWrap.appendChild(fallback);
+    return avatarWrap;
+}
+
+function renderSearchFriendResult(resultDiv, found, { infoText, action }) {
+    resetSearchResultStyle(resultDiv);
+    resultDiv.innerHTML = '';
+
+    const card = document.createElement('div');
+    card.style.cssText = 'background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px;';
+
+    card.appendChild(createSafeAvatarElement(found.avatar));
+
+    const info = document.createElement('div');
+    info.style.flex = '1';
+
+    const displayName = document.createElement('div');
+    displayName.style.cssText = 'font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);';
+    displayName.textContent = found.displayName || found.username;
+    info.appendChild(displayName);
+
+    const username = document.createElement('div');
+    username.style.cssText = 'font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);';
+    username.textContent = `@${found.username}`;
+    info.appendChild(username);
+
+    const meta = document.createElement('div');
+    meta.style.cssText = 'font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;';
+    meta.textContent = infoText;
+    info.appendChild(meta);
+
+    card.appendChild(info);
+
+    if (action?.type === 'button') {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = action.label;
+        btn.style.cssText = 'padding: 10px 18px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border: none; border-radius: 6px; color: var(--bg-deep); font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;';
+        btn.addEventListener('click', action.onClick);
+        card.appendChild(btn);
+    }
+
+    resultDiv.appendChild(card);
+}
+
 async function searchFriend() {
     const input = document.getElementById('friend-search-input');
     const resultDiv = document.getElementById('search-result');
+    if (!window.currentUser?.uid) {
+        setSearchResultMessage(resultDiv, 'Entre na sua conta para buscar amigos.', '#c07070');
+        return;
+    }
+
     let searchTerm = input.value.trim().toLowerCase();
     
     searchTerm = searchTerm.replace(/^@/, '');
     
     if (!searchTerm || searchTerm.length < 2) {
-        resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Digite pelo menos 2 caracteres</p>';
+        setSearchResultMessage(resultDiv, 'Digite pelo menos 2 caracteres');
         return;
     }
     
-    resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Buscando...</p>';
+    setSearchResultMessage(resultDiv, 'Buscando...');
     
     try {
         const usersRef = ref(database, 'users');
         const snapshot = await get(usersRef);
         
         if (!snapshot.exists()) {
-            resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Nenhum usuário encontrado</p>';
+            setSearchResultMessage(resultDiv, 'Nenhum usuário encontrado');
             return;
         }
         
@@ -938,14 +1293,16 @@ async function searchFriend() {
             const u = users[uid];
             if (uid === window.currentUser.uid) continue; // Pula eu mesmo
 
-            if (u.username.toLowerCase().includes(searchTerm) || 
-                (u.displayName && u.displayName.toLowerCase().includes(searchTerm))) {
+            const username = normalizeSearchText(u?.username);
+            const displayName = normalizeSearchText(u?.displayName);
+
+            if (username.includes(searchTerm) || displayName.includes(searchTerm)) {
                 results.push({uid, ...u});
             }
         }
         
         if (results.length === 0) {
-            resultDiv.innerHTML = '<p style="color: var(--text-dim); font-size: 0.85rem; padding: 8px;">Nenhum usuário encontrado</p>';
+            setSearchResultMessage(resultDiv, 'Nenhum usuário encontrado');
             return;
         }
 
@@ -957,16 +1314,7 @@ async function searchFriend() {
         const friendCheck = await get(myFriendsRef);
         
         if (friendCheck.exists()) {
-            resultDiv.innerHTML = `
-                <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${window.getAvatarHTML(found.avatar)}</div>
-                    <div style="flex: 1;">
-                        <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${found.displayName || found.username}</div>
-                        <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${found.username}</div>
-                        <div style="font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">✅ Já são amigos</div>
-                    </div>
-                </div>
-            `;
+            renderSearchFriendResult(resultDiv, found, { infoText: '✅ Já são amigos' });
             return;
         }
         
@@ -974,34 +1322,24 @@ async function searchFriend() {
         const sentCheck = await get(sentRef);
         
         if (sentCheck.exists()) {
-            resultDiv.innerHTML = `
-                <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${window.getAvatarHTML(found.avatar)}</div>
-                    <div style="flex: 1;">
-                        <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${found.displayName || found.username}</div>
-                        <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${found.username}</div>
-                        <div style="font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">⏳ Pedido enviado</div>
-                    </div>
-                </div>
-            `;
+            renderSearchFriendResult(resultDiv, found, { infoText: '⏳ Pedido enviado' });
             return;
         }
         
-        resultDiv.innerHTML = `
-            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-                <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${window.getAvatarHTML(found.avatar)}</div>
-                <div style="flex: 1;">
-                    <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${found.displayName || found.username}</div>
-                    <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${found.username}</div>
-                    <div style="font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">🔥 ${found.currentStreak || 0} dias</div>
-                </div>
-                <button onclick="sendFriendRequest('${foundUid}')" style="padding: 10px 18px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border: none; border-radius: 6px; color: var(--bg-deep); font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;">Adicionar</button>
-            </div>
-        `;
+        const parsedStreak = Number(found.currentStreak);
+        const safeStreak = Number.isFinite(parsedStreak) && parsedStreak > 0 ? parsedStreak : 0;
+        renderSearchFriendResult(resultDiv, found, {
+            infoText: `🔥 ${safeStreak} dias`,
+            action: {
+                type: 'button',
+                label: 'Adicionar',
+                onClick: () => sendFriendRequest(foundUid)
+            }
+        });
         
     } catch (error) {
         console.error('Erro:', error);
-        resultDiv.innerHTML = '<p style="color: #c07070; font-size: 0.85rem; padding: 8px;">Erro ao buscar: ' + error.message + '</p>';
+        setSearchResultMessage(resultDiv, `Erro ao buscar: ${error.message}`, '#c07070');
     }
 }
 
@@ -1281,6 +1619,31 @@ window.openInboxModal = async function() {
                         <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Recusar</button>
                     </div>
                 `;
+            } else if (data.type === 'challenge_result') {
+                const isWin = data.result === 'win';
+                const isDraw = data.result === 'draw';
+                const icon = isWin ? '🏆' : (isDraw ? '🤝' : '🙏');
+                const title = isWin
+                    ? 'Parabéns! Você venceu o desafio de 7 dias!'
+                    : (isDraw ? 'Desafio encerrado com empate.' : 'Tente outra vez! Você não venceu desta vez.');
+                const subtitle = data.message || (isWin ? 'Continue firme na oração!' : (isDraw ? 'Ambos perseveraram até o fim!' : 'Continue perseverando na fé.'));
+
+                div.innerHTML = `
+                    <div class="inbox-header">
+                        <strong style="color: var(--gold); font-family: var(--font-display); font-size: 0.8rem;">Desafio 7 Dias</strong>
+                        <span class="inbox-time">${dateStr}</span>
+                    </div>
+                    <div class="inbox-body" style="display:flex; align-items:flex-start; gap:8px;">
+                        <span style="font-size: 1.1rem;">${icon}</span>
+                        <div>
+                            <div style="font-weight:600; margin-bottom: 4px;">${title}</div>
+                            <div style="opacity:0.9;">${subtitle}</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+                        <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Apagar</button>
+                    </div>
+                `;
             }
             list.appendChild(div);
         });
@@ -1366,6 +1729,35 @@ window.closeChallengeConfirm = function() {
     pendingChallengeName = null;
 };
 
+window.openCloseChallengeConfirm = function() {
+    if (!window.userProfile?.active_challenge) return;
+    document.getElementById('close-challenge-modal').classList.add('active');
+};
+
+window.closeCloseChallengeConfirm = function() {
+    document.getElementById('close-challenge-modal').classList.remove('active');
+};
+
+window.confirmCloseChallenge = async function() {
+    if (!window.currentUser || !window.userProfile?.active_challenge) return;
+    const myUid = window.currentUser.uid;
+
+    try {
+        // Fechamento manual: remove do próprio perfil para evitar bloqueios de permissão.
+        await update(ref(database, `users/${myUid}`), {
+            active_challenge: null
+        });
+
+        window.userProfile.active_challenge = null;
+        window.updateUserInterface();
+        window.closeCloseChallengeConfirm();
+        showCustomAlert('Desafio encerrado', 'O desafio foi removido do seu perfil.');
+    } catch (error) {
+        console.error('Erro ao encerrar desafio:', error);
+        showCustomAlert('Erro', 'Não foi possível encerrar o desafio agora.');
+    }
+};
+
 window.confirmSendChallenge = async function() {
     // Verificações iniciais
     if (!pendingChallengeUid || !window.currentUser) return;
@@ -1402,6 +1794,15 @@ if (challengeModal) {
     challengeModal.addEventListener('click', (e) => {
         if (e.target === challengeModal) {
             window.closeChallengeConfirm();
+        }
+    });
+}
+
+const closeChallengeModal = document.getElementById('close-challenge-modal');
+if (closeChallengeModal) {
+    closeChallengeModal.addEventListener('click', (e) => {
+        if (e.target === closeChallengeModal) {
+            window.closeCloseChallengeConfirm();
         }
     });
 }
@@ -1555,6 +1956,33 @@ window.viewFriendProfile = viewFriendProfile;
 <script type="module">
     
 import { TEXTS, MONTFORT } from './prayers.js';
+
+    const PRAYER_LIBRARY = [
+        { key: 'cross', title: 'Sinal da Cruz' },
+        { key: 'credo', title: 'Creio' },
+        { key: 'pater', title: 'Pai-Nosso' },
+        { key: 'ave', title: 'Ave-Maria' },
+        { key: 'gloria', title: 'Glória ao Pai' },
+        { key: 'fatima', title: 'Oração de Fátima' },
+        { key: 'salve', title: 'Salve Rainha' }
+    ];
+
+    function renderPrayersList() {
+        const container = document.getElementById('prayers-list');
+        if (!container) return;
+
+        container.innerHTML = PRAYER_LIBRARY.map(({ key, title }) => `
+            <article style="margin-bottom: 16px; padding: 14px 16px; background: rgba(255,255,255,0.72); border: 1px solid rgba(140, 112, 76, 0.22); border-radius: 14px;">
+                <h3 style="font-family: var(--font-display); font-size: 0.92rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 8px;">
+                    ${title}
+                </h3>
+                <p style="font-family: var(--font-body); color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap; margin: 0;">
+                    ${TEXTS[key]}
+                </p>
+            </article>
+        `).join('');
+    }
+    renderPrayersList();
     
     window.getAvatarHTML = function(avatarValue, size = '100%') {
         if (!avatarValue) return '👤';
@@ -1612,6 +2040,28 @@ import { TEXTS, MONTFORT } from './prayers.js';
         if (e.target === modal) window.closeAvatarModal();
     });
 
+    window.openProfileSettingsModal = function() {
+        if (!window.userProfile) return;
+        document.getElementById('settings-bio').value = window.userProfile.bio || '';
+        document.getElementById('settings-intention').value = window.userProfile.intention || '';
+        document.getElementById('profile-settings-modal').classList.add('active');
+        refreshPushStatusUI().catch(console.error);
+    };
+
+    window.closeProfileSettingsModal = function() {
+        document.getElementById('profile-settings-modal').classList.remove('active');
+    };
+
+    document.addEventListener('click', (e) => {
+        const settingsModal = document.getElementById('profile-settings-modal');
+        if (e.target === settingsModal) window.closeProfileSettingsModal();
+    });
+
+    const pushEnableBtn = document.getElementById('push-enable-btn');
+    if (pushEnableBtn) pushEnableBtn.addEventListener('click', () => enableDailyPushNotifications().catch(console.error));
+    const pushDisableBtn = document.getElementById('push-disable-btn');
+    if (pushDisableBtn) pushDisableBtn.addEventListener('click', () => disableDailyPushNotifications().catch(console.error));
+
     window.saveAvatar = async function(){
         if (!window.currentUser) {
             alert('Você precisa estar logado para salvar.');
@@ -1652,8 +2102,13 @@ import { TEXTS, MONTFORT } from './prayers.js';
             return;
         }
 
-        const bio = document.getElementById('profile-bio').value.trim();
-        const intention = document.getElementById('profile-intention').value.trim();
+        const bio = document.getElementById('settings-bio').value.trim();
+        const intention = document.getElementById('settings-intention').value.trim();
+        const saveBtn = document.getElementById('profile-save-btn');
+        if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Salvando...';
+        }
 
         try {
             const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
@@ -1671,10 +2126,17 @@ import { TEXTS, MONTFORT } from './prayers.js';
             }
 
             showCustomAlert('Sucesso!', 'Perfil atualizado com sucesso.');
+            window.closeProfileSettingsModal();
+            window.updateUserInterface();
 
         } catch (error) {
             console.error('Erro ao salvar perfil:', error);
             showCustomAlert('Erro', 'Não foi possível salvar as alterações.');
+        } finally {
+            if (saveBtn) {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Salvar Alterações';
+            }
         }
     };
     
@@ -2075,7 +2537,7 @@ const app = {
     // CORREÇÃO: Lógica de Streak Robusta (Fuso Horário)
     async saveCompletion(aves, paters) {
         try {
-             const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+             const { getDatabase, ref, update, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
              const database = getDatabase();
              const userId = window.currentUser.uid;
              
@@ -2144,18 +2606,46 @@ const app = {
              if (window.userProfile.active_challenge && window.userProfile.active_challenge.active) {
                  const challenge = window.userProfile.active_challenge;
                  // Incrementa meu progresso
-                 challenge.my_progress = (challenge.my_progress || 0) + 1;
+                 const myProgress = Math.min((challenge.my_progress || 0) + 1, 7);
+                 challenge.my_progress = myProgress;
                  
                  // Atualiza meu perfil
-                 updates[`users/${userId}/active_challenge/my_progress`] = challenge.my_progress;
+                 updates[`users/${userId}/active_challenge/my_progress`] = myProgress;
                  
                  // Atualiza perfil do amigo (precisa inverter: meu progresso lá é 'friend_progress')
-                 updates[`users/${challenge.friend_uid}/active_challenge/friend_progress`] = challenge.my_progress;
+                 updates[`users/${challenge.friend_uid}/active_challenge/friend_progress`] = myProgress;
                  
-                 // Se completou 7 dias
-                 if (challenge.my_progress >= 7) {
+                 // Se completou 7 dias, finaliza desafio para ambos e envia resultado para inbox.
+                 if (myProgress >= 7) {
                      showCustomAlert('VITÓRIA! 🏆', 'Você completou o desafio de 7 dias!');
-                     // Lógica de finalizar desafio poderia vir aqui
+
+                     const winnerUid = userId;
+                     const loserUid = challenge.friend_uid;
+                     const winnerName = window.userProfile.displayName || window.userProfile.username || 'Você';
+
+                     updates[`users/${winnerUid}/active_challenge`] = null;
+                     updates[`users/${loserUid}/active_challenge`] = null;
+
+                     const winnerInboxKey = push(ref(database, `inbox/${winnerUid}`)).key;
+                     const loserInboxKey = push(ref(database, `inbox/${loserUid}`)).key;
+                     const ts = Date.now();
+
+                     updates[`inbox/${winnerUid}/${winnerInboxKey}`] = {
+                         type: 'challenge_result',
+                         result: 'win',
+                         message: 'Parabéns! Você venceu o desafio de 7 dias consecutivos!',
+                         byUid: winnerUid,
+                         byName: winnerName,
+                         timestamp: ts
+                     };
+                     updates[`inbox/${loserUid}/${loserInboxKey}`] = {
+                         type: 'challenge_result',
+                         result: 'lose',
+                         message: `${winnerName} completou os 7 dias primeiro. Tente outra vez!`,
+                         byUid: winnerUid,
+                         byName: winnerName,
+                         timestamp: ts
+                     };
                  }
              }
              
@@ -2167,6 +2657,9 @@ const app = {
              window.userProfile.currentStreak = newStreak;
              if (newStreak > (window.userProfile.longestStreak || 0)) {
                  window.userProfile.longestStreak = newStreak;
+             }
+             if (window.userProfile.active_challenge?.my_progress >= 7) {
+                 window.userProfile.active_challenge = null;
              }
              
              window.updateUserInterface();
