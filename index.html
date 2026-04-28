@@ -247,8 +247,13 @@
             <div class="prayers-tab">
                 <header class="prayers-hero">
                     <h2>Orações</h2>
-                    <p>Textos organizados para oração pessoal e devoção diária.</p>
+                    <p>Selecione no menu a oração que deseja rezar.</p>
                 </header>
+                <div class="prayers-controls">
+                    <select id="select-prayer" aria-label="Selecionar oração" disabled>
+                        <option value="">Selecione a oração</option>
+                    </select>
+                </div>
                 <div id="prayers-list" class="prayers-list">
                     <p class="prayers-loading">Carregando orações...</p>
                 </div>
@@ -526,13 +531,7 @@
         <span class="nav-label">Rosário</span>
     </button>
     <button type="button" class="nav-item" data-tab="prayers">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2v20"/>
-            <path d="M8 6h8"/>
-            <path d="M8 10h8"/>
-            <path d="M8 14h8"/>
-            <path d="M8 18h8"/>
-        </svg>
+        <span class="nav-icon nav-icon-emoji" aria-hidden="true">🙏</span>
         <span class="nav-label">Orações</span>
     </button>
         <button type="button" class="nav-item" data-tab="biblia">
@@ -1957,38 +1956,66 @@ import { TEXTS, MONTFORT } from './prayers.js';
 
     const toHTML = (text = '') => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-    function renderPrayersList(prayers = []) {
+    function renderPrayer(prayer) {
         const container = document.getElementById('prayers-list');
         if (!container) return;
 
-        container.innerHTML = prayers.map((prayer) => {
-            const hasLatin = Boolean(prayer.latin && prayer.latin.trim());
-            const prayerBody = hasLatin
-                ? `
-                <div class="prayer-body prayer-body-split">
-                    <div class="prayer-col">
-                        <h4>Português</h4>
-                        <p>${toHTML(prayer.pt).replace(/\n/g, '<br>')}</p>
-                    </div>
-                    <div class="prayer-divider" aria-hidden="true"></div>
-                    <div class="prayer-col prayer-col-latin">
-                        <h4>Latim</h4>
-                        <p>${toHTML(prayer.latin).replace(/\n/g, '<br>')}</p>
-                    </div>
-                </div>`
-                : `
-                <div class="prayer-body">
-                    <p>${toHTML(prayer.pt).replace(/\n/g, '<br>')}</p>
-                </div>`;
+        if (!prayer) {
+            container.innerHTML = '<p class="prayers-loading">Selecione uma oração no menu acima.</p>';
+            return;
+        }
 
-            return `
-                <article class="prayer-card">
-                    <h3 class="prayer-title">${toHTML(prayer.title)}</h3>
-                    ${prayer.subtitle ? `<p class="prayer-subtitle">${toHTML(prayer.subtitle)}</p>` : ''}
-                    ${prayerBody}
-                </article>
-            `;
-        }).join('');
+        const hasLatin = Boolean(prayer.latin && prayer.latin.trim());
+        const prayerBody = hasLatin
+            ? `
+            <div class="prayer-body prayer-body-split">
+                <div class="prayer-col">
+                    <h4>Português</h4>
+                    <p>${toHTML(prayer.pt).replace(/\n/g, '<br>')}</p>
+                </div>
+                <div class="prayer-divider" aria-hidden="true"></div>
+                <div class="prayer-col prayer-col-latin">
+                    <h4>Latim</h4>
+                    <p>${toHTML(prayer.latin).replace(/\n/g, '<br>')}</p>
+                </div>
+            </div>`
+            : `
+            <div class="prayer-body">
+                <p>${toHTML(prayer.pt).replace(/\n/g, '<br>')}</p>
+            </div>`;
+
+        container.innerHTML = `
+            <article class="prayer-card">
+                <h3 class="prayer-title">${toHTML(prayer.title)}</h3>
+                ${prayer.subtitle ? `<p class="prayer-subtitle">${toHTML(prayer.subtitle)}</p>` : ''}
+                ${prayerBody}
+            </article>
+        `;
+    }
+
+    function setupPrayerSelector(prayers = []) {
+        const selectPrayer = document.getElementById('select-prayer');
+        if (!selectPrayer) return;
+
+        selectPrayer.innerHTML = '<option value="">Selecione a oração</option>';
+
+        prayers.forEach((prayer, index) => {
+            const option = document.createElement('option');
+            option.value = String(index);
+            option.textContent = prayer.title;
+            selectPrayer.appendChild(option);
+        });
+
+        selectPrayer.disabled = false;
+        selectPrayer.addEventListener('change', () => {
+            const selectedIndex = Number(selectPrayer.value);
+            renderPrayer(Number.isNaN(selectedIndex) ? null : prayers[selectedIndex]);
+        });
+
+        if (prayers.length > 0) {
+            selectPrayer.value = '0';
+            renderPrayer(prayers[0]);
+        }
     }
 
     async function loadAndRenderPrayersList() {
@@ -1999,7 +2026,7 @@ import { TEXTS, MONTFORT } from './prayers.js';
             if (!Array.isArray(prayers) || prayers.length === 0) {
                 throw new Error('Formato inválido em prayers.json');
             }
-            renderPrayersList(prayers);
+            setupPrayerSelector(prayers);
         } catch (error) {
             console.error('Erro ao carregar orações:', error);
             const container = document.getElementById('prayers-list');
