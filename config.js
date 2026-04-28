@@ -10,3 +10,6 @@ export const firebaseConfig = {
     messagingSenderId: "928215518242",
     appId: "1:928215518242:web:09c61bfbfc0fc947570e7b"
 };
+
+// Web Push (VAPID) - chave pública gerada no backend de envio
+export const webPushPublicKey = "COLE_AQUI_SUA_CHAVE_VAPID_PUBLICA";
