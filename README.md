@@ -49,6 +49,22 @@
 - **Firebase Realtime Database** - Sincronização de dados
 - **Service Worker** - Funcionalidade offline
 - **PWA** - Instalável no celular
+- **Web Push** - Notificações diárias (via backend agendado)
+
+## 🔔 Push Diário (Intenção + Mistério)
+
+O app suporta Web Push diário para enviar:
+- Mistério recomendado do dia
+- Intenção diária
+
+### Configuração rápida
+1. Gere chaves VAPID no backend e publique a chave pública em `config.js` (`webPushPublicKey`).
+2. Defina as variáveis de ambiente no deploy das funções:
+   - `WEB_PUSH_PUBLIC_KEY`
+   - `WEB_PUSH_PRIVATE_KEY`
+   - `WEB_PUSH_SUBJECT` (opcional, ex.: `mailto:admin@rosario.app`)
+3. Faça deploy da função `sendDailyRosaryPush` (pasta `functions/`).
+4. No app, usuário ativa push no modal de configurações do perfil.
 
 ## 🙏 Orações Incluídas
 

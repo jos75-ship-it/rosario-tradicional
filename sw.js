@@ -1,6 +1,6 @@
 // sw.js - Service Worker para PWA
 
-const CACHE_NAME = 'rosario-v3';
+const CACHE_NAME = 'rosario-v5';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -119,12 +119,21 @@ async function syncPrayers() {
 
 // Push notifications
 self.addEventListener('push', (event) => {
+  let payload = {};
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch {
+    payload = { body: event.data ? event.data.text() : '' };
+  }
+
+  const notificationTitle = payload.title || 'Santo Rosário';
   const options = {
-    body: event.data ? event.data.text() : 'Hora de rezar o Rosário! 🙏',
+    body: payload.body || 'Hora de rezar o Rosário! 🙏',
     icon: '/icon-192.png',
     badge: '/icon-72.png',
     vibrate: [200, 100, 200],
     data: {
+      url: payload.url || '/',
       dateOfArrival: Date.now(),
       primaryKey: 1
     },
@@ -142,7 +151,7 @@ self.addEventListener('push', (event) => {
   };
   
   event.waitUntil(
-    self.registration.showNotification('Santo Rosário', options)
+    self.registration.showNotification(notificationTitle, options)
   );
 });
 
@@ -159,13 +168,14 @@ self.addEventListener('notificationclick', (event) => {
       // Procurar se já existe janela aberta
       for (let i = 0; i < clientList.length; i++) {
         const client = clientList[i];
-        if (client.url === '/' && 'focus' in client) {
+        if ('focus' in client) {
           return client.focus();
         }
       }
       // Se não existe, abrir nova
       if (clients.openWindow) {
-        return clients.openWindow('/');
+        const destination = event.notification?.data?.url || '/';
+        return clients.openWindow(destination);
       }
     })
   );
