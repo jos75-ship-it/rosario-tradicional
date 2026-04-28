@@ -83,6 +83,13 @@
         </div>
     </div>
 </div>
+<div id="app-splash">
+    <div class="splash-content">
+        <img src="/icon-192.png" alt="Logo Rosário" class="splash-logo">
+        <h1 class="splash-title">Rosário</h1>
+        <p class="splash-subtitle">Método de São Luís de Montfort</p>
+    </div>
+</div>
 <div id="auth-screen">
     <div class="auth-container">
         <div class="auth-logo">
@@ -839,6 +846,17 @@ async function disableDailyPushNotifications() {
 }
 function showElement(id){ document.getElementById(id).classList.add('visible');}
 function hideElement(id){ document.getElementById(id).classList.remove('visible');}
+let splashHidden = false;
+function hideSplashScreen() {
+    if (splashHidden) return;
+    splashHidden = true;
+    const splash = document.getElementById('app-splash');
+    if (!splash) return;
+    splash.classList.add('hide');
+    setTimeout(() => splash.remove(), 700);
+}
+window.hideSplashScreen = hideSplashScreen;
+setTimeout(() => hideSplashScreen(), 2500);
 function showError(id, message){
     const el = document.getElementById(id);
     el.textContent = message;
@@ -950,6 +968,7 @@ onAuthStateChanged(auth, async (user) =>{
         window.userProfile = null;
         window.currentUser = null;
     }
+    hideSplashScreen();
 });
 
 async function closeExpiredChallengeIfNeeded() {
