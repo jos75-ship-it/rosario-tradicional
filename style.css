@@ -2044,12 +2044,15 @@ body::before{
 
 /* Aba de orações */
 .prayers-tab{
-    padding: 20px 18px 110px;
+    padding: 24px 24px 100px 24px;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .prayers-hero{
     text-align: center;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
 }
 
 .prayers-hero h2{
@@ -2069,35 +2072,81 @@ body::before{
     max-width: 520px;
 }
 
+.prayers-controls{
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 18px;
+}
+
+.prayers-controls select{
+    width: 100%;
+    padding: 14px 12px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23d4a855%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px top 50%;
+    background-size: 10px auto;
+}
+
+.prayers-controls select:focus,
+.prayers-controls select:hover{
+    border-color: var(--gold-dim);
+}
+
+.prayers-controls select:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.prayers-list{
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
 .prayer-card{
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(250, 246, 238, 0.92));
-    border: 1px solid rgba(140, 112, 76, 0.22);
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
-    margin-bottom: 16px;
-    padding: 16px;
+    background: linear-gradient(135deg, rgba(212, 168, 85, 0.05) 0%, rgba(212, 168, 85, 0.01) 100%);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 24px 20px;
 }
 
 .prayer-title{
     font-family: var(--font-display);
-    font-size: 1rem;
-    color: var(--gold-dark);
-    margin-bottom: 6px;
+    font-size: 1.08rem;
+    color: var(--gold);
+    margin-bottom: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
 .prayer-subtitle{
     font-family: var(--font-body);
     color: var(--text-muted);
-    margin-bottom: 10px;
-    font-size: 0.95rem;
+    margin-bottom: 14px;
+    font-size: 0.92rem;
+    font-style: italic;
 }
 
 .prayer-body p{
     margin: 0;
-    line-height: 1.65;
+    line-height: 1.75;
     color: var(--text-secondary);
     font-family: var(--font-body);
-    font-size: 0.96rem;
+    font-size: 1rem;
+    text-align: justify;
 }
 
 .prayer-body-split{
@@ -2109,9 +2158,9 @@ body::before{
 
 .prayer-col h4{
     margin: 0 0 8px;
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.16em;
     color: var(--gold);
 }
 
@@ -2123,7 +2172,7 @@ body::before{
 
 .prayer-col-latin h4,
 .prayer-col-latin p{
-    color: #9e1d1d;
+    color: var(--burgundy-light);
 }
 
 .prayers-error,
