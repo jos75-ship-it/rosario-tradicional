@@ -434,7 +434,7 @@
 
                 <div class="profile-section">
                     <label class="profile-label">Tema</label>
-                    <button type="button" class="auth-btn" id="theme-toggle-btn" onclick="toggleTheme()">Alternar Tema</button>
+                    <button type="button" class="auth-btn" id="theme-toggle-btn">Alternar Tema</button>
                     <label class="profile-label">Sobre Mim (Bio)</label>
                     <div id="profile-bio-display" class="profile-input" style="cursor: default; white-space: pre-wrap;">
                         —
@@ -588,6 +588,8 @@
         <label class="profile-label">Minha Intenção (Pública)</label>
         <input type="text" id="settings-intention" class="profile-input" placeholder="Ex: Pela saúde da minha família...">
 
+        <label class="profile-label">Tema do App</label>
+        <button type="button" class="auth-btn" id="settings-theme-toggle-btn">Alternar Tema</button>
         <label class="profile-label">Notificações Diárias</label>
         <div style="display: flex; gap: 10px; margin-bottom: 16px;">
             <button type="button" id="push-enable-btn" style="flex:1; padding: 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;">
@@ -2778,7 +2780,7 @@ window.showCustomAlert = showCustomAlert;
 window.closeCustomAlert = closeCustomAlert;
 function applyTheme(theme){document.documentElement.setAttribute("data-theme",theme);localStorage.setItem("rosario-theme",theme);const m=document.getElementById("theme-color-meta");if(m)m.setAttribute("content",theme==="light"?"#f8f1e8":"#080709");const b=document.getElementById("theme-toggle-btn");if(b)b.textContent=theme==="light"?"Usar modo escuro":"Usar modo claro";}
 function toggleTheme(){applyTheme(document.documentElement.getAttribute("data-theme")==="light"?"dark":"light");}
-window.toggleTheme=toggleTheme;document.addEventListener("DOMContentLoaded",()=>applyTheme(document.documentElement.getAttribute("data-theme")||"dark"));
+window.toggleTheme=toggleTheme;document.addEventListener("DOMContentLoaded",()=>{applyTheme(document.documentElement.getAttribute("data-theme")||"dark");const ids=["theme-toggle-btn","settings-theme-toggle-btn"];ids.forEach(id=>{const el=document.getElementById(id);if(el){el.addEventListener("click",toggleTheme);}});if(window.matchMedia){const mq=window.matchMedia("(prefers-color-scheme: light)");mq.addEventListener?.("change",(e)=>{if(!localStorage.getItem("rosario-theme")){applyTheme(e.matches?"light":"dark");}});}});
 </script>
     <script src="biblia.js"></script>
 </body>
