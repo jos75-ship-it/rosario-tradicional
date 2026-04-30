@@ -2599,3 +2599,19 @@ body::before{
 .nav-item.active .nav-icon,.nav-item.active .nav-label{color:var(--gold);filter:drop-shadow(0 0 8px var(--gold-glow));}
 .nav-item:not(.active):hover{color:var(--text-secondary);}
 @media (max-width: 380px){.bottom-nav{width:calc(100vw - 10px);padding:8px;}.nav-item{min-height:52px;padding-top:6px;}}
+
+/* Ajustes visuais exclusivos do modo claro */
+:root[data-theme="light"] .tab-content::after,
+:root[data-theme="light"] .home-screen-content::after{
+    background: linear-gradient(to top, var(--bg-card) 0%, rgba(255, 249, 242, 0.94) 52%, transparent 100%);
+}
+
+:root[data-theme="light"] .bottom-nav{
+    background: var(--bg-card);
+    box-shadow: 0 6px 16px rgba(120, 72, 56, 0.10);
+}
+
+:root[data-theme="light"] #main-app,
+:root[data-theme="light"] .tab-content{
+    background: var(--bg-primary);
+}
