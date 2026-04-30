@@ -21,7 +21,8 @@
     <link rel="apple-touch-icon" sizes="167x167" href="/icon-192.png">
     
     <meta name="description" content="Reze o Santo Rosário pelo Método de São Luís de Montfort. App completo com meditações, calendário e acompanhamento.">
-    <meta name="theme-color" content="#080709">
+    <meta name="theme-color" content="#080709" id="theme-color-meta">
+    <script>(function(){const k="rosario-theme";const s=localStorage.getItem(k);const p=window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.setAttribute("data-theme",s||p);})();</script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -531,10 +532,15 @@
         <span class="nav-label">Rosário</span>
     </button>
     <button type="button" class="nav-item" data-tab="prayers">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 3v8"></path>
-            <path d="M8.4 6.5c-.5-.9-1.6-1.2-2.4-.8-.8.5-1.1 1.5-.7 2.4L9 16.5c.8 1.7 3.2 1.7 4 0l3.7-8.4c.4-.9.1-1.9-.7-2.4-.8-.4-1.9-.1-2.4.8L12 9.2 8.4 6.5z"></path>
-            <path d="M7 20h10"></path>
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3.5v6.2"></path>
+            <path d="M12 14.3v6.2"></path>
+            <path d="M3.5 12h6.2"></path>
+            <path d="M14.3 12h6.2"></path>
+            <path d="M6.2 6.2l4.4 4.4"></path>
+            <path d="M13.4 13.4l4.4 4.4"></path>
+            <path d="M17.8 6.2l-4.4 4.4"></path>
+            <path d="M10.6 13.4l-4.4 4.4"></path>
         </svg>
         <span class="nav-label">Orações</span>
     </button>
@@ -585,6 +591,8 @@
         <label class="profile-label">Minha Intenção (Pública)</label>
         <input type="text" id="settings-intention" class="profile-input" placeholder="Ex: Pela saúde da minha família...">
 
+        <label class="profile-label">Tema do App</label>
+        <button type="button" class="auth-btn" id="settings-theme-toggle-btn">Alternar Tema</button>
         <label class="profile-label">Notificações Diárias</label>
         <div style="display: flex; gap: 10px; margin-bottom: 16px;">
             <button type="button" id="push-enable-btn" style="flex:1; padding: 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;">
@@ -2451,6 +2459,7 @@ const app = {
             this.els.track.appendChild(el);
         });
         this.els.prayer.classList.add('active');
+        document.body.classList.add('is-praying');
         AudioSystem.playBell();
         this.update();
     },
@@ -2580,6 +2589,7 @@ const app = {
     home() {
         this.state.type = null;
         this.els.prayer.classList.remove('active');
+        document.body.classList.remove('is-praying');
         this.els.completion.classList.remove('active');
     },
     complete() {
@@ -2593,6 +2603,7 @@ const app = {
             this.saveCompletion(aves, paters);
         }
         this.els.prayer.classList.remove('active');
+        document.body.classList.remove('is-praying');
         this.els.completion.classList.add('active');
     },
     // CORREÇÃO: Lógica de Streak Robusta (Fuso Horário)
@@ -2773,6 +2784,26 @@ document.addEventListener('click', (e) => {
 
 window.showCustomAlert = showCustomAlert;
 window.closeCustomAlert = closeCustomAlert;
+
+// Prompt automático de instalação PWA (Android/Chrome)
+(function initAutoPwaPrompt(){
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (!isMobile || isStandalone) return;
+
+    window.addEventListener('beforeinstallprompt', async (e) => {
+        e.preventDefault();
+        try {
+            await new Promise(r => setTimeout(r, 600));
+            await e.prompt();
+            await e.userChoice;
+        } catch (_) {}
+    }, { once: true });
+})();
+
+function applyTheme(theme){document.documentElement.setAttribute("data-theme",theme);localStorage.setItem("rosario-theme",theme);const m=document.getElementById("theme-color-meta");if(m)m.setAttribute("content",theme==="light"?"#f8f1e8":"#080709");const b=document.getElementById("theme-toggle-btn");if(b)b.textContent=theme==="light"?"Usar modo escuro":"Usar modo claro";}
+function toggleTheme(){applyTheme(document.documentElement.getAttribute("data-theme")==="light"?"dark":"light");}
+window.toggleTheme=toggleTheme;document.addEventListener("DOMContentLoaded",()=>{applyTheme(document.documentElement.getAttribute("data-theme")||"dark");const ids=["settings-theme-toggle-btn"];ids.forEach(id=>{const el=document.getElementById(id);if(el){el.addEventListener("click",toggleTheme);}});if(window.matchMedia){const mq=window.matchMedia("(prefers-color-scheme: light)");mq.addEventListener?.("change",(e)=>{if(!localStorage.getItem("rosario-theme")){applyTheme(e.matches?"light":"dark");}});}});
 </script>
     <script src="biblia.js"></script>
 </body>
