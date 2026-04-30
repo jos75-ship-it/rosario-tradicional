@@ -2615,3 +2615,20 @@ body::before{
 :root[data-theme="light"] .tab-content{
     background: var(--bg-primary);
 }
+
+
+/* Correções de layout e rosário */
+:root[data-theme="light"] .rosary-rail{
+    background: linear-gradient(90deg, var(--bg-primary) 0%, var(--bg-card) 100%);
+    border-right-color: rgba(139, 39, 64, 0.12);
+}
+:root[data-theme="light"] .rosary-rail::before{
+    background: linear-gradient(180deg, var(--bg-card) 0%, rgba(255, 249, 242, 0.9) 55%, transparent 100%);
+}
+:root[data-theme="light"] .rosary-rail::after{
+    background: linear-gradient(0deg, var(--bg-card) 0%, rgba(255, 249, 242, 0.9) 55%, transparent 100%);
+}
+
+body.is-praying .bottom-nav{display:none !important;}
+
+.home-screen-content{justify-content:flex-start;}

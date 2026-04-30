@@ -2454,6 +2454,7 @@ const app = {
             this.els.track.appendChild(el);
         });
         this.els.prayer.classList.add('active');
+        document.body.classList.add('is-praying');
         AudioSystem.playBell();
         this.update();
     },
@@ -2583,6 +2584,7 @@ const app = {
     home() {
         this.state.type = null;
         this.els.prayer.classList.remove('active');
+        document.body.classList.remove('is-praying');
         this.els.completion.classList.remove('active');
     },
     complete() {
@@ -2596,6 +2598,7 @@ const app = {
             this.saveCompletion(aves, paters);
         }
         this.els.prayer.classList.remove('active');
+        document.body.classList.remove('is-praying');
         this.els.completion.classList.add('active');
     },
     // CORREÇÃO: Lógica de Streak Robusta (Fuso Horário)
