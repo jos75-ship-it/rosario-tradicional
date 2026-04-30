@@ -2638,3 +2638,15 @@ body.is-praying .bottom-nav{display:none !important;}
     padding-top: calc(var(--safe-area-top) + 20px) !important;
     box-sizing: border-box;
 }
+
+/* Light mode: remove sombreado incômodo na tela de login */
+:root[data-theme="light"] body::before{
+    background:
+        radial-gradient(ellipse at 15% 15%, rgba(139, 39, 64, 0.06) 0%, transparent 42%),
+        radial-gradient(ellipse at 85% 85%, rgba(255, 249, 242, 0.45) 0%, transparent 48%),
+        linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-card) 100%);
+}
+
+:root[data-theme="light"] #auth-screen{
+    background: var(--bg-primary);
+}
