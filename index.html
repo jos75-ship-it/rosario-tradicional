@@ -21,7 +21,8 @@
     <link rel="apple-touch-icon" sizes="167x167" href="/icon-192.png">
     
     <meta name="description" content="Reze o Santo Rosário pelo Método de São Luís de Montfort. App completo com meditações, calendário e acompanhamento.">
-    <meta name="theme-color" content="#080709">
+    <meta name="theme-color" content="#080709" id="theme-color-meta">
+    <script>(function(){const k="rosario-theme";const s=localStorage.getItem(k);const p=window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.setAttribute("data-theme",s||p);})();</script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -432,6 +433,8 @@
                 </div>
 
                 <div class="profile-section">
+                    <label class="profile-label">Tema</label>
+                    <button type="button" class="auth-btn" id="theme-toggle-btn" onclick="toggleTheme()">Alternar Tema</button>
                     <label class="profile-label">Sobre Mim (Bio)</label>
                     <div id="profile-bio-display" class="profile-input" style="cursor: default; white-space: pre-wrap;">
                         —
@@ -2773,6 +2776,9 @@ document.addEventListener('click', (e) => {
 
 window.showCustomAlert = showCustomAlert;
 window.closeCustomAlert = closeCustomAlert;
+function applyTheme(theme){document.documentElement.setAttribute("data-theme",theme);localStorage.setItem("rosario-theme",theme);const m=document.getElementById("theme-color-meta");if(m)m.setAttribute("content",theme==="light"?"#f8f1e8":"#080709");const b=document.getElementById("theme-toggle-btn");if(b)b.textContent=theme==="light"?"Usar modo escuro":"Usar modo claro";}
+function toggleTheme(){applyTheme(document.documentElement.getAttribute("data-theme")==="light"?"dark":"light");}
+window.toggleTheme=toggleTheme;document.addEventListener("DOMContentLoaded",()=>applyTheme(document.documentElement.getAttribute("data-theme")||"dark"));
 </script>
     <script src="biblia.js"></script>
 </body>
