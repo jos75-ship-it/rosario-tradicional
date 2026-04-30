@@ -2632,3 +2632,9 @@ body::before{
 body.is-praying .bottom-nav{display:none !important;}
 
 .home-screen-content{justify-content:flex-start;}
+
+/* Fix: garantir topo da Home visível */
+#tab-home .home-screen-content{
+    padding-top: calc(var(--safe-area-top) + 20px) !important;
+    box-sizing: border-box;
+}
