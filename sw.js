@@ -1,108 +1,40 @@
-// sw.js - Service Worker para PWA
-
-const CACHE_NAME = 'rosario-v5';
+// Offline application shell; update this version whenever shell files change.
+const CACHE_NAME = 'rosario-v6';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/app.js',
-  '/biblia.js',
-  '/biblia.json',
-  '/manifest.json',
-  '/icon-72.png',
-  '/icon-96.png',
-  '/icon-128.png',
-  '/icon-144.png',
-  '/icon-152.png',
-  '/icon-192.png',
-  '/icon-384.png',
-  '/icon-512.png',
-  'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap'
+  '/', '/index.html', '/style.css', '/prayers.js', '/prayers.json',
+  '/config.js', '/biblia.js', '/biblia.json', '/manifest.json',
+  '/icon-72.png', '/icon-192.png', '/icon-512.png'
 ];
-// Instalar Service Worker
-self.addEventListener('install', (event) => {
-  console.log('📦 Service Worker: Instalando...');
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('✅ Cache aberto');
-        return cache.addAll(urlsToCache);
-      })
-      .catch(err => {
-        console.error('❌ Erro ao cachear:', err);
-      })
-  );
-  self.skipWaiting();
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
 });
-
-// Ativar Service Worker
-self.addEventListener('activate', (event) => {
-  console.log('🚀 Service Worker: Ativando...');
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('🗑️ Removendo cache antigo:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-  self.clients.claim();
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(key => key.startsWith('rosario-') && key !== CACHE_NAME).map(key => caches.delete(key)));
+    await self.clients.claim();
+  })());
 });
-
-// Interceptar requisições
-self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-  
-  // ⚠️ CRÍTICO: Ignorar requisições Firebase e APIs externas
-  const shouldNotCache = 
-    url.hostname.includes('firebaseio.com') || 
-    url.hostname.includes('googleapis.com') && url.pathname.includes('identitytoolkit') ||
-    url.hostname.includes('gstatic.com') && url.pathname.includes('firebasejs') ||
-    url.hostname.includes('fonts.googleapis.com') ||
-    url.hostname.includes('fonts.gstatic.com') ||
-    event.request.method !== 'GET';
-  
-  if (shouldNotCache) {
-    return; // Deixar a requisição passar normalmente
-  }
-
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Cache hit - retornar resposta do cache
-        if (response) {
-          return response;
-        }
-
-        // Clone da requisição
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then((response) => {
-          // Checar se resposta é válida
-          if (!response || response.status !== 200 || response.type === 'error') {
-            return response;
-          }
-
-          // Clone da resposta
-          const responseToCache = response.clone();
-          
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          
-          return response;
-        }).catch(err => {
-          console.error('Erro ao buscar:', err);
-          
-          // Retornar página offline se disponível
-          return caches.match('/index.html');
-        });
-      })
-  );
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = new URL(request.url);
+  if (request.method !== 'GET' || url.origin !== self.location.origin) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    try {
+      const response = await fetch(request);
+      if (response.ok) {
+        await cache.put(request, response.clone());
+      }
+      return response;
+    } catch {
+      // Never return HTML in place of a missing script, image or JSON resource.
+      if (request.mode === 'navigate') return (await cache.match('/index.html')) || Response.error();
+      return Response.error();
+    }
+  })());
 });
 
 // Sincronização em background
