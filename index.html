@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="no">
     <meta name="apple-mobile-web-app-capable" content="no">
     <meta name="apple-mobile-web-app-title" content="Rosário">
@@ -30,6 +30,7 @@
 <link rel="stylesheet" href="style.css">
     
 </head>
+<body>
 <div id="custom-alert" class="custom-alert">
     <div class="custom-alert-content">
         <svg class="custom-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -41,7 +42,6 @@
         <button type="button" class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
     </div>
 </div>
-<body>
 <div id="challenge-confirm-modal" class="challenge-confirm-modal">
     <div class="challenge-confirm-content">
         <div class="challenge-icon">⚔️</div>
@@ -620,16 +620,11 @@
 
 <div id="prayer-screen">
     <div class="rosary-rail">
-        <div class="rosary-chain"></div>
-        <div class="center-guide"></div>
-        <div id="bead-track"></div>
+        <div id="bead-track" aria-label="Rosário: conta atual destacada"></div>
     </div>
     <div class="prayer-main">
         <header class="prayer-header">
-            <button class="back-btn" onclick="app.confirmExit()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                Sair
-            </button>
+            <span class="prayer-session-label">Santo Rosário</span>
             <div class="progress-compact">
                 <div class="progress-bar-mini"><div class="progress-fill-mini" id="progress-fill"></div></div>
                 <span class="progress-text" id="progress-text">1/59</span>
@@ -647,7 +642,7 @@
                 <div class="meditation-label">Meditação</div>
                 <p class="meditation-text" id="meditation-text"></p>
             </div>
-            <button class="prayer-text-toggle" id="prayer-text-toggle" onclick="app.toggleText()">
+            <button class="prayer-text-toggle" id="prayer-text-toggle" aria-expanded="false" aria-controls="prayer-full-text" onclick="app.toggleText()">
                 <span>Ver texto da oração</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
             </button>
@@ -655,11 +650,16 @@
             <p class="nav-hint">Toque nas contas ou use as setas para navegar</p>
         </div>
         <footer class="prayer-footer">
-            <button class="nav-btn" id="prev-btn" onclick="app.prev()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+            <button class="back-btn" onclick="app.confirmExit()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Início
             </button>
-            <button class="nav-btn primary" id="next-btn" onclick="app.next()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+
+            <button class="nav-btn" id="prev-btn" onclick="app.prev()" aria-label="Voltar à oração anterior">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg><span>Voltar</span>
+            </button>
+            <button class="nav-btn primary" id="next-btn" onclick="app.next()" aria-label="Avançar para a próxima oração">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg><span id="next-label">Avançar</span>
             </button>
         </footer>
     </div>
@@ -1918,9 +1918,6 @@ document.getElementById('register-form').addEventListener('submit', (e) => {
             }
         });
     });
-    document.getElementById('nav-rosary-btn').addEventListener('click', () =>{
-        document.querySelector('.nav-item[data-tab="rosary"]').click();
-    });
     document.getElementById('prev-month-btn').addEventListener('click', () =>{
         currentCalendarMonth--;
         if (currentCalendarMonth < 0){
@@ -2013,7 +2010,7 @@ import { TEXTS, MONTFORT } from './prayers.js';
         selectPrayer.disabled = false;
         selectPrayer.addEventListener('change', () => {
             const selectedIndex = Number(selectPrayer.value);
-            renderPrayer(Number.isNaN(selectedIndex) ? null : prayers[selectedIndex]);
+            renderPrayer(selectPrayer.value === '' || Number.isNaN(selectedIndex) ? null : prayers[selectedIndex]);
         });
 
         if (prayers.length > 0) {
@@ -2355,42 +2352,30 @@ const app = {
         if(infoEl) infoEl.innerHTML = `Hoje é <strong>${days[d]}</strong> — Mistérios <strong>${mysteries[d]}</strong>`;
     },
     setupGestures() {
-        let startY = 0;
-        let startX = 0;
-        const body = document.getElementById('prayer-body');
-        if(!body) return;
-
-        body.addEventListener('touchstart', e => {
-            startY = e.touches[0].clientY;
-            startX = e.touches[0].clientX;
+        // Scrolling prayer text must never advance the prayer by accident.
+        const rail = document.querySelector('.rosary-rail');
+        let startY = null;
+        rail.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+        rail.addEventListener('touchcancel', () => { startY = null; });
+        rail.addEventListener('touchend', e => {
+            if (!this.state.type || startY === null) return;
+            const delta = startY - e.changedTouches[0].clientY;
+            startY = null;
+            if (Math.abs(delta) > 40) delta > 0 ? this.next() : this.prev();
         }, { passive: true });
-
-        body.addEventListener('touchmove', e => {
-            if (e.target.closest('.prayer-full-text')) return;
-
-            const dy = Math.abs(startY - e.touches[0].clientY);
-            const dx = Math.abs(startX - e.touches[0].clientX);
-            if (dy > dx && dy > 10) e.preventDefault();
+        let lastWheel = 0;
+        rail.addEventListener('wheel', e => {
+            if (!this.state.type || Math.abs(e.deltaY) < 5) return;
+            e.preventDefault();
+            if (Date.now() - lastWheel < 250) return;
+            lastWheel = Date.now();
+            e.deltaY > 0 ? this.next() : this.prev();
         }, { passive: false });
-
-        body.addEventListener('touchend', e => {
-            if (e.target.closest('.prayer-full-text')) return;
-
-            if (!this.state.type) return;
-            const endY = e.changedTouches[0].clientY;
-            const endX = e.changedTouches[0].clientX;
-            const dy = startY - endY;
-            const dx = Math.abs(startX - endX);
-
-            if (Math.abs(dy) > 30 && Math.abs(dy) > dx) {
-                if (dy > 0) this.next();
-                else this.prev();
-            }
-        }, { passive: true });
     },
     setupKeyboard() {
         document.addEventListener('keydown', e => {
-            if (!this.state.type) return;
+            if (!this.state.type || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+            if (e.target.closest('input, textarea, select, button, [contenteditable="true"]')) return;
             if (['ArrowDown', 'ArrowRight', ' '].includes(e.key)) { e.preventDefault(); this.next(); }
             if (['ArrowUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); this.prev(); }
             if (e.key === 'Escape') this.confirmExit();
@@ -2441,18 +2426,64 @@ const app = {
         this.state.type = type;
         this.state.beads = this.generateBeads(type);
         this.state.index = 0;
-        this.els.track.innerHTML = '';
-        this.state.beads.forEach((bead, idx) => {
-            const el = document.createElement('div');
-            el.className = `bead ${bead.beadType}`;
-            if (bead.beadType !== 'ave' && bead.beadType !== 'pater') el.classList.add('special');
-            if (idx === 0) el.classList.add('active');
-            el.onclick = () => this.goTo(idx);
-            this.els.track.appendChild(el);
-        });
+        this.renderRosary();
+        this.els.completion.classList.remove('active');
+        document.body.classList.add('praying');
         this.els.prayer.classList.add('active');
         AudioSystem.playBell();
         this.update();
+    },
+    rosaryPosition(index) {
+        if (index < 2) return 0;
+        if (index < 7) return index - 1;
+        if (index === this.state.beads.length - 1) return 5;
+        const step = (index - 7) % 65;
+        return 6 + Math.floor(step / 13) * 11 + Math.min(step % 13, 10);
+    },
+    renderRosary() {
+        const ns = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('viewBox', '0 0 240 360');
+        const chain = document.createElementNS(ns, 'path');
+        chain.setAttribute('d', 'M120 255 A93 120 0 1 1 120 15 A93 120 0 1 1 120 255 L120 337');
+        chain.setAttribute('class', 'rosary-outline');
+        svg.appendChild(chain);
+        const points = [[120,337], [120,316], [120,299], [120,285], [120,271], [120,255]];
+        for (let i = 0; i < 55; i++) {
+            const angle = Math.PI / 2 + (i + 0.5) * Math.PI * 2 / 55;
+            points.push([120 + 93 * Math.cos(angle), 135 + 120 * Math.sin(angle)]);
+        }
+        points.forEach(([x,y], position) => {
+            const node = document.createElementNS(ns, 'g');
+            node.setAttribute('class', 'rosary-point');
+            node.dataset.position = position;
+            node.setAttribute('role', 'button');
+            node.setAttribute('tabindex', '-1');
+            node.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); node.dispatchEvent(new MouseEvent('click')); }
+            });
+            node.setAttribute('transform', `translate(${x} ${y})`);
+            const shape = document.createElementNS(ns, position === 0 ? 'path' : 'ellipse');
+            if (position === 0) shape.setAttribute('d', 'M-3 -12 H3 V-5 H10 V1 H3 V14 H-3 V1 H-10 V-5 H-3 Z');
+            else {
+                const large = position === 1 || position === 5 || (position >= 6 && (position - 6) % 11 === 0);
+                shape.setAttribute('rx', large ? 5.5 : 3.5);
+                shape.setAttribute('ry', position === 5 ? 8 : large ? 5.5 : 3.5);
+            }
+            node.appendChild(shape);
+            const title = document.createElementNS(ns, 'title');
+            title.textContent = position === 0 ? 'Crucifixo' : position === 5 ? 'Medalha · Salve Rainha' : 'Conta do Rosário';
+            node.setAttribute('aria-label', title.textContent);
+            node.appendChild(title);
+            node.addEventListener('click', () => {
+                if (!this.state.type) return;
+                const groupStart = this.state.index >= 7 ? 7 + Math.floor((Math.min(this.state.index, this.state.beads.length - 2) - 7) / 65) * 65 : 7;
+                let target = position === 5 ? this.state.beads.length - 1 : position === 0 ? 0 : position < 5 ? position + 1 : groupStart + Math.floor((position - 6) / 11) * 13 + (position - 6) % 11;
+                this.goTo(target);
+            });
+            svg.appendChild(node);
+        });
+        this.els.track.replaceChildren(svg);
     },
     goTo(idx) {
         if (idx >= 0 && idx < this.state.beads.length) {
@@ -2462,6 +2493,7 @@ const app = {
         }
     },
     next() {
+        if (!this.state.type) return;
         if (this.state.index < this.state.beads.length - 1) {
             this.state.index++;
             this.update();
@@ -2532,14 +2564,16 @@ const app = {
         this.els.name.classList.add('visible');
         if (bead.count) this.els.count.classList.add('visible');
         
-        const beadEls = this.els.track.children;
-        Array.from(beadEls).forEach(el => el.classList.remove('active'));
-        if (beadEls[idx]) {
-            beadEls[idx].classList.add('active');
-            const activeEl = beadEls[idx];
-            const beadCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
-            this.els.track.style.transform = `translate(-50%, -${beadCenter}px)`;
-        }
+        this.els.prevBtn.disabled = idx === 0;
+        const finalPrayer = idx === total - 1;
+        document.getElementById('next-label').textContent = finalPrayer ? 'Concluir' : 'Avançar';
+        document.getElementById('next-btn').setAttribute('aria-label', finalPrayer ? 'Concluir o Rosário' : 'Avançar para a próxima oração');
+        this.els.track.querySelectorAll('.rosary-point').forEach(el => {
+            const active = Number(el.dataset.position) === this.rosaryPosition(idx);
+            el.classList.toggle('active', active);
+            el.setAttribute('tabindex', active ? '0' : '-1');
+            el.setAttribute('aria-current', active ? 'step' : 'false');
+        });
     },
     // FUNÇÃO PARA EXPANDIR A IMAGEM
     toggleImageZoom() {
@@ -2568,6 +2602,7 @@ const app = {
     },
     toggleText() {
         this.state.showText = !this.state.showText;
+        this.els.textToggle.setAttribute('aria-expanded', String(this.state.showText));
         if (this.state.showText) {
             this.els.fullText.classList.add('visible');
             this.els.textToggle.classList.add('expanded');
@@ -2579,10 +2614,14 @@ const app = {
     confirmExit() { if (confirm('Sair?')) this.home(); },
     home() {
         this.state.type = null;
+        document.body.classList.remove('praying');
         this.els.prayer.classList.remove('active');
         this.els.completion.classList.remove('active');
     },
     complete() {
+        if (!this.state.type) return;
+        this.state.type = null;
+        document.body.classList.remove('praying');
         AudioSystem.playComplete();
         const aves = this.state.beads.filter(b => b.beadType === 'ave').length;
         const paters = this.state.beads.filter(b => b.beadType === 'pater').length;
@@ -2715,6 +2754,8 @@ const app = {
              // Atualiza interface localmente
              window.userProfile.prayedDays = prayedDays;
              window.userProfile.totalRosaries = (window.userProfile.totalRosaries || 0) + 1;
+             window.userProfile.totalAves = (window.userProfile.totalAves || 0) + aves;
+             window.userProfile.totalPaters = (window.userProfile.totalPaters || 0) + paters;
              window.userProfile.currentStreak = newStreak;
              if (newStreak > (window.userProfile.longestStreak || 0)) {
                  window.userProfile.longestStreak = newStreak;

@@ -2569,3 +2569,40 @@ body::before{
     color: var(--text-secondary);
     font-size: 1.05rem;
 }
+
+/* Prayer workspace: complete rosary, readable text and persistent controls. */
+body.praying { overflow: hidden; }
+#prayer-screen { height: 100dvh; }
+#prayer-screen .rosary-rail { width: clamp(110px, 25vw, 300px); padding: 20px 8px; }
+#prayer-screen .rosary-rail::before, #prayer-screen .rosary-rail::after { display: none; }
+#bead-track { position: static; width: 100%; height: 100%; padding: 0; transform: none; display: flex; justify-content: center; }
+#bead-track svg { width: 100%; height: 100%; max-height: 640px; overflow: visible; }
+.rosary-outline { fill: none; stroke: var(--gold-dim); stroke-width: 1; opacity: .45; }
+.rosary-point { fill: var(--bg-elevated); stroke: var(--gold-dim); stroke-width: 1.5; cursor: pointer; }
+.rosary-point.active { fill: var(--gold); stroke: var(--gold-bright); filter: drop-shadow(0 0 4px var(--gold)); }
+.prayer-main { min-width: 0; min-height: 0; }
+#prayer-body { min-height: 0; justify-content: safe center; overscroll-behavior: contain; padding: 28px clamp(18px, 4vw, 64px); }
+#prayer-body > * { flex-shrink: 0; }
+#prayer-body .prayer-full-text { max-width: 680px; line-height: 1.8; }
+.prayer-session-label { font-family: var(--font-display); font-size: .7rem; letter-spacing: .16em; color: var(--gold-dim); }
+.prayer-header { padding-top: max(18px, env(safe-area-inset-top)); gap: 12px; }
+.prayer-footer { border-top: 1px solid var(--border-subtle); padding-bottom: max(18px, env(safe-area-inset-bottom)); gap: 12px; }
+.prayer-footer .nav-btn, .prayer-footer .nav-btn.primary { width: auto; height: 48px; border-radius: 12px; padding: 0 18px; gap: 8px; font-family: var(--font-body); font-size: 1rem; }
+.prayer-footer .back-btn { margin-right: auto; }
+.prayer-footer .nav-btn svg { width: 18px; height: 18px; }
+button:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+body.praying .audio-toggle { bottom: max(20px, env(safe-area-inset-bottom)); left: 24px; right: auto; }
+.bottom-nav { bottom: max(12px, env(safe-area-inset-bottom)); left: 50%; right: auto; transform: translateX(-50%); width: min(620px, calc(100% - 24px)); height: 68px; border: 1px solid var(--border-subtle); border-radius: 24px; box-shadow: 0 12px 35px #0005; }
+@media (max-width: 768px) {
+    #prayer-screen .rosary-rail { width: 96px; padding: 12px 5px; }
+    .prayer-session-label { display: none; }
+    .prayer-header { justify-content: flex-end; }
+    .prayer-footer { flex-wrap: wrap; gap: 8px; padding: 12px 10px max(12px, env(safe-area-inset-bottom)); }
+    .prayer-footer .back-btn { width: 100%; justify-content: center; padding: 4px; min-height: 32px; }
+    .prayer-footer .nav-btn, .prayer-footer .nav-btn.primary { flex: 1; padding: 0 8px; }
+    body.praying .audio-toggle { left: auto; right: 25px; bottom: max(20px, env(safe-area-inset-bottom)); }
+    #prayer-body { padding: 18px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
