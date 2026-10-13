@@ -690,18 +690,26 @@ import { firebaseConfig, webPushPublicKey } from './config.js';
 import{ initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import{ getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import{ getDatabase, ref, set, get, update, remove, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js'; // Adicionado push
+import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js';
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const database = getDatabase(firebaseApp);
 
 let currentFriendUid = null; // Guarda o ID do amigo que estamos visitando
 
+// Segurança: valores que vêm do banco (nomes, mensagens, ids) nunca entram como HTML.
+window.escHTML = (v) => String(v ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+window.safeId = (v) => String(v ?? '').replace(/[^A-Za-z0-9_-]/g, '');
+window.SAFE_AVATARS = ['therese.png', 'pius.png', 'thomas.png', 'kolbe.jpg', 'madonna.png', 'agoustine.png', 'francis.jpg'];
 window.getAvatarHTML = function(avatarValue, size = '100%') {
-    if (!avatarValue) return '👤';
+    // Só aceita as medalhas conhecidas ou um emoji curto: o valor vem do banco e não pode virar HTML.
+    if (!avatarValue || typeof avatarValue !== 'string') return '👤';
     if (avatarValue.indexOf('.') > -1) {
+        if (!window.SAFE_AVATARS.includes(avatarValue)) return '👤';
         return `<img src="img/avatars/${avatarValue}" class="avatar-img" alt="Avatar" style="width:${size}; height:${size}; object-fit: cover;">`;
     }
-    return `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size: calc(${size} * 0.6);">${avatarValue}</div>`;
+    if (!/^[^<>"'&=\\/]{1,8}$/.test(avatarValue)) return '👤';
+    return `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size: calc(${size} * 0.6);">${window.escHTML(avatarValue)}</div>`;
 }
 
 function usernameToEmail(username){
@@ -1271,44 +1279,21 @@ async function searchFriend() {
     searchTerm = searchTerm.replace(/^@/, '');
     
     if (!searchTerm || searchTerm.length < 2) {
-        setSearchResultMessage(resultDiv, 'Digite pelo menos 2 caracteres');
+        setSearchResultMessage(resultDiv, 'Digite o nome de usuário do seu amigo');
         return;
     }
     
     setSearchResultMessage(resultDiv, 'Buscando...');
     
     try {
-        const usersRef = ref(database, 'users');
-        const snapshot = await get(usersRef);
-        
-        if (!snapshot.exists()) {
-            setSearchResultMessage(resultDiv, 'Nenhum usuário encontrado');
+        // Busca pelo nome de usuário exato, no servidor: a lista de todos os usuários não fica mais aberta.
+        const findSiteUser = httpsCallable(getFunctions(firebaseApp, 'us-central1'), 'findSiteUser');
+        const res = (await findSiteUser({ username: searchTerm })).data || {};
+        if (!res.found) {
+            setSearchResultMessage(resultDiv, res.self ? 'Esse é você.' : 'Nenhum usuário com esse nome. Digite o nome de usuário exato.');
             return;
         }
-        
-        const users = snapshot.val();
-        let results = [];
-        
-        // CORREÇÃO: BUSCA INTELIGENTE (INCLUDES)
-        for (const uid in users) {
-            const u = users[uid];
-            if (uid === window.currentUser.uid) continue; // Pula eu mesmo
-
-            const username = normalizeSearchText(u?.username);
-            const displayName = normalizeSearchText(u?.displayName);
-
-            if (username.includes(searchTerm) || displayName.includes(searchTerm)) {
-                results.push({uid, ...u});
-            }
-        }
-        
-        if (results.length === 0) {
-            setSearchResultMessage(resultDiv, 'Nenhum usuário encontrado');
-            return;
-        }
-
-        // Mostra o primeiro resultado (ou lista, mas vamos focar no primeiro para simplificar layout mobile)
-        const found = results[0]; 
+        const found = res.user;
         const foundUid = found.uid;
         
         const myFriendsRef = ref(database, `users/${window.currentUser.uid}/friends/${foundUid}`);
@@ -1385,11 +1370,11 @@ async function loadFriendRequests() {
                 card.innerHTML = `
                     <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${window.getAvatarHTML(user.avatar)}</div>
                     <div style="flex: 1;">
-                        <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${user.displayName || user.username}</div>
-                        <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${user.username}</div>
+                        <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${window.escHTML(user.displayName || user.username)}</div>
+                        <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${window.escHTML(user.username)}</div>
                     </div>
-                    <button onclick="acceptFriendRequest('${uid}')" style="padding: 8px 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border: none; border-radius: 6px; color: var(--bg-deep); font-family: var(--font-display); font-size: 0.7rem; text-transform: uppercase; cursor: pointer; margin-right: 8px;">Aceitar</button>
-                    <button onclick="rejectFriendRequest('${uid}')" style="padding: 8px 16px; background: rgba(180, 60, 60, 0.15); border: 1px solid rgba(180, 60, 60, 0.3); border-radius: 6px; color: #c07070; font-family: var(--font-display); font-size: 0.7rem; text-transform: uppercase; cursor: pointer;">Recusar</button>
+                    <button onclick="acceptFriendRequest('${window.safeId(uid)}')" style="padding: 8px 16px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%); border: none; border-radius: 6px; color: var(--bg-deep); font-family: var(--font-display); font-size: 0.7rem; text-transform: uppercase; cursor: pointer; margin-right: 8px;">Aceitar</button>
+                    <button onclick="rejectFriendRequest('${window.safeId(uid)}')" style="padding: 8px 16px; background: rgba(180, 60, 60, 0.15); border: 1px solid rgba(180, 60, 60, 0.3); border-radius: 6px; color: #c07070; font-family: var(--font-display); font-size: 0.7rem; text-transform: uppercase; cursor: pointer;">Recusar</button>
                 `;
                 list.appendChild(card);
             }
@@ -1454,9 +1439,9 @@ async function loadFriends() {
                 card.innerHTML = `
                     <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: var(--bg-deep); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${window.getAvatarHTML(user.avatar)}</div>
                     <div style="flex: 1;">
-                        <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${user.displayName || user.username}</div>
-                        <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${user.username}</div>
-                        <div style="font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">🔥 ${user.currentStreak || 0} dias</div>
+                        <div style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary);">${window.escHTML(user.displayName || user.username)}</div>
+                        <div style="font-family: var(--font-body); font-size: 0.85rem; color: var(--gold);">@${window.escHTML(user.username)}</div>
+                        <div style="font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">🔥 ${Number(user.currentStreak) || 0} dias</div>
                     </div>
                     <svg style="width: 20px; height: 20px; color: var(--text-dim);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 `;
@@ -1587,8 +1572,10 @@ window.openInboxModal = async function() {
             const dateStr = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
             
             // FIX 3: Sanitizar nome para não quebrar o HTML com aspas simples
-            const safeName = (data.fromName || 'Alguém').replace(/'/g, ""); 
-            const safeUid = data.fromUid || '';
+            const safeName = window.escHTML((data.fromName || 'Alguém').replace(/['"\\<>&]/g, ''));
+            const safeUid = window.safeId(data.fromUid);
+            const safeKey = window.safeId(key);
+            const fromName = window.escHTML(data.fromName || 'Alguém');
 
             const div = document.createElement('div');
             div.className = 'inbox-card';
@@ -1596,28 +1583,28 @@ window.openInboxModal = async function() {
             if (data.type === 'prayer') {
                 div.innerHTML = `
                     <div class="inbox-header">
-                        <strong style="color: var(--gold); font-family: var(--font-display); font-size: 0.8rem;">${data.fromName}</strong>
+                        <strong style="color: var(--gold); font-family: var(--font-display); font-size: 0.8rem;">${fromName}</strong>
                         <span class="inbox-time">${dateStr}</span>
                     </div>
                     <div class="inbox-body">
                         🙏 Rezou pela sua intenção!
                     </div>
                     <div style="text-align: right; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
-                        <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Apagar</button>
+                        <button class="btn-delete-msg" onclick="deleteMessage('${safeKey}')">Apagar</button>
                     </div>
                 `;
             } else if (data.type === 'challenge') {
                 div.innerHTML = `
                     <div class="inbox-header">
-                        <strong style="color: var(--gold); font-family: var(--font-display); font-size: 0.8rem;">${data.fromName}</strong>
+                        <strong style="color: var(--gold); font-family: var(--font-display); font-size: 0.8rem;">${fromName}</strong>
                         <span class="inbox-time">${dateStr}</span>
                     </div>
                     <div class="inbox-body" style="margin-bottom: 12px;">
                         ⚔️ Desafiou você para 7 dias de oração!
                     </div>
                     <div class="challenge-actions">
-                        <button class="btn-challenge-accept" onclick="acceptChallenge('${key}', '${safeUid}', '${safeName}')">Aceitar Desafio</button>
-                        <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Recusar</button>
+                        <button class="btn-challenge-accept" onclick="acceptChallenge('${safeKey}', '${safeUid}', '${safeName}')">Aceitar Desafio</button>
+                        <button class="btn-delete-msg" onclick="deleteMessage('${safeKey}')">Recusar</button>
                     </div>
                 `;
             } else if (data.type === 'challenge_result') {
@@ -1638,11 +1625,11 @@ window.openInboxModal = async function() {
                         <span style="font-size: 1.1rem;">${icon}</span>
                         <div>
                             <div style="font-weight:600; margin-bottom: 4px;">${title}</div>
-                            <div style="opacity:0.9;">${subtitle}</div>
+                            <div style="opacity:0.9;">${window.escHTML(subtitle)}</div>
                         </div>
                     </div>
                     <div style="text-align: right; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
-                        <button class="btn-delete-msg" onclick="deleteMessage('${key}')">Apagar</button>
+                        <button class="btn-delete-msg" onclick="deleteMessage('${safeKey}')">Apagar</button>
                     </div>
                 `;
             }
@@ -2043,11 +2030,13 @@ import { TEXTS, MONTFORT } from './prayers.js';
     loadAndRenderPrayersList();
     
     window.getAvatarHTML = function(avatarValue, size = '100%') {
-        if (!avatarValue) return '👤';
+        if (!avatarValue || typeof avatarValue !== 'string') return '👤';
         if (avatarValue.indexOf('.') > -1) {
+            if (!window.SAFE_AVATARS.includes(avatarValue)) return '👤';
             return `<img src="img/avatars/${avatarValue}" class="avatar-img" alt="Avatar" style="width:${size}; height:${size}; object-fit: cover;">`;
         }
-        return `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size: calc(${size} * 0.6);">${avatarValue}</div>`;
+        if (!/^[^<>"'&=\\/]{1,8}$/.test(avatarValue)) return '👤';
+        return `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size: calc(${size} * 0.6);">${window.escHTML(avatarValue)}</div>`;
     };
 
     const AVATARS = [

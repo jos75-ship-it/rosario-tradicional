@@ -1,11 +1,12 @@
 // Offline application shell; update this version whenever shell files change.
-const CACHE_NAME = 'rosario-v6';
+const CACHE_NAME = 'rosario-v7';
 const urlsToCache = [
   '/', '/index.html', '/style.css', '/prayers.js', '/prayers.json',
   '/config.js', '/biblia.js', '/biblia.json', '/manifest.json',
   '/icon-72.png', '/icon-192.png', '/icon-512.png'
 ];
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
 });
 self.addEventListener('activate', event => {
