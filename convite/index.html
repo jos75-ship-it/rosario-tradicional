@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convite para rezar · Rosário Montfort</title>
+  <meta name="description" content="Um convite para rezarem juntos o Santo Rosário pelo método de São Luís de Montfort.">
+  <meta property="og:title" content="Vamos rezar o Rosário juntos?">
+  <meta property="og:description" content="Convite para o app Rosário Montfort.">
+  <meta property="og:image" content="https://rosariotradicionalmontfort.online/icon-512.png">
+  <meta name="theme-color" content="#080709">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=EB+Garamond&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #080709; --surface: #141215; --line: #29242a; --gold: #d4a855; --gold-dim: #8a6e3a; --text: #f4f1eb; --dim: #a89f90; --on-gold: #17110a; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--text); }
+    body { font-family: 'EB Garamond', Georgia, serif; font-size: 17px; line-height: 1.55; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 32px 20px; }
+    main { width: 100%; max-width: 420px; text-align: center; display: grid; gap: 18px; }
+    img { width: 96px; height: 96px; border-radius: 22px; margin: 0 auto; display: block; }
+    .eyebrow { font-family: 'Cinzel', Georgia, serif; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-dim); margin: 0; }
+    h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; font-size: 34px; line-height: 1.1; margin: 0; text-wrap: balance; }
+    .who { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 21px; color: var(--dim); margin: 0; }
+    .who b { color: var(--gold); font-style: normal; font-weight: 500; }
+    .btn { display: block; border-radius: 999px; padding: 14px 18px; font-family: 'Cinzel', Georgia, serif; font-size: 14px; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; font-weight: 600; }
+    .btn.gold { background: var(--gold); color: var(--on-gold); }
+    .btn.ghost { border: 1px solid var(--gold-dim); color: var(--gold); }
+    .btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+    .note { font-size: 15px; color: var(--dim); margin: 0; }
+    .rule { height: 1px; background: var(--line); margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <main>
+    <img src="/icon-192.png" alt="Ícone do Rosário Montfort: mãos em oração com o terço">
+    <p class="eyebrow">Rosário Montfort</p>
+    <h1>Vamos rezar o Rosário juntos?</h1>
+    <p class="who" id="who" hidden><b id="user"></b> convidou você para rezarem uns pelos outros.</p>
+    <a class="btn gold" id="open" href="rosario://irmaos">Abrir no app</a>
+    <div class="rule"></div>
+    <p class="note">Ainda não tem o app? Ele está em testes e chega em breve à Play Store. Enquanto isso, você pode rezar pelo site.</p>
+    <a class="btn ghost" href="/">Rezar pelo site</a>
+  </main>
+  <script>
+    (function () {
+      var u = new URLSearchParams(location.search).get('u') || '';
+      u = u.replace(/^@/, '').toLowerCase();
+      if (!/^[a-z0-9_.]{3,20}$/.test(u)) return;
+      document.getElementById('user').textContent = '@' + u;
+      document.getElementById('who').hidden = false;
+      document.getElementById('open').href = 'rosario://convite/' + u;
+    })();
+  </script>
+</body>
+</html>
